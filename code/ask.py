@@ -151,14 +151,14 @@ def finetune(data):
     ###################################################
 
     ########## set up tensorboard #####################
-    tmpdir = tempfile.TemporaryDirectory()
-    local_training_root = tmpdir.name
+    #tmpdir = tempfile.TemporaryDirectory()
+    #local_training_root = tmpdir.name
 
-    loc_checkpoint_path = os.path.join(local_training_root, name)
-    tensorboard_display_dir = f"{loc_checkpoint_path}/runs"
+    #loc_checkpoint_path = os.path.join(local_training_root, name)
+    #tensorboard_display_dir = f"{loc_checkpoint_path}/runs"
 
-    %load_ext tensorboard
-    %tensorboard --logdir f'{tensorboard_display_dir}'
+    #%load_ext tensorboard
+    #%tensorboard --logdir f'{tensorboard_display_dir}'
 
     #########################################################
 
@@ -177,3 +177,5 @@ def finetune(data):
 # RUN!
 if __name__ == '__main__':
     trainer_obj = finetune(prep_data())
+
+    #see what changes made on VM then change git then pull to VM.
