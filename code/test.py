@@ -126,8 +126,9 @@ pd.concat([first_quart, second_quart], axis=1)
 # %%
 second_quart.reset_index(inplace=True)
 
-# %%
-from augment import testing
 
-testing()
+# %% --------------------------------------------------------------------------
+# 
+# -----------------------------------------------------------------------------
+pd.read_csv(r'../ready_data.csv').loc[1,'full_questions']
 # %%
