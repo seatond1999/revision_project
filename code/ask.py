@@ -107,15 +107,15 @@ def finetune(data):
     name = "mist_question_asking"
     training_arguments = TrainingArguments(
         output_dir=name,
-        per_device_train_batch_size=8,
+        per_device_train_batch_size=8, #5 works
         gradient_accumulation_steps=1,
         optim="paged_adamw_32bit",
-        learning_rate=2e-4,
+        learning_rate=3e-4,
         lr_scheduler_type="cosine",
         save_strategy="epoch",  # so do we need the whole PeftSavingCallback function? maybe try withput and run the trainer(from last check=true)
         logging_steps=100,
         num_train_epochs=1,
-        max_steps=250,
+        #max_steps=250,
         fp16=True,
         #push_to_hub=True,
         report_to=["tensorboard"],
@@ -144,7 +144,7 @@ def finetune(data):
         dataset_text_field="content",
         args=training_arguments,
         tokenizer=tokenizer,
-        callbacks=callbacks,
+        callbacks=callbacks, #try if doesnt work hashing all of checkpiint stuff above and also this callback line
         packing=False,
     )
 
@@ -162,7 +162,8 @@ def finetune(data):
 
     #########################################################
 
-    trainer.train(resume_from_checkpoint=True)
+    #trainer.train(resume_from_checkpoint=True) #use if want to go from checkpoint
+    trainer.train()
     #trainer.state.log_history()
     #trainer.save_model()
     #trainer.push_to_hub() #un hash when want to send final model to hub
@@ -178,4 +179,4 @@ def finetune(data):
 if __name__ == '__main__':
     trainer_obj = finetune(prep_data())
 
-    #see what changes made on VM then change git then pull to VM.
+
