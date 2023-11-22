@@ -112,7 +112,7 @@ def finetune(data):
     name = "mist_question_asking"
     training_arguments = TrainingArguments(
         output_dir=name,
-        per_device_train_batch_size=8, #5 works
+        per_device_train_batch_size=8,  # 5 works
         gradient_accumulation_steps=1,
         optim="paged_adamw_32bit",
         learning_rate=3e-4,
@@ -121,7 +121,7 @@ def finetune(data):
         save_strategy="epoch",  # so do we need the whole PeftSavingCallback function? maybe try withput and run the trainer(from last check=true)
         logging_steps=100,
         num_train_epochs=1,
-        #max_steps=250,
+        # max_steps=250,
         fp16=True,
         push_to_hub=True,
         report_to=["tensorboard"],
@@ -150,7 +150,7 @@ def finetune(data):
         dataset_text_field="content",
         args=training_arguments,
         tokenizer=tokenizer,
-        callbacks=callbacks, #try if doesnt work hashing all of checkpiint stuff above and also this callback line
+        callbacks=callbacks,  # try if doesnt work hashing all of checkpiint stuff above and also this callback line
         packing=False,
     )
 
@@ -168,11 +168,11 @@ def finetune(data):
 
     #########################################################
 
-    #trainer.train(resume_from_checkpoint=True) #use if want to go from checkpoint
+    # trainer.train(resume_from_checkpoint=True) #use if want to go from checkpoint
     trainer.train()
-    #trainer.state.log_history()
-    #trainer.save_model()
-    #trainer.push_to_hub() #un hash when want to send final model to hub
+    # trainer.state.log_history()
+    # trainer.save_model()
+    # trainer.push_to_hub() #un hash when want to send final model to hub
     return trainer
 
 
@@ -185,9 +185,9 @@ if __name__ == "__main__":
     trainer_obj = finetune(prep_data())
 
 
-
 # %% --------------------------------------------------------------------------
 import os
+
 os.getcwd()
 # -----------------------------------------------------------------------------
 
@@ -196,7 +196,7 @@ from peft import AutoPeftModelForCausalLM
 from transformers import AutoTokenizer, GenerationConfig, GPTQConfig
 import torch
 
-#model_id_inf = "seatond/mist_question_asking_5e4LR_2epoch"
+# model_id_inf = "seatond/mist_question_asking_5e4LR_2epoch"
 
 model_id_inf = r"/checkpoint-62/"
 
