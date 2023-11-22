@@ -117,7 +117,7 @@ def finetune(data):
         num_train_epochs=1,
         #max_steps=250,
         fp16=True,
-        #push_to_hub=True,
+        push_to_hub=True,
         report_to=["tensorboard"],
     )
 
