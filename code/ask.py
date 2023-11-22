@@ -185,3 +185,20 @@ if __name__ == "__main__":
     trainer_obj = finetune(prep_data())
 
 
+
+# %% --------------------------------------------------------------------------
+import os
+os.getcwd()
+# -----------------------------------------------------------------------------
+
+# %%
+from peft import AutoPeftModelForCausalLM
+from transformers import AutoTokenizer, GenerationConfig, GPTQConfig
+import torch
+
+#model_id_inf = "seatond/mist_question_asking_5e4LR_2epoch"
+
+model_id_inf = r"/checkpoint-62/"
+
+tokenizer = AutoTokenizer.from_pretrained(model_id_inf, use_fast=True)
+# %%
