@@ -132,3 +132,5 @@ second_quart.reset_index(inplace=True)
 # -----------------------------------------------------------------------------
 pd.read_csv(r'../ready_data.csv').loc[1,'full_questions']
 # %%
+
+# %%
