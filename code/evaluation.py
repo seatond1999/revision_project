@@ -72,8 +72,8 @@ def inference(tokenizer, model, contexts):
 
 
 def score_with_gpt(outputs):
-    os.environ["OPENAI_API_KEY"] = "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"
-    key = "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"
+    os.environ["OPENAI_API_KEY"] = "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"
+    key = "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"
     openai.api_key = key
     scores = []
     counter = 0
@@ -87,14 +87,11 @@ def score_with_gpt(outputs):
                 client.chat.completions.create(
                     model="gpt-3.5-turbo",
                     messages=[
-                        {
-                            "role": "system",
-                            "content": 'you will respond with the word "yes" or "no" only. If the answer to a question is not available in the information provided, you will respond with "no", otherwise you iwll respond with "no".',
-                        },
+                        # {'role':'system','content':'you will respond with the word "yes" or "no" only. If the answer to a question is not available in the information provided, you will respond with "no", otherwise you iwll respond with "no".'},
                         {
                             "role": "user",
-                            "content": f'can this question: ### {j} ### \n be answered using only this information: ### {outputs[i][0]} ### \n If the answers are not available in the information provided only, answer with the word "no". Otherwise, answer with the word "yes"',
-                        },
+                            "content": f'''can the following question be answered using only the provided context? Question: ### {j} ### \n Context: ### {outputs[i][0]} ### \n if any extra information is needed to answer the question please respond with the word "no". If it can be answered, please respond with the word "yes."''',
+                        }
                     ],
                 )
                 .choices[0]
@@ -117,8 +114,10 @@ if __name__ == "__main__":
     tokenizer, model = load_model(adapter_path, base_model_path)
     outputs = inference(tokenizer, model, context_list)
     scores = score_with_gpt(outputs)
-    score = (len(list(filter(lambda x: x.lower()=='yes',scores))))/len(scores)
+    score = (len(list(filter(lambda x: x.lower() == "yes", scores)))) / len(scores)
     print(score)
-    print(inference(tokenizer,model, list(pd.read_csv(eval_path)['contexts'][[10]]))[0]) #this is just for 1 row of eval table which is the usual context for comparison
+    print(
+        inference(tokenizer, model, list(pd.read_csv(eval_path)["contexts"][[10]]))[0]
+    )  # this is just for 1 row of eval table which is the usual context for comparison
 
 # %%
