@@ -25,7 +25,7 @@ if __name__ == "__main__":
 
 
 # %% --------------------------------------------------------------------------
-# function fo enrivching data - add line which puts it on to table and joins with other question
+# function to enrivching data - add line which puts it on to table and joins with other question
 def gpt_enrich_data(data_inp, start_row=0, end_row=None):
     end_row = len(data_inp) if end_row is None else end_row
     # create prompt for GPT 3.5:

@@ -1,55 +1,124 @@
-# %%
-# for inference
-from peft import AutoPeftModelForCausalLM
-from transformers import AutoTokenizer, GenerationConfig, GPTQConfig
+# %% --------------------------------------------------------------------------
+###### starting using poroper evaluation function ###################
+import pandas as pd
+from peft import PeftModel
+from transformers import (
+    AutoTokenizer,
+    GenerationConfig,
+    GPTQConfig,
+    AutoModelForCausalLM,
+)
 import torch
 from openai import OpenAI
+import openai
 import os
 import time
 
-# %% --------------------------------------------------------------------------
 
-model_id_inf = "seatond/mist_question_asking_5e4LR_2epoch"
+def load_model(lora_adapters, base_model):
+    base_path = base_model  # input: base model
+    adapter_path = lora_adapters  # input: adapters
 
-tokenizer = AutoTokenizer.from_pretrained(model_id_inf, use_fast=True)
-
-model = AutoPeftModelForCausalLM.from_pretrained(
-    pretrained_model_name_or_path=model_id_inf,
-    low_cpu_mem_usage=True,
-    return_dict=True,
-    torch_dtype=torch.float16,
-    device_map="cuda:0",
-    token="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",
-)
-
-context_list = None  # get list of test data - try with 3 points and eithe loop through each Q or ask all at once
-result = []
-for i in context_list:
-    prompt_template = (
-        f"###human: Ask me a questions about:\n{context_list}\n###Response:\n"
-    )
-    input_ids = tokenizer(prompt_template, return_tensors="pt").input_ids.to("cuda:0")
-    quantization_config_loading = GPTQConfig(bits=4)
-    generation_config = GenerationConfig(
-        do_sample=True,
-        top_k=1,
-        temperature=0.5,
-        max_new_tokens=35,
-        pad_token_id=tokenizer.eos_token_id,
+    base_model = AutoModelForCausalLM.from_pretrained(
+        base_path,
+        return_dict=True,
+        device_map="auto",
     )
 
-    outputs = model.generate(inputs=input_ids, generation_config=generation_config)
-    questions = (tokenizer.decode(outputs[0], skip_special_tokens=True))
+    tokenizer = AutoTokenizer.from_pretrained(base_path)
 
-    eval_template = f"""can these questions:"{questions}" be answered using only the following context: "{i}"\nIf extra information is required please start your answer with no """
+    # Add/set tokens (same 5 lines of code we used before training)
+    tokenizer.pad_token = "</s>"
+    tokenizer.add_tokens(["<|im_start|>"])
+    tokenizer.add_special_tokens(dict(eos_token="<|im_end|>"))
+    base_model.resize_token_embeddings(len(tokenizer))
+    base_model.config.eos_token_id = tokenizer.eos_token_id
+
+    # Load LoRA adapter and merge
+    return tokenizer, PeftModel.from_pretrained(base_model, adapter_path)
 
 
-# now feed question into GPT
+def inference(tokenizer, model, contexts):
+    outputs = {}
+    sys = "You are an AI examiner who will ask concise questions about information which will be provided."
+    for i, j in enumerate(contexts):
+        print(i)
+        prompt = (
+            "<|im_start|>system"
+            + f"\n{sys}<|im_end|>"
+            + "\n<|im_start|>user"
+            + f"\nInformation: ###{j}###\nAsk me questions about this information.<|im_end|>"
+            + "\n<|im_start|>assisstant"
+        )
+        input_ids = tokenizer(prompt, return_tensors="pt").input_ids.to("cuda:0")
 
-client.chat.completions.create(
-                model="gpt-3.5-turbo",
-                messages=[{"role": "user", "content": data_to_enrich.iloc[i, 0]}],
+        generation_config = GenerationConfig(
+            do_sample=True,
+            top_k=5,
+            temperature=0.5,
+            max_new_tokens=4000,
+            eos_token_id=tokenizer.eos_token_id,
+            pad_token_id=tokenizer.eos_token_id,
+        )
+        out = model.generate(inputs=input_ids, generation_config=generation_config)
+        decoded_output = tokenizer.decode(out[0], skip_special_tokens=True)
+        decoded_output = decoded_output[
+            decoded_output.find("<|im_start|>assisstant")
+            + len("<|im_start|>assisstant") :
+        ]
+        outputs[i] = (j, decoded_output)
+
+    return outputs
+
+
+def score_with_gpt(outputs):
+    os.environ["OPENAI_API_KEY"] = "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"
+    key = "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"
+    openai.api_key = key
+    scores = []
+    counter = 0
+    for i in outputs:
+        questions = list(map(lambda x: x + "?", outputs[i][1].split("?")))
+        questions = questions[: len(questions) - 1]
+        for j in questions:
+            print(j, outputs[i][0][:50])
+            client = OpenAI()
+            scores.append(
+                client.chat.completions.create(
+                    model="gpt-3.5-turbo",
+                    messages=[
+                        {
+                            "role": "system",
+                            "content": 'you will respond with the word "yes" or "no" only. If the answer to a question is not available in the information provided, you will respond with "no", otherwise you iwll respond with "no".',
+                        },
+                        {
+                            "role": "user",
+                            "content": f'can this question: ### {j} ### \n be answered using only this information: ### {outputs[i][0]} ### \n If the answers are not available in the information provided only, answer with the word "no". Otherwise, answer with the word "yes"',
+                        },
+                    ],
+                )
+                .choices[0]
+                .message.content
             )
-            .choices[0]
-            .message.content
+            time.sleep(60) if (counter + 1) % 3 == 0 else None
+            counter += 1
+    return scores
 
+
+# -----------------------------------------------------------------------------
+
+
+# %% --------------------------------------------------------------------------
+if __name__ == "__main__":
+    adapter_path = "seatond/chatml_finetune_mistral_aq_rank8"
+    base_model_path = "TheBloke/Mistral-7B-v0.1-GPTQ"
+    eval_path = r"../evaluation_data.csv"
+    context_list = list(pd.read_csv(eval_path)["contexts"])
+    tokenizer, model = load_model(adapter_path, base_model_path)
+    outputs = inference(tokenizer, model, context_list)
+    scores = score_with_gpt(outputs)
+    score = (len(list(filter(lambda x: x.lower()=='yes',scores))))/len(scores)
+    print(score)
+    print(inference(tokenizer,model, list(pd.read_csv(eval_path)['contexts'][[10]]))[0]) #this is just for 1 row of eval table which is the usual context for comparison
+
+# %%
