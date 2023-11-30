@@ -33,6 +33,7 @@ def load_model(lora_adapters, base_model):
     tokenizer.add_special_tokens(dict(eos_token="<|im_end|>"))
     base_model.resize_token_embeddings(len(tokenizer))
     base_model.config.eos_token_id = tokenizer.eos_token_id
+    #base_model.config.pad_token_id = tokenizer.pad_token_id
 
     # Load LoRA adapter and merge
     return tokenizer, PeftModel.from_pretrained(base_model, adapter_path)
@@ -55,10 +56,10 @@ def inference(tokenizer, model, contexts):
         generation_config = GenerationConfig(
             do_sample=True,
             top_k=5,
-            temperature=0.5,
-            max_new_tokens=4000,
+            temperature=0.2,
+            max_new_tokens=300,
             eos_token_id=tokenizer.eos_token_id,
-            pad_token_id=tokenizer.eos_token_id,
+            pad_token_id=tokenizer.pad_token_id,
         )
         out = model.generate(inputs=input_ids, generation_config=generation_config)
         decoded_output = tokenizer.decode(out[0], skip_special_tokens=True)
@@ -78,6 +79,8 @@ def score_with_gpt(outputs):
     scores = []
     counter = 0
     for i in outputs:
+        time.sleep(60) if (counter) % 3 == 0 and counter != 0 else None
+        counter += 1
         questions = list(map(lambda x: x + "?", outputs[i][1].split("?")))
         questions = questions[: len(questions) - 1]
         for j in questions:
@@ -97,8 +100,7 @@ def score_with_gpt(outputs):
                 .choices[0]
                 .message.content
             )
-            time.sleep(60) if (counter + 1) % 3 == 0 else None
-            counter += 1
+
     return scores
 
 
@@ -107,7 +109,7 @@ def score_with_gpt(outputs):
 
 # %% --------------------------------------------------------------------------
 if __name__ == "__main__":
-    adapter_path = "seatond/chatml_finetune_mistral_aq_rank8"
+    adapter_path = "/home/seatond/revision_project/code/rank8_lr0.0002_target2_epochs2_laplha16"
     base_model_path = "TheBloke/Mistral-7B-v0.1-GPTQ"
     eval_path = r"../evaluation_data.csv"
     context_list = list(pd.read_csv(eval_path)["contexts"])
