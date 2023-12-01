@@ -1,4 +1,3 @@
-# %% --------------------------------------------------------------------------
 import pandas as pd
 from datasets import load_dataset, Dataset
 from transformers import (
@@ -111,7 +110,7 @@ def finetune(data):
     r = 16
     lora_alpha = 16
     lr = 1.8e-4
-    epochs = 3
+    epochs = 4
     target_modules=["q_proj", "v_proj","k_proj"]
 
     ##finetune:
@@ -133,7 +132,7 @@ def finetune(data):
     model = get_peft_model(model, peft_config)
     print("trainable parameters:",model.print_trainable_parameters())
     ##
-    name = "stage_three_TRY_3epoch"
+    name = "4_epochs_2"
     training_arguments = TrainingArguments(
         output_dir=name,
         per_device_train_batch_size=8, #5 works
@@ -143,7 +142,7 @@ def finetune(data):
         learning_rate=lr,
         lr_scheduler_type="cosine",
         save_strategy="steps",  # so do we need the whole PeftSavingCallback function? maybe try withput and run the trainer(from last check=true)
-        logging_steps=20,
+        logging_steps=55,
         num_train_epochs=epochs,
         #max_steps=250,
         fp16=False,
@@ -208,4 +207,19 @@ def finetune(data):
 if __name__ == '__main__':
     lets_go = finetune(prep_data(load_data())) 
     lets_go.save_model()
-# -----------------------------------------------------------------------------
+
+
+from huggingface_hub import HfApi
+hf_api = HfApi(
+    endpoint="https://huggingface.co", # Can be a Private Hub endpoint.
+    token="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", # Token is not persisted on the machine.
+)
+#token = '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'
+#login(token = token)
+# Upload all the content from the local folder to your remote Space.
+# By default, files are uploaded at the root of the repo
+hf_api.upload_folder(
+    folder_path="/home/seatond/revision_project/code/4_epochs_2",
+    repo_id="seatond/4_epochs_2",
+    #repo_type="space",
+)
