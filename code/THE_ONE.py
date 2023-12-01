@@ -46,7 +46,7 @@ def prep_data():
             "content": data.apply(
                 lambda x: "<|im_start|>system" + f'\n{system}<|im_end|>'
                 + "\n<|im_start|>user" + f"\nInformation: ###{x['full_context']}###\nAsk me questions about this information.<|im_end|>"
-                + "\n<|im_start|>assisstant" + f"\n{x['full_questions']}<|im_end|> ",
+                + "\n<|im_start|>assisstant" + f"\n{x['full_questions']}",
                 axis=1,
             )
         }
@@ -66,13 +66,10 @@ def finetune(data,r,lora_alpha,lr,epochs,target_modules):
     ##load model and tokenizer
     model_id = "TheBloke/Mistral-7B-v0.1-GPTQ"
 
-    tokenizer = AutoTokenizer.from_pretrained(model_id,use_fast=False)
-    
-
+    tokenizer = AutoTokenizer.from_pretrained(model_id,use_fast=False,add_eos_token = True)
     quantization_config_loading = GPTQConfig(
         bits=4, disable_exllama=True, tokenizer=tokenizer, 
     )
-
     model = AutoModelForCausalLM.from_pretrained(
         model_id, quantization_config=quantization_config_loading, device_map="auto",torch_dtype=torch.float16
     )
@@ -99,7 +96,7 @@ def finetune(data,r,lora_alpha,lr,epochs,target_modules):
     peft_config = LoraConfig(
         r=r,
         lora_alpha=lora_alpha,
-        lora_dropout=0.05,
+        lora_dropout=0.1,
         bias="none",
         task_type="CAUSAL_LM",
         target_modules=target_modules,
@@ -155,7 +152,7 @@ def finetune(data,r,lora_alpha,lr,epochs,target_modules):
         tokenizer=tokenizer,
         callbacks=callbacks, #try if doesnt work hashing all of checkpiint stuff above and also this callback line
         packing=False,
-        max_seq_length=2048
+        #max_seq_length=1200
     )
 
     ###################################################
@@ -182,10 +179,16 @@ def finetune(data,r,lora_alpha,lr,epochs,target_modules):
 
 # %% --------------------------------------------------------------------------
 # RUN!
+#import os
+#os.environ['PYTORCH_CUDA_ALLOC_CONF'] = 'max_split_size_mb=10'
 if __name__ == '__main__':
-    trainer_obj = finetune(prep_data(),16,16,2e-4,1,["q_proj", "v_proj","o_proj"])
+    trainer_obj = finetune(prep_data(),8,16,2e-4,3,["q_proj", "v_proj"]) 
 # -----------------------------------------------------------------------------
 #def finetune(data,r,lora_alpha,lr,epochs,target_modules):
+
+# %% --------------------------------------------------------------------------
+trainer_obj.save_model() 
+# -----------------------------------------------------------------------------
 
 # %% --------------------------------------------------------------------------
 #torch.cuda.empty_cache()
@@ -222,9 +225,9 @@ except:
 # 
 # -----------------------------------------------------------------------------
 
-torch.cuda.empty_cache()
+
 try:
-    finetune(prep_data(),8,16,2e-4,2,["q_proj", "v_proj"]) 
+    finetune(prep_data(),8,16,2e-4,3,["q_proj", "v_proj"]) 
     print('4')
 except:
     None
@@ -255,14 +258,13 @@ hf_api = HfApi(
 # Upload all the content from the local folder to your remote Space.
 # By default, files are uploaded at the root of the repo
 hf_api.upload_folder(
-    folder_path="/home/seatond/revision_project/code/rank16_lr0.0002_target7_epochs2_laplha16",
-    repo_id="seatond/rank16_lr0.0002_target7_epochs2_laplha16",
+    folder_path="/home/seatond/revision_project/code/stage_three/stage_three_TRY_3epoch",
+    repo_id="seatond/answer_3_epoch",
     #repo_type="space",
 )
 # -----------------------------------------------------------------------------
 
 
+
+
 # %%
-torch.cuda.empty_cache()
-# %%
-os.getcwd()
