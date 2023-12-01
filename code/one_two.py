@@ -35,12 +35,12 @@ data = load_data()
 # %% --------------------------------------------------------------------------
 def prep_data(data)    :
     data = data[0]
-    system = "You will answer a question concisely using only the information provided."
+    system = "You will answer a question concisely using only the information provided by the user."
     data_aq = pd.DataFrame(
             {
                 "content": data.apply(
                     lambda x: "<|im_start|>system" + f'\n{system}<|im_end|>'
-                    + "\n<|im_start|>user" + f"""###"{x['question']}"###\nInformation: ###"{x['context']}"###<|im_end|>"""
+                    + "\n<|im_start|>user" + f"""Answer this question: "{x['question']}"\nUsing only this information:"{x['context']}"<|im_end|>"""
                     + "\n<|im_start|>assisstant" + f"\n{x['long_answer']}<|im_end|>",
                     axis=1,
                 )
@@ -110,7 +110,7 @@ def finetune(data):
     r = 16
     lora_alpha = 16
     lr = 1.8e-4
-    epochs = 4
+    epochs = 5
     target_modules=["q_proj", "v_proj","k_proj"]
 
     ##finetune:
@@ -132,7 +132,7 @@ def finetune(data):
     model = get_peft_model(model, peft_config)
     print("trainable parameters:",model.print_trainable_parameters())
     ##
-    name = "4_epochs_2"
+    name = "5_epochs_2"
     training_arguments = TrainingArguments(
         output_dir=name,
         per_device_train_batch_size=8, #5 works
@@ -219,7 +219,7 @@ hf_api = HfApi(
 # Upload all the content from the local folder to your remote Space.
 # By default, files are uploaded at the root of the repo
 hf_api.upload_folder(
-    folder_path="/home/seatond/revision_project/code/4_epochs_2",
-    repo_id="seatond/4_epochs_2",
+    folder_path="/home/seatond/revision_project/code/5_epochs_2",
+    repo_id="seatond/5_epochs_2",
     #repo_type="space",
 )

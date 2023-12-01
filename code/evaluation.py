@@ -109,17 +109,17 @@ def score_with_gpt(outputs):
 
 # %% --------------------------------------------------------------------------
 if __name__ == "__main__":
-    adapter_path = "/home/seatond/revision_project/code/rank8_lr0.0002_target2_epochs2_laplha16"
+    adapter_path = "seatond/4_epochs"
     base_model_path = "TheBloke/Mistral-7B-v0.1-GPTQ"
     eval_path = r"../evaluation_data.csv"
     context_list = list(pd.read_csv(eval_path)["contexts"])
     tokenizer, model = load_model(adapter_path, base_model_path)
     outputs = inference(tokenizer, model, context_list)
-    scores = score_with_gpt(outputs)
-    score = (len(list(filter(lambda x: x.lower() == "yes", scores)))) / len(scores)
-    print(score)
-    print(
-        inference(tokenizer, model, list(pd.read_csv(eval_path)["contexts"][[10]]))[0]
-    )  # this is just for 1 row of eval table which is the usual context for comparison
+    #scores = score_with_gpt(outputs)
+    #score = (len(list(filter(lambda x: x.lower() == "yes", scores)))) / len(scores)
+    #print(score)
+    #print(
+    single = inference(tokenizer, model, list(pd.read_csv(eval_path)["contexts"][[10]]))[0]
+    #)  # this is just for 1 row of eval table which is the usual context for comparison
 
 # %%

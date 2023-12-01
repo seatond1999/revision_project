@@ -42,9 +42,9 @@ def prep_data():
     data_aq = pd.DataFrame(
         {
             "content": data.apply(
-                lambda x: "<|im_start|>system" + f'\n{system}<|im_end|>'
-                + "\n<|im_start|>user" + f"\nInformation: ###{x['full_context']}###\nAsk me questions about this information.<|im_end|>"
-                + "\n<|im_start|>assisstant" + f"\n{x['full_questions']}",
+                lambda x: "<|im_start|>system" + f'\n{system}<|im_start|>'
+                + "\n<|im_start|>user" + f"\nInformation: ###{x['full_context']}###\nAsk me questions about this information.<|im_start|>"
+                + "\n<|im_start|>assisstant" + f"\n{x['full_questions']}<|im_start|><|im_end|>",
                 axis=1,
             )
         }
@@ -104,7 +104,7 @@ def finetune(data,r,lora_alpha,lr,epochs,target_modules):
     print("trainable parameters:",model.print_trainable_parameters())
     ##
     #name = f"rank{r}_lr{lr}_target{len(target_modules)}_epochs{epochs}_laplha{lora_alpha}"
-    name = '4_epochs'
+    name = '5_epochs'
     training_arguments = TrainingArguments(
         output_dir=name,
         per_device_train_batch_size=8, #5 works
@@ -181,7 +181,7 @@ def finetune(data,r,lora_alpha,lr,epochs,target_modules):
 #import os
 #os.environ['PYTORCH_CUDA_ALLOC_CONF'] = 'max_split_size_mb=10'
 if __name__ == '__main__':
-    trainer_obj = finetune(prep_data(),16,16,1.8e-4,4,["q_proj", "v_proj"]) 
+    trainer_obj = finetune(prep_data(),16,16,1.8e-4,5,["q_proj", "v_proj"]) 
 # -----------------------------------------------------------------------------
 #def finetune(data,r,lora_alpha,lr,epochs,target_modules):
 
@@ -202,7 +202,7 @@ hf_api = HfApi(
 # Upload all the content from the local folder to your remote Space.
 # By default, files are uploaded at the root of the repo
 hf_api.upload_folder(
-    folder_path="/home/seatond/revision_project/code/4_epochs",
-    repo_id="seatond/4_epochs",
+    folder_path="/home/seatond/revision_project/code/5_epochs",
+    repo_id="seatond/5_epochs",
     #repo_type="space",
 )
