@@ -41,7 +41,7 @@ def prep_data(data)    :
             {
                 "content": data.apply(
                     lambda x: "<|im_start|>system" + f'\n{system}<|im_end|>'
-                    + "\n<|im_start|>user" + f"""###"{x['question']}"###\nInformation: ###"{x['context']}"###<|im_end|>"""
+                    + "\n<|im_start|>user" + f"""Answer this question: "{x['question']}"\nUsing only this infomration:"{x['context']}"<|im_end|>"""
                     + "\n<|im_start|>assisstant" + f"\n{x['long_answer']}<|im_end|>",
                     axis=1,
                 )

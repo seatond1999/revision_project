@@ -46,7 +46,7 @@ def prep_data():
             "content": data.apply(
                 lambda x: "<|im_start|>system" + f'\n{system}<|im_end|>'
                 + "\n<|im_start|>user" + f"\nInformation: ###{x['full_context']}###\nAsk me questions about this information.<|im_end|>"
-                + "\n<|im_start|>assisstant" + f"\n{x['full_questions']}",
+                + "\n<|im_start|>assisstant" + f"\n{x['full_questions']}<|im_end|>",
                 axis=1,
             )
         }
@@ -79,7 +79,8 @@ def finetune(data,r,lora_alpha,lr,epochs,target_modules):
     tokenizer.add_special_tokens(dict(eos_token="<|im_end|>"))
     model.resize_token_embeddings(len(tokenizer))
     model.config.eos_token_id = tokenizer.eos_token_id
-
+    model.config.pad_token_id = tokenizer.pad_token_id
+    return tokenizer
     r = r
     lora_alpha = lora_alpha
     lr = lr

@@ -39,10 +39,9 @@ def load_model(lora_adapters, base_model):
     return tokenizer, PeftModel.from_pretrained(base_model, adapter_path)
 
 
-def inference(tokenizer, model, contexts):
+def inference(tokenizer, model, contexts, example_question):
     outputs = {}
     system = "You will answer a question concisely using only the information provided."
-    example_question = 'What is the primary structure of  a protein?'
     for i, j in enumerate(contexts):
         print(i,j)
         prompt = (
@@ -63,10 +62,10 @@ def inference(tokenizer, model, contexts):
         )
         out = model.generate(inputs=input_ids, generation_config=generation_config)
         decoded_output = tokenizer.decode(out[0], skip_special_tokens=True)
-        decoded_output = decoded_output[
-            decoded_output.find("<|im_start|>assisstant")
-            + len("<|im_start|>assisstant") :
-        ]
+        #decoded_output = decoded_output[
+        #    decoded_output.find("<|im_start|>assisstant")
+        #    + len("<|im_start|>assisstant") :
+        #]
         outputs[i] = (j, example_question, decoded_output)
 
     return outputs
@@ -109,17 +108,20 @@ def score_with_gpt(outputs):
 
 # %% --------------------------------------------------------------------------
 if __name__ == "__main__":
+    example_question = 'Can we change the properties of protein by changing the types of bond between amino acids?'
     adapter_path = "seatond/4_epochs_2"
     base_model_path = "TheBloke/Mistral-7B-v0.1-GPTQ"
     eval_path = r"../../evaluation_data.csv"
     context_list = list(pd.read_csv(eval_path)["contexts"][[10]])
-    tokenizer, model = load_model(adapter_path, base_model_path)
-    outputs = inference(tokenizer, model, context_list)
+    #tokenizer, model = load_model(adapter_path, base_model_path)
+    #outputs = inference(tokenizer, model, context_list, example_question)
     #scores = score_with_gpt(outputs)
     #score = (len(list(filter(lambda x: x.lower() == "yes", scores)))) / len(scores)
     #print(score)
     #print(
-    inference(tokenizer, model, list(pd.read_csv(eval_path)["contexts"][[10]]))[0]
+    hi = inference(tokenizer, model, list(pd.read_csv(eval_path)["contexts"][[10]]),example_question)[0]
     #)  # this is just for 1 row of eval table which is the usual context for comparison
 
 
+
+# %%
