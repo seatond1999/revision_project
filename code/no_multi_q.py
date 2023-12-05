@@ -1,3 +1,15 @@
+
+# %% --------------------------------------------------------------------------
+import pandas as pd
+df = pd.read_csv(r'../enriched_data.csv')
+df["full_questions"] = df["question"] + "\n" + df["gpt_question"]
+df.rename(columns={'context':'full_context'},inplace=True)
+# -----------------------------------------------------------------------------
+
+# %% --------------------------------------------------------------------------
+# 
+# -----------------------------------------------------------------------------
+
 import pandas as pd
 from datasets import load_dataset, Dataset
 from transformers import (
@@ -16,83 +28,56 @@ from huggingface_hub import login
 from datetime import datetime as dt
 import torch
 
+# -----------------------------------------------------------------------------
+
+
+## timer
+def timer(func):
+    def do(*args):
+        before = dt.now()
+        perform = func(*args)
+        after = dt.now()
+        print(after - before)
+        return perform
+
+    return do
+
 
 # %%
-def load_data():
-    dataset = load_dataset(
-        "pubmed_qa", "pqa_labeled"
-    )  # this is the 1000 'expertly labelled' dataset (can choose from "pqa_artificial", "pqa_labeled", "pqa_unlabeled")
-    data = dataset["train"].to_pandas()[["question", "context", "long_answer"]]
-    data["context"] = data["context"].apply(lambda x: "".join(x["contexts"]))
-    extra_data = data.iloc[664:]
-    data = data.iloc[0:664, :]  # as dont have many credits on
-    return data, extra_data
+token = "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"
+login(token=token)
+
+# preprocessing:
 
 
-data = load_data()
-
-
-# %% --------------------------------------------------------------------------
-def prep_data(data):
-    data = data[0]
-    system = "You will answer a question concisely using only the information provided by the user."
+def prep_data():
+    df = pd.read_csv(r'../enriched_data.csv')
+    df["full_questions"] = df["question"] + "\n" + df["gpt_question"]
+    df.rename(columns={'context':'full_context'},inplace=True)
+    # context had disctionary, only interested in the 'contexts' key
+    system = "You are an AI examiner who will ask concise questions about information which will be provided."
+    # create data for asking Qs (aq)
     data_aq = pd.DataFrame(
         {
-            "content": data.apply(
+            "content": df.apply(
                 lambda x: "<|im_start|>system"
                 + f"\n{system}<|im_end|>"
                 + "\n<|im_start|>user"
-                + f"""Answer this question: "{x['question']}"\nUsing only this information:"{x['context']}"<|im_end|>"""
+                + f"\nInformation: ###{x['full_context']}###\nAsk me questions about this information.<|im_end|>"
                 + "\n<|im_start|>assisstant"
-                + f"\n{x['long_answer']}<|im_end|>",
+                + f"\n{x['full_questions']}<|im_end|>",
                 axis=1,
             )
         }
     )
+
     data_aq = Dataset.from_pandas(data_aq)
     data_aq = data_aq.train_test_split(test_size=0.1)
     return data_aq
 
 
-data = prep_data(data)
-
-
-# -----------------------------------------------------------------------------
-# %%
-## timer
-def timer(func):
-    def do(x):
-        before = dt.now()
-        perform = func(x)
-        after = dt.now()
-        print(after - before)
-        return perform
-
-    return do
-
-
-# %%
-## timer
-def timer(func):
-    def do(x):
-        before = dt.now()
-        perform = func(x)
-        after = dt.now()
-        print(after - before)
-        return perform
-
-    return do
-
-
-# login
-token = "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"
-login(token=token)
-
-# finetune..
-
-
 @timer
-def finetune(data):
+def finetune(data, r, lora_alpha, lr, epochs, target_modules):
     token = "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"
     login(token=token)
     train_data = data["train"]
@@ -104,13 +89,11 @@ def finetune(data):
     tokenizer = AutoTokenizer.from_pretrained(
         model_id, use_fast=False, add_eos_token=True
     )
-
     quantization_config_loading = GPTQConfig(
         bits=4,
         disable_exllama=True,
         tokenizer=tokenizer,
     )
-
     model = AutoModelForCausalLM.from_pretrained(
         model_id,
         quantization_config=quantization_config_loading,
@@ -124,11 +107,11 @@ def finetune(data):
     model.resize_token_embeddings(len(tokenizer))
     model.config.eos_token_id = tokenizer.eos_token_id
 
-    r = 16
-    lora_alpha = 16
-    lr = 1.8e-4
-    epochs = 5
-    target_modules = ["q_proj", "v_proj", "k_proj"]
+    r = r
+    lora_alpha = lora_alpha
+    lr = lr
+    epochs = epochs
+    target_modules = target_modules
 
     ##finetune:
 
@@ -152,7 +135,8 @@ def finetune(data):
     model = get_peft_model(model, peft_config)
     print("trainable parameters:", model.print_trainable_parameters())
     ##
-    name = "5_epochs_2"
+    name = f"nomultiq_rank{r}_lr{lr}_target{len(target_modules)}_epochs{epochs}_laplha{lora_alpha}"
+    #name = "5_epochs"
     training_arguments = TrainingArguments(
         output_dir=name,
         per_device_train_batch_size=8,  # 5 works
@@ -162,7 +146,7 @@ def finetune(data):
         learning_rate=lr,
         lr_scheduler_type="cosine",
         save_strategy="steps",  # so do we need the whole PeftSavingCallback function? maybe try withput and run the trainer(from last check=true)
-        logging_steps=55,
+        logging_steps=23,
         num_train_epochs=epochs,
         # max_steps=250,
         fp16=False,
@@ -199,6 +183,7 @@ def finetune(data):
         tokenizer=tokenizer,
         callbacks=callbacks,  # try if doesnt work hashing all of checkpiint stuff above and also this callback line
         packing=False,
+        # max_seq_length=1200
     )
 
     ###################################################
@@ -211,7 +196,7 @@ def finetune(data):
     tensorboard_display_dir = f"{loc_checkpoint_path}/runs"
 
     #########################################################
-    # trainer.train(resume_from_checkpoint='/home/seatond/revision_project/code/stage_three/stage_three_TRY') #use if want to go from checkpoint
+    # trainer.train(resume_from_checkpoint = '/home/seatond/revision_project/code/rank16_lr0.0002_target7_epochs2_laplha16/checkpoint-56')
     trainer.train()
     # trainer.state.log_history()
     # trainer.save_model()
@@ -223,13 +208,34 @@ def finetune(data):
 
 
 # %% --------------------------------------------------------------------------
+# RUN!
+# import os
+# os.environ['PYTORCH_CUDA_ALLOC_CONF'] = 'max_split_size_mb=10'
 if __name__ == "__main__":
-    lets_go = finetune(prep_data(load_data()))
-    lets_go.save_model()
+    r = 8
+    lora_alpha = 16
+    lr = 1e-4
+    epochs = 2
+    target_modules = ["q_proj", "v_proj"]
+    trainer_obj = finetune(prep_data(), r, lora_alpha, lr, epochs, target_modules)
+# -----------------------------------------------------------------------------
+# def finetune(data,r,lora_alpha,lr,epochs,target_modules):
 
+# %% --------------------------------------------------------------------------
+trainer_obj.save_model()
+# -----------------------------------------------------------------------------
 
+# %% --------------------------------------------------------------------------
+r = 8
+lora_alpha = 16
+lr = 1e-4
+epochs = 2
+target_modules = ["q_proj", "v_proj"]
+name = f"nomultiq_rank{r}_lr{lr}_target{len(target_modules)}_epochs{epochs}_laplha{lora_alpha}"
+name
+# %% --------------------------------------------------------------------------
 from huggingface_hub import HfApi
-
+name = f"nomultiq_rank{r}_lr{lr}_target{len(target_modules)}_epochs{epochs}_laplha{lora_alpha}"
 hf_api = HfApi(
     endpoint="https://huggingface.co",  # Can be a Private Hub endpoint.
     token="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",  # Token is not persisted on the machine.
@@ -239,7 +245,7 @@ hf_api = HfApi(
 # Upload all the content from the local folder to your remote Space.
 # By default, files are uploaded at the root of the repo
 hf_api.upload_folder(
-    folder_path="/home/seatond/revision_project/code/5_epochs_2",
-    repo_id="seatond/5_epochs_2",
+    folder_path="/home/seatond/revision_project/code/_epochs",
+    repo_id="seatond/5_epochs",
     # repo_type="space",
 )
