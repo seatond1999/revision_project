@@ -224,15 +224,6 @@ if __name__ == "__main__":
 # %% --------------------------------------------------------------------------
 trainer_obj.save_model()
 # -----------------------------------------------------------------------------
-
-# %% --------------------------------------------------------------------------
-r = 8
-lora_alpha = 16
-lr = 1e-4
-epochs = 2
-target_modules = ["q_proj", "v_proj"]
-name = f"nomultiq_rank{r}_lr{lr}_target{len(target_modules)}_epochs{epochs}_laplha{lora_alpha}"
-name
 # %% --------------------------------------------------------------------------
 from huggingface_hub import HfApi
 name = f"nomultiq_rank{r}_lr{lr}_target{len(target_modules)}_epochs{epochs}_laplha{lora_alpha}"
