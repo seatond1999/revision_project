@@ -5,6 +5,7 @@ from openai import OpenAI
 import os
 import time
 import matplotlib.pyplot as plt
+import openai
 
 
 # -----------------------------------------------------------------------------
@@ -45,28 +46,37 @@ def gpt_enrich_data(data_inp, start_row=0, end_row=None):
     data_to_enrich = data_to_enrich.iloc[
         start_row:end_row
     ]  # i dont pass all due to open AI limits
+
+    os.environ["OPENAI_API_KEY"] = "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"
+    key = "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"
+    openai.api_key = key
     client = OpenAI()
     new_questions = []
-    for i in range(0, len(data_to_enrich)):
-        print(i)
-        new_questions.append(
-            client.chat.completions.create(
-                model="gpt-3.5-turbo",
-                messages=[{"role": "user", "content": data_to_enrich.iloc[i, 0]}],
+    try:
+        for i in range(0, len(data_to_enrich)):
+            print(i)
+            new_questions.append(
+                client.chat.completions.create(
+                    model="gpt-3.5-turbo",
+                    messages=[{"role": "user", "content": data_to_enrich.iloc[i, 0]}],
+                )
+                .choices[0]
+                .message.content
             )
-            .choices[0]
-            .message.content
-        )
-        print(i)
-        time.sleep(60) if (i + 1) % 3 == 0 else None
-
-    enriched_data = data_inp
-    enriched_data.loc[start_row : end_row - 1, "gpt_question"] = new_questions
-    return enriched_data
+            print(i)
+            time.sleep(62) if (i + 1) % 3 == 0 else None
+    except:
+        pass
+    try:
+        enriched_data = data_inp
+        enriched_data.loc[start_row : end_row - 1, "gpt_question"] = new_questions
+        return enriched_data
+    except:
+        return new_questions
 
 
 if __name__ == "__main__":
-    enriched_data = gpt_enrich_data(data[0])
+    enriched_data = gpt_enrich_data(data[1], 336,None)
 # if doing in batches of 200 would do this:
 # enriched_data = gpt_enrich_data(enriched_data, 200,401) etc spaced 1 day apart lol
 
@@ -74,8 +84,14 @@ if __name__ == "__main__":
 
 # %% --------------------------------------------------------------------------
 ## add mulitQ
+try:
+    enriched_data.to_csv("from_336.csv")
+except:
+    pd.DataFrame(enriched_data).to_csv('from_336.csv')
+# -----------------------------------------------------------------------------
 
-
+# %% --------------------------------------------------------------------------
+some_more = enriched_data
 # -----------------------------------------------------------------------------
 
 
@@ -164,6 +180,3 @@ if __name__ == "__main__":
 if __name__ == "__main__":
     ready_data.to_csv(r"../ready_data.csv")
 # -----------------------------------------------------------------------------
-
-
-# %%
