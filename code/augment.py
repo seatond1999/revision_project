@@ -16,8 +16,7 @@ def load_data():
     )  # this is the 1000 'expertly labelled' dataset (can choose from "pqa_artificial", "pqa_labeled", "pqa_unlabeled")
     data = dataset["train"].to_pandas()[["question", "context", "long_answer"]]
     data["context"] = data["context"].apply(lambda x: "".join(x["contexts"]))
-    extra_data = data.iloc[664:]
-    data = data.iloc[0:664, :]  # as dont have many credits on
+    data = data.iloc[0:1000, :]  # as dont have many credits on
     return data, extra_data
 
 
@@ -76,7 +75,7 @@ def gpt_enrich_data(data_inp, start_row=0, end_row=None):
 
 
 if __name__ == "__main__":
-    enriched_data = gpt_enrich_data(data[1], 336,None)
+    enriched_data = gpt_enrich_data(data[1], 0, None)
 # if doing in batches of 200 would do this:
 # enriched_data = gpt_enrich_data(enriched_data, 200,401) etc spaced 1 day apart lol
 
@@ -87,15 +86,23 @@ if __name__ == "__main__":
 try:
     enriched_data.to_csv("from_336.csv")
 except:
-    pd.DataFrame(enriched_data).to_csv('from_336.csv')
+    pd.DataFrame(enriched_data).to_csv("from_336.csv")
 # -----------------------------------------------------------------------------
 
 # %% --------------------------------------------------------------------------
-some_more = enriched_data
+# once have enriched data, get it into ready data:
+hi = pd.read_csv(r"../enriched_data.csv")
+hi["full_questions"] = hi.apply(
+    lambda x: x["question"] + "\n" + x["gpt_question"], axis=1
+)
+hi.rename(columns={"context": "full_context"}, inplace=True)
+hi = hi[["full_context", "full_questions"]]
+hi.to_csv(r'../ready_data.csv')
 # -----------------------------------------------------------------------------
 
 
 # %% --------------------------------------------------------------------------
+# redundant:
 def create_multiq_data(data_unprepared, single_qs):
     # prep single question data
     single_qs = single_qs[["context", "question"]]
