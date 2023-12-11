@@ -65,20 +65,19 @@ def prep_data():
     data_aq = data_aq.train_test_split(test_size=0.1)
     return data_aq
 
-
 @timer
 def finetune(data, r, lora_alpha, lr, epochs, target_modules):
     token = "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"
     login(token=token)
     train_data = data["train"]
     test_data = data["test"]
-
     ##load model and tokenizer
     model_id = "TheBloke/Mistral-7B-v0.1-GPTQ"
 
     tokenizer = AutoTokenizer.from_pretrained(
         model_id, use_fast=False, add_eos_token=True
     )
+
     quantization_config_loading = GPTQConfig(
         bits=4,
         disable_exllama=True,
@@ -96,6 +95,53 @@ def finetune(data, r, lora_alpha, lr, epochs, target_modules):
     tokenizer.add_special_tokens(dict(eos_token="<|im_end|>"))
     model.resize_token_embeddings(len(tokenizer))
     model.config.eos_token_id = tokenizer.eos_token_id
+
+    # tokenize
+    def tokenize(element):
+        return tokenizer(
+            element["content"],
+            truncation=True,
+            max_length=2048,
+            add_special_tokens=False,
+        )
+######################## can split after ...
+    dataset_train_tokenized = train_data.map(
+        tokenize,
+        batched=True,
+        remove_columns=[
+            "content"
+        ],  # don't need the strings anymore, we have tokens from here on
+    )
+    dataset_test_tokenized = test_data.map(
+        tokenize,
+        batched=True,
+        remove_columns=[
+            "content"
+        ],  # don't need the strings anymore, we have tokens from here on
+    )
+    return dataset_train_tokenized
+    # collate function - to transform list of dictionaries [ {input_ids: [123, ..]}, {.. ] to single batch dictionary { input_ids: [..], labels: [..], attention_mask: [..] }
+    def collate(elements):
+        tokenlist = [e["input_ids"] for e in elements]
+        tokens_maxlen = max([len(t) for t in tokenlist])  # length of longest input
+
+        input_ids, labels, attention_masks = [], [], []
+        for tokens in tokenlist:
+            # how many pad tokens to add for this sample
+            pad_len = tokens_maxlen - len(tokens)
+
+            # pad input_ids with pad_token, labels with ignore_index (-100) and set attention_mask 1 where content, otherwise 0
+            input_ids.append(tokens + [tokenizer.pad_token_id] * pad_len)
+            labels.append(tokens + [-100] * pad_len)
+            attention_masks.append([1] * len(tokens) + [0] * pad_len)
+
+        batch = {
+            "input_ids": torch.tensor(input_ids),
+            "labels": torch.tensor(labels),
+            "attention_mask": torch.tensor(attention_masks),
+        }
+        return batch
+
 
     r = r
     lora_alpha = lora_alpha
@@ -143,7 +189,7 @@ def finetune(data, r, lora_alpha, lr, epochs, target_modules):
         push_to_hub=False,
         report_to=["tensorboard"],
         group_by_length=True,
-        ddp_find_unused_parameters=False,
+        #ddp_find_unused_parameters=False,
         do_eval=True,  ## for eval:
         evaluation_strategy="steps",
     )
@@ -163,12 +209,13 @@ def finetune(data, r, lora_alpha, lr, epochs, target_modules):
 
     callbacks = [PeftSavingCallback()]
 
-    trainer = SFTTrainer(
+    trainer = Trainer(
         model=model,
-        train_dataset=train_data,
-        eval_dataset=test_data,
-        peft_config=peft_config,
-        dataset_text_field="content",
+        train_dataset=dataset_train_tokenized,
+        eval_dataset=dataset_test_tokenized,
+        #peft_config=peft_config, #maybe put this back!!
+        #dataset_text_field="content",
+        data_collator=collate,
         args=training_arguments,
         tokenizer=tokenizer,
         callbacks=callbacks,  # try if doesnt work hashing all of checkpiint stuff above and also this callback line
