@@ -26,9 +26,7 @@ def load_data():
     )  # this is the 1000 'expertly labelled' dataset (can choose from "pqa_artificial", "pqa_labeled", "pqa_unlabeled")
     data = dataset["train"].to_pandas()[["question", "context", "long_answer"]]
     data["context"] = data["context"].apply(lambda x: "".join(x["contexts"]))
-    extra_data = data.iloc[664:]
-    data = data.iloc[0:664, :]  # as dont have many credits on
-    return data, extra_data
+    return data
 
 
 data = load_data()
@@ -212,4 +210,24 @@ if __name__ == '__main__':
 
 -----------------------------------------------------------------
 
+# %%
+def load_data():
+    dataset = load_dataset(
+        "pubmed_qa", "pqa_labeled"
+    )  # this is the 1000 'expertly labelled' dataset (can choose from "pqa_artificial", "pqa_labeled", "pqa_unlabeled")
+    data = dataset["train"].to_pandas()[["question", "context", "long_answer"]]
+    data["context"] = data["context"].apply(lambda x: "".join(x["contexts"]))
+    return data
+
+
+data = load_data()
+# %%
+dataset = load_dataset("pubmed_qa", "pqa_artificial")  # this is the 1000 'expertly labelled' dataset (can choose from "pqa_artificial", "pqa_labeled", "pqa_unlabeled")
+
+# %%
+dataset_keep = dataset.iloc[0:3000,:]
+# %%
+dataset_keep = dataset_keep[["question", "context", "long_answer"]]
+# %%
+dataset_keep.to_csv('synthetic_data.csv')
 # %%
