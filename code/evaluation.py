@@ -123,3 +123,7 @@ if __name__ == "__main__":
     #)  # this is just for 1 row of eval table which is the usual context for comparison
 
 # %%
+eval_path = r"../evaluation_data.csv"
+pd.read_csv(eval_path)["contexts"][9]
+#print(pd.read_csv(eval_path)["contexts"][3])
+# %%
