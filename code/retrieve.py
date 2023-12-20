@@ -4,7 +4,11 @@
 from PyPDF2 import PdfReader
 
 # %% --------------------------------------------------------------------------
-reader = PdfReader(r'../biology textbook.pdf')
+reader = PdfReader(r'../../biology textbook.pdf')
+reader2 = PdfReader(r'../../cambridge business textbook.pdf')
+reader3 = PdfReader(r'../../9780133887518.pdf')
+reader4 = PdfReader(r'../../CGP-AQA-Biology-A-Level-ariadanesh.com_.pdf')
+
 # -----------------------------------------------------------------------------
 
 # %%
@@ -28,5 +32,17 @@ print(pub_avg_len)
 print(f"so would need to concatenate up to {page_avg_len / pub_avg_len} points")
 # -----------------------------------------------------------------------------
 # %%
-reader.pages[30].extract_text()
+reader.pages[3].extract_text()
 # %%
+reader2.pages[15].extract_text()
+
+# %% --------------------------------------------------------------------------
+reader3.pages[8].extract_text()
+
+# -----------------------------------------------------------------------------
+
+# %% --------------------------------------------------------------------------
+# 
+# -----------------------------------------------------------------------------
+reader4.pages[51].extract_text()
+
