@@ -118,13 +118,7 @@ biotext_data = [reader.pages[i].extract_text() for i in pages]
 data = aqabio_data + biscam_data + biotext_data
 # %%
 data_df = pd.DataFrame({'pages':data})
-data_df.to_csv(r'/pages.csv')
+#data_df.to_csv(r'/pages.csv')
+data_df.to_json(r'data_new/pages.json')
 
 # %%
-pd.read_csv(r'\data\pages.csv')
-
-# %%
-hi = pd.read_csv(r"../enriched_data.csv")
-
-# %%
-hi.to_csv(r'/ready_data.csv')
