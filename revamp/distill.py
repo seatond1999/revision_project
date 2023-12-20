@@ -40,7 +40,7 @@ token = "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"
 login(token=token)
 
 def prep_data():
-    data = pd.read_json(r"data/synthetic_data.csv")
+    data = pd.read_json(r"data/ready_data.json")
     data_aq = pd.DataFrame(
         {
             "content": data.apply(
@@ -48,7 +48,7 @@ def prep_data():
 {x['pages']}
 
 [INST]You will split text up into subsections and add informative titles for each subsection. Each subsection must be in paragraph form and no information should be missing from the original text. Mark each title you create by adding the symbols "@@@" before each title.[/INST]
-Output: {x['gpt_answer']} </s>""",
+Output: {x['responses']} </s>""",
                 axis=1,
             )
         }
@@ -155,7 +155,7 @@ def finetune(data, r, lora_alpha, lr, epochs, target_modules):
         tokenizer=tokenizer,
         callbacks=callbacks,  # try if doesnt work hashing all of checkpiint stuff above and also this callback line
         packing=False,
-        # max_seq_length=1200
+        max_seq_length=1200
     )
 
     ###################################################
