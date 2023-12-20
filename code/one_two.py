@@ -24,9 +24,7 @@ def load_data():
     )  # this is the 1000 'expertly labelled' dataset (can choose from "pqa_artificial", "pqa_labeled", "pqa_unlabeled")
     data = dataset["train"].to_pandas()[["question", "context", "long_answer"]]
     data["context"] = data["context"].apply(lambda x: "".join(x["contexts"]))
-    extra_data = data.iloc[664:]
-    data = data.iloc[0:664, :]  # as dont have many credits on
-    return data, extra_data
+    return data
 
 
 data = load_data()
@@ -34,17 +32,17 @@ data = load_data()
 
 # %% --------------------------------------------------------------------------
 def prep_data(data):
-    data = data[0]
-    system = "You will answer a question concisely using only the information provided by the user."
+    data = data
+    system = "You are an assisstant who will answer a question asked by the user using only the information provided by the user"
     data_aq = pd.DataFrame(
         {
             "content": data.apply(
                 lambda x: "<|im_start|>system"
-                + f"\n{system}<|im_end|>"
-                + "\n<|im_start|>user"
-                + f"""Answer this question: "{x['question']}"\nUsing only this information:"{x['context']}"<|im_end|>"""
-                + "\n<|im_start|>assisstant"
-                + f"\n{x['long_answer']}<|im_end|>",
+                + f" {system}<|im_end|>"
+                + "<|im_start|>user"
+                + f"""Answer this question ### {x['question']} ### Using only the information ###{x['context']} ###<|im_end|>"""
+                + "<|im_start|>assisstant "
+                + f"{x['long_answer']}<|im_end|>",
                 axis=1,
             )
         }
@@ -121,8 +119,10 @@ def finetune(data):
     tokenizer.pad_token = "</s>"
     tokenizer.add_tokens(["<|im_start|>"])
     tokenizer.add_special_tokens(dict(eos_token="<|im_end|>"))
+    tokenizer.padding_side = "right"
     model.resize_token_embeddings(len(tokenizer))
     model.config.eos_token_id = tokenizer.eos_token_id
+    model.config.pad_token_id = tokenizer.pad_token_id
 
     r = 16
     lora_alpha = 16
