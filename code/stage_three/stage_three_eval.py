@@ -29,8 +29,8 @@ def load_model(lora_adapters, base_model):
 
     # Add/set tokens (same 5 lines of code we used before training)
     tokenizer.pad_token = "</s>"
-    tokenizer.add_tokens(["<|im_start|>"])
-    tokenizer.add_special_tokens(dict(eos_token="<|im_end|>"))
+    #tokenizer.add_tokens(["<|im_start|>"])
+    #tokenizer.add_special_tokens(dict(eos_token="<|im_end|>"))
     base_model.resize_token_embeddings(len(tokenizer))
     base_model.config.eos_token_id = tokenizer.eos_token_id
     base_model.config.pad_token_id = tokenizer.pad_token_id
@@ -41,14 +41,25 @@ def load_model(lora_adapters, base_model):
 
 def inference(tokenizer, model, contexts, example_questions):
     outputs = []
-    system = "You will answer a question concisely using only the information provided by the user."
+    system = "You are an AI assisstant who will answer the question given by the user using the information provided"
     for i in example_questions:
+        #prompt = (
+        #    "<|im_start|>system"
+        #    + f" {system}<|im_end|>"
+        #    + "<|im_start|>user"
+        #    + f""" question ###{i}### information ###{contexts}###<|im_end|>"""
+        #    + "<|im_start|>assisstant ###"
+        #)
+
         prompt = (
-            "<|im_start|>system"
-            + f"\n{system}<|im_end|>"
-            + "\n<|im_start|>user"
-            + f"""Answer this question: "{i}"\nUsing only this information:"{contexts}"<|im_end|>"""
-            + "\n<|im_start|>assisstant"
+            "Context information is below.\n"
+            "---------------------\n"
+            f"{contexts}\n"
+            "---------------------\n"
+            "Given the context information and not prior knowledge, "
+            "answer the query.\n"
+            f"Query: {i}\n"
+            f"Answer: "
         )
 
         input_ids = tokenizer(prompt, return_tensors="pt").input_ids.to("cuda:0")
@@ -63,10 +74,10 @@ def inference(tokenizer, model, contexts, example_questions):
         )
         out = model.generate(inputs=input_ids, generation_config=generation_config)
         decoded_output = tokenizer.decode(out[0], skip_special_tokens=True)
-        decoded_output = decoded_output[
-            decoded_output.find("<|im_start|>assisstant")
-            + len("<|im_start|>assisstant") :
-        ]
+        #decoded_output = decoded_output[
+        #    decoded_output.find("<|im_start|>assisstant ")
+        #    + len("<|im_start|>assisstant ") :
+        #]
         outputs.append((i, decoded_output))
 
     return outputs
@@ -119,9 +130,17 @@ if __name__ == "__main__":
         example_question3,
         example_question4,
     ]
-    adapter_path = "seatond/4_epochs_2"
+    adapter_path = "/home/seatond/revision_project/code/stage_three/prompting_answer_rank32_lr8e-06_target8_epochs1_laplha64_wuratio0.13_wdecay0.13"
     base_model_path = "TheBloke/Mistral-7B-v0.1-GPTQ"
     eval_path = r"../../evaluation_data.csv"
     context_list = pd.read_csv(eval_path)["contexts"][[10]]
-    tokenizer, model = load_model(adapter_path, base_model_path)
+    context_list = 'Hydrogen bonds break easily and reform if pH or temperature conditions change.\nDISULFIDE BONDS\nDisulfide bonds form when two cysteine molecules are close together in the structure of a polypeptide (see fig C). An oxidation reaction occurs between the two sulfur-containing groups, resulting in a strong covalent bond known as a disulfide bond. These disulfide bonds are much stronger than hydrogen bonds but they happen much less often. They are important for holding the folded polypeptide chains in place.\nhydrogen bondhydrogen bond\ndisulﬁde bonddisulﬁde bond\nα-helixα-helixα-helixα-helixβ-pleated sheetβ-pleated sheetβ-pleated sheetβ-pleated sheet\n▲ fig C Hydr ogen bonds and disulfide bonds maintain the shape of protein molecules and this determines \ntheir function.\nIONIC BONDS\nIonic bonds can form between some of the strongly positive and negative amino acid side chains \nwhich are sometimes found deep inside the protein molecules. They are strong bonds, but they are not as common as the other structural bonds.\nY our hair is made of the protein keratin.'
+    example_questions = ['Under what conditions do hydrogen bonds break easily?']
+    #example_questions = ['Do somatic complaints predict subsequent symptoms of depression?']
+    #context_list = """Evidence suggests substantial comorbidity between symptoms of somatization and depression in clinical as well as nonclinical populations. However, as most existing research has been retrospective or cross-sectional in design, very little is known about the specific nature of this relationship. In particular, it is unclear whether somatic complaints may heighten the risk for the subsequent development of depressive symptoms.We report findings on the link between symptoms of somatization (assessed using the SCL-90-R) and depression 5 years later (assessed using the CES-D) in an initially healthy cohort of community adults, based on prospective data from the RENO Diet-Heart Study.Gender-stratified multiple regression analyses revealed that baseline CES-D scores were the best predictors of subsequent depressive symptoms for men and women. Baseline scores on the SCL-90-R somatization subscale significantly predicted subsequent self-reported symptoms of depressed mood 5 years later, but only in women. However, somatic complaints were a somewhat less powerful predictor than income and age."""
+    context_list = context_list.replace("\n", " ")
+    #tokenizer, model = load_model(adapter_path, base_model_path)
     outputs = inference(tokenizer, model, context_list, example_questions)
+    print(outputs)
+
+# %%

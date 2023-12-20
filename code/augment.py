@@ -93,7 +93,7 @@ except:
 # once have enriched data, get it into ready data:
 hi = pd.read_csv(r"../enriched_data.csv")
 hi["full_questions"] = hi.apply(
-    lambda x: x["question"] + "\n" + x["gpt_question"], axis=1
+    lambda x: x["question"] + x["gpt_question"], axis=1
 )
 hi.rename(columns={"context": "full_context"}, inplace=True)
 hi = hi[["full_context", "full_questions"]]
