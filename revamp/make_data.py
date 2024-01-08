@@ -120,7 +120,7 @@ reader = PdfReader(r"../../biology textbook.pdf")
 biotext_data = [reader.pages[i].extract_text() for i in pages]
 
 # %% --------------------------------------------------------------------------
-# edexcel biology pearson
+# hodder
 pages = [
     8,
     10,
