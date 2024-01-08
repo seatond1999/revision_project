@@ -19,7 +19,7 @@ import tempfile
 from huggingface_hub import login
 from datetime import datetime as dt
 import torch
-
+import tensorboard
 # -----------------------------------------------------------------------------
 
 
@@ -40,37 +40,39 @@ token = "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"
 login(token=token)
 
 def prep_data():
-    data = pd.read_json(r"data/ready_data.json")
+    data = pd.read_json(r"synthetic_data_newest.json")
     data_aq = pd.DataFrame(
         {
             "content": data.apply(
-                lambda x: f"""Context:
-{x['pages']}
-
-[INST]You will split text up into subsections and add informative titles for each subsection. Each subsection must be in paragraph form and no information should be missing from the original text. Mark each title you create by adding the symbols "@@@" before each title.[/INST]
-Output: {x['responses']} </s>""",
+                lambda x: f"""[INST]You must split text up into subsections and add informative titles for each subsection.
+Each subsection must be in paragraph form and all information should be included from the original text.
+You will be penalized for removing information from the original text.
+Mark each title you create by adding the symbols "@@@" before each title and placing the title on its own line.
+An example subsection format is "@@@title \n content", where you should add the subsection title and content.
+This is the text:
+### {x['pages']} ### [/INST]
+Output: {x['sums']} </s>""",
                 axis=1,
             )
         }
     )
-
     data_aq = Dataset.from_pandas(data_aq)
     data_aq = data_aq.train_test_split(test_size=0.1)
     return data_aq
 
 
 @timer
-def finetune(data, r, lora_alpha, lr, epochs, target_modules):
+def finetune(data, r, lora_alpha, lr, epochs, target_modules,batch_s,gradacc):
     token = "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"
     login(token=token)
     train_data = data["train"]
     test_data = data["test"]
 
     ##load model and tokenizer
-    model_id = "TheBloke/Mistral-7B-v0.1-GPTQ"
+    model_id = "TheBloke/Mistral-7B-Instruct-v0.1-GPTQ"
 
     tokenizer = AutoTokenizer.from_pretrained(
-        model_id, use_fast=False, add_eos_token=True
+        model_id, use_fast=False
     )
     quantization_config_loading = GPTQConfig(
         bits=4,
@@ -84,11 +86,22 @@ def finetune(data, r, lora_alpha, lr, epochs, target_modules):
         torch_dtype=torch.float16,
     )
 
+    tokenizer.pad_token = "<unk>"
+    tokenizer.padding_side = "right"
+    model.resize_token_embeddings(len(tokenizer))
+    model.config.eos_token_id = tokenizer.eos_token_id
+    model.config.pad_token_id = tokenizer.pad_token_id
+    
+
     r = r
     lora_alpha = lora_alpha
     lr = lr
     epochs = epochs
     target_modules = target_modules
+    batch_s = batch_s
+    gradacc=gradacc
+    #warmup_ratio = warmup_ratio
+    #wdecay=wdecay
 
     ##finetune:
 
@@ -108,17 +121,18 @@ def finetune(data, r, lora_alpha, lr, epochs, target_modules):
     model = get_peft_model(model, peft_config)
     print("trainable parameters:", model.print_trainable_parameters())
     ##
-    name = f"revamp_rank{r}_lr{lr}_target{len(target_modules)}_epochs{epochs}_laplha{lora_alpha}"    
+    name = f"gp4_rank{r}_lr{lr}_target{len(target_modules)}_epochs{epochs}_laplha{lora_alpha}_batch{batch_s}_gradacc{gradacc}" #_wuratio{warmup_ratio}_wdecay{wdecay    
     training_arguments = TrainingArguments(
         output_dir=name,
-        per_device_train_batch_size=2,  # 5 works
-        per_device_eval_batch_size=2,
-        gradient_accumulation_steps=1,
+        per_device_train_batch_size=batch_s,  # 5 works
+        per_device_eval_batch_size=batch_s,
+        gradient_accumulation_steps=gradacc,
         optim="paged_adamw_32bit",
         learning_rate=lr,
         lr_scheduler_type="cosine",
         save_strategy="steps",  # so do we need the whole PeftSavingCallback function? maybe try withput and run the trainer(from last check=true)
-        logging_steps=55,
+        logging_steps=6,
+        #save_steps=60,
         num_train_epochs=epochs,
         # max_steps=250,
         fp16=True,
@@ -128,6 +142,8 @@ def finetune(data, r, lora_alpha, lr, epochs, target_modules):
         ddp_find_unused_parameters=False,
         do_eval=True,  ## for eval:
         evaluation_strategy="steps",
+        #warmup_ratio=warmup_ratio,
+        #weight_decay=wdecay,
     )
 
     # if checkpint doesnt work, might have to do save_steps=20 for example in the training argumnet above
@@ -155,7 +171,7 @@ def finetune(data, r, lora_alpha, lr, epochs, target_modules):
         tokenizer=tokenizer,
         callbacks=callbacks,  # try if doesnt work hashing all of checkpiint stuff above and also this callback line
         packing=False,
-        max_seq_length=1200
+        max_seq_length=2608
     )
 
     ###################################################
@@ -184,9 +200,12 @@ def finetune(data, r, lora_alpha, lr, epochs, target_modules):
 # import os
 # os.environ['PYTORCH_CUDA_ALLOC_CONF'] = 'max_split_size_mb=10'
 if __name__ == "__main__":
-    trainer_obj = finetune(prep_data(), 16, 16, 1.8e-4, 5, ["q_proj", "v_proj"])
+    trainer_obj = finetune(prep_data(), 64, 128, 2.1e-5, 2, ["q_proj", "v_proj","o_proj","k_proj","up_proj","down_proj","gate_proj"],1,6)
+
+#,"gate_proj"
+#,"gate_proj","up_proj","down_proj"
 # -----------------------------------------------------------------------------
-# def finetune(data,r,lora_alpha,lr,epochs,target_modules):
+# def finetune(data,r,lora_alpha,lr,epochs,target_modules,batch,,warmup_ratio,wdecay):
 
 # %% --------------------------------------------------------------------------
 trainer_obj.save_model()
@@ -195,18 +214,22 @@ trainer_obj.save_model()
 # %% --------------------------------------------------------------------------
 
 # %% --------------------------------------------------------------------------
-from huggingface_hub import HfApi
 
-hf_api = HfApi(
-    endpoint="https://huggingface.co",  # Can be a Private Hub endpoint.
-    token="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",  # Token is not persisted on the machine.
-)
-# token = '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'
-# login(token = token)
-# Upload all the content from the local folder to your remote Space.
-# By default, files are uploaded at the root of the repo
-hf_api.upload_folder(
-    folder_path="/home/seatond/revision_project/code/5_epochs",
-    repo_id="seatond/5_epochs",
-    # repo_type="space",
-)
+
+# %%
+#see max sequence length of input
+hi = 0
+if hi == 1:
+    from transformers import AutoTokenizer
+    model_id = "TheBloke/Mistral-7B-v0.1-GPTQ"
+
+    tokenizer = AutoTokenizer.from_pretrained(
+        model_id, use_fast=False, add_eos_token=True)
+    
+    lens = []
+    for i in prep_data()['train']['content']:
+        lens.append(len(tokenizer(i)['input_ids']))
+
+    print(max(lens))
+    # %%
+    
