@@ -8,7 +8,7 @@ import openai
 import requests
 
 # ----------------------------------------------------------------------------
-df = pd.read_json(r'data/revamped_data.json')
+df = pd.read_json(r'final_pages.json')
 df.reset_index(inplace=True)
 df.drop(columns='index',inplace=True)
 df
@@ -34,21 +34,21 @@ disulﬁde bonddisulﬁde bond
         start_row:end_row
     ]  # i dont pass all due to open AI limits
 
-    os.environ["OPENAI_API_KEY"] = "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"
-    key = "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"
+    os.environ["OPENAI_API_KEY"] = "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"
+    key = "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"
     openai.api_key = key
     client = OpenAI()
     subs = []
+    try:
+        for i in range(0, len(data_to_enrich)):
+            print(i)
 
-    for i in range(0, len(data_to_enrich)):
-        print(i)
-        try:
             prompt2 = f"This is the text: {data_to_enrich.iloc[i,0]}"
 
             url = "https://api.openai.com/v1/chat/completions"
             headers = {
                 "Content-Type": "application/json",
-                "Authorization": "Bearer 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"
+                "Authorization": "Bearer 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"
             }
 
             data = {
@@ -73,30 +73,29 @@ disulﬁde bonddisulﬁde bond
                 ],
                 'temperature':1
             }
-
             response = requests.post(url, headers=headers, json=data)
 
             # Print the response content
             res = (response.json())
             subs.append(res['choices'][0]['message']['content'])
-        except:
-            None
-        print(i)
-        #time.sleep(62) if (i + 1) % 3 == 0 else None
+
+            print(i)
+            #time.sleep(62) if (i + 1) % 3 == 0 else None
+    except:
+        None
 
     return subs
     
 # -----------------------------------------------------------------------------
 # %%
 
-data = gpt_enrich_data(df.iloc[1:])
+data = gpt_enrich_data(df)
 
 #1st point = ["@@@TOPIC IA — BIOLOGICAL MOLECULES: CARBOHYDRATES AND COMMON BIOCHEMISTRY\nEven though there is, and has been, a huge variety of different organisms on Earth, they all share some biochemistry— for example, they all contain a few carbon-based compounds that interact in similar ways.\n\n@@@MOST CARBOHYDRATES ARE POLYMERS\n1) Most carbohydrates (as well as proteins and nucleic acids) are polymers.\n2) Polymers are large, complex molecules composed of long chains of monomers joined together.\n3) Monomers are small, basic molecular units.\n4) Examples of monomers include monosaccharides, amino acids and nucleotides.\nmonomer e.g. monosaccharide, amino acid polymer e.g. carbohydrate, protein\n\n@@@CARBOHYDRATES ARE MADE FROM MONOSACCHARIDES\n1) All carbohydrates contain the elements C, H and O.\n2) The monomers that they're made from are monosaccharides, e.g. glucose, fructose and galactose.\n1) Glucose is a hexose sugar — a monosaccharide with six carbon atoms in each molecule.\n2) There are two types of glucose, alpha (α) and beta (β)— they're isomers (molecules with the same molecular formula as each other, but with the atoms connected in a different way).\n3) You need to know the structures of both types of glucose for your exam— it's pretty easy because there's only one difference between the two:\nα-glucose molecule β-glucose molecule\nThe two types of glucose have these groups reversed\n\n@@@CONDENSATION REACTIONS JOIN MONOSACCHARIDES TOGETHER\n1) A condensation reaction is when two molecules join together with the formation of a new chemical bond, and a water molecule is released when the bond is formed.\n2) Monosaccharides are joined together by condensation reactions.\n3) A glycosidic bond forms between the two monosaccharides as a molecule of water is released.\n4) A disaccharide is formed when two monosaccharides join together.\nExample\nTwo α-glucose molecules are joined together by a glycosidic bond to form maltose.\n5) Sucrose is a disaccharide formed from a condensation reaction between a glucose molecule and a fructose molecule.\n6) Lactose is another disaccharide formed from a glucose molecule and a galactose molecule.\nIf you're asked to show a condensation reaction, don't forget to put the water molecule in as a product."]
 # %%
-try:
-    pd.DataFrame({'responses':data}).to_csv(r"synthetic_data_newest.csv")
-except:
-    pd.DataFrame({'responses':data}).to_json(r"synthetic_data_newest.json")
+final = pd.DataFrame({'pages':df['pages'],'sums':data})
+final.to_json(r"synthetic_data_newest.json")
+#pd.DataFrame({'responses':data}).to_json(r"synthetic_data_newest.json")
 
 
 # %% --------------------------------------------------------------------------
@@ -284,3 +283,29 @@ res = (response.json())
 message = res['choices'][0]['message']['content']
 
 # %%
+from transformers import AutoTokenizer
+model_id = "TheBloke/Mistral-7B-v0.1-GPTQ"
+
+tokenizer = AutoTokenizer.from_pretrained(
+    model_id, use_fast=False, add_eos_token=True
+)
+# %%
+lens = []
+for i,j in enumerate(df['pages']): 
+    if len(tokenizer(j)['input_ids']) ==1428:
+        print(i)
+
+
+# %%
+def test():
+    res = []
+    try:
+        for i in range(1,100):
+    
+                
+            print(i)
+            res.append(i/(i-10))
+    except:
+        None
+    return res
+hi = test()
