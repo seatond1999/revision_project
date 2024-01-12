@@ -69,7 +69,7 @@ def finetune(data, r, lora_alpha, lr, epochs, target_modules,batch_s,gradacc):
     test_data = data["test"]
 
     ##load model and tokenizer
-    model_id = "TheBloke/Mistral-7B-Instruct-v0.1-GPTQ"
+    model_id = "TheBloke/Mistral-7B-Instruct-v0.2-GPTQ"
 
     tokenizer = AutoTokenizer.from_pretrained(
         model_id, use_fast=False
@@ -121,7 +121,7 @@ def finetune(data, r, lora_alpha, lr, epochs, target_modules,batch_s,gradacc):
     model = get_peft_model(model, peft_config)
     print("trainable parameters:", model.print_trainable_parameters())
     ##
-    name = f"gp4_rank{r}_lr{lr}_target{len(target_modules)}_epochs{epochs}_laplha{lora_alpha}_batch{batch_s}_gradacc{gradacc}" #_wuratio{warmup_ratio}_wdecay{wdecay    
+    name = f"v2_gp4_rank{r}_lr{lr}_target{len(target_modules)}_epochs{epochs}_laplha{lora_alpha}_batch{batch_s}_gradacc{gradacc}" #_wuratio{warmup_ratio}_wdecay{wdecay    
     training_arguments = TrainingArguments(
         output_dir=name,
         per_device_train_batch_size=batch_s,  # 5 works
@@ -200,7 +200,7 @@ def finetune(data, r, lora_alpha, lr, epochs, target_modules,batch_s,gradacc):
 # import os
 # os.environ['PYTORCH_CUDA_ALLOC_CONF'] = 'max_split_size_mb=10'
 if __name__ == "__main__":
-    trainer_obj = finetune(prep_data(), 64, 128, 2.1e-5, 2, ["q_proj", "v_proj","o_proj","k_proj","up_proj","down_proj","gate_proj"],1,6)
+    trainer_obj = finetune(prep_data(), 64, 128, 2.2e-5, 2, ["q_proj", "v_proj","o_proj","k_proj","up_proj","down_proj","gate_proj"],1,6)
 
 #,"gate_proj"
 #,"gate_proj","up_proj","down_proj"
