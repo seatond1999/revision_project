@@ -20,7 +20,6 @@ from huggingface_hub import login
 from datetime import datetime as dt
 import torch
 import tensorboard
-from sklearn.preprocessing import LabelEncoder
 # -----------------------------------------------------------------------------
 
 
@@ -42,7 +41,7 @@ login(token=token)
 
 def prep_data():
     data = pd.read_json(r"page_identification_data.json")
-    data_aq = pd.DataFrame(
+    df = pd.DataFrame(
         {
             "content": data.apply(
                 lambda x: f"""<s>[INST] @@@ Instructions:
@@ -68,18 +67,26 @@ Assisstant: {x['label']}""",
             'label': data.apply(lambda x: 0 if x['label']=='No' else 1,axis=1)
         }
     )
+
+    #stratified sampling
+    df = df.sample(frac=1)
+    df.reset_index(inplace=True)
+    df.drop(columns='index',inplace=True)
+    split = 0.15
+
+    test = Dataset.from_pandas(pd.concat([df[df['label']==0][0:int(len(df[df['label']==0])*split)] ,  df[df['label']==1][0:int(len(df[df['label']==1])*split)]]))
+    train = Dataset.from_pandas(pd.concat([df[df['label']==0][int(len(df[df['label']==0])*split):] ,  df[df['label']==1][int(len(df[df['label']==1])*split):]]))
+    
     #return data_aq
-    data_aq = Dataset.from_pandas(data_aq)
-    data_aq = data_aq.train_test_split(test_size=0.15,stratify_by_column='label') #add 
-    return data_aq
+    return train,test
 
 
 @timer
 def finetune(data, r, lora_alpha, lr, epochs, target_modules,batch_s,gradacc):
     token = "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"
     login(token=token)
-    train_data = data["train"]
-    test_data = data["test"]
+    train_data = data[0]
+    test_data = data[1]
 
     ##load model and tokenizer
     model_id = "TheBloke/Mistral-7B-Instruct-v0.2-GPTQ"
@@ -104,8 +111,6 @@ def finetune(data, r, lora_alpha, lr, epochs, target_modules,batch_s,gradacc):
     model.resize_token_embeddings(len(tokenizer))
     model.config.eos_token_id = tokenizer.eos_token_id
     model.config.pad_token_id = tokenizer.pad_token_id
-    
-
     r = r
     lora_alpha = lora_alpha
     lr = lr
@@ -144,7 +149,7 @@ def finetune(data, r, lora_alpha, lr, epochs, target_modules,batch_s,gradacc):
         learning_rate=lr,
         lr_scheduler_type="cosine",
         save_strategy="steps",  # so do we need the whole PeftSavingCallback function? maybe try withput and run the trainer(from last check=true)
-        logging_steps=6,
+        logging_steps=12,
         #save_steps=60,
         num_train_epochs=epochs,
         # max_steps=250,
@@ -184,7 +189,7 @@ def finetune(data, r, lora_alpha, lr, epochs, target_modules,batch_s,gradacc):
         tokenizer=tokenizer,
         callbacks=callbacks,  # try if doesnt work hashing all of checkpiint stuff above and also this callback line
         packing=False,
-        max_seq_length=2608
+        max_seq_length=4000
     )
 
     ###################################################
@@ -213,7 +218,8 @@ def finetune(data, r, lora_alpha, lr, epochs, target_modules,batch_s,gradacc):
 # import os
 # os.environ['PYTORCH_CUDA_ALLOC_CONF'] = 'max_split_size_mb=10'
 if __name__ == "__main__":
-    trainer_obj = finetune(prep_data(), 64, 128, 2.2e-5, 2, ["q_proj", "v_proj","o_proj","k_proj","up_proj","down_proj","gate_proj"],1,4)
+    data = prep_data()
+    trainer_obj = finetune(data, 32, 64, 2.2e-5, 1, ["q_proj", "v_proj","o_proj","k_proj","up_proj","down_proj","gate_proj"],1,4)
 
 #,"gate_proj"
 #,"gate_proj","up_proj","down_proj"
@@ -227,3 +233,26 @@ trainer_obj.save_model()
 # %% --------------------------------------------------------------------------
 
 # %% --------------------------------------------------------------------------
+#lens = []
+#for i in prep_data()[1]['content']:
+#    lens.append(len(trainer_obj(i)['input_ids']))
+
+
+# %% --------------------------------------------------------------------------
+hi = 1
+if hi==1 and __name__ == "__main__":
+    from huggingface_hub import HfApi
+
+    hf_api = HfApi(
+        endpoint="https://huggingface.co",  # Can be a Private Hub endpoint.
+        token="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",  # Token is not persisted on the machine.
+    )
+    # token = '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'
+    # login(token = token)
+    # Upload all the content from the local folder to your remote Space.
+    # By default, files are uploaded at the root of the repo
+    hf_api.upload_folder(
+        folder_path="/home/seatond/revision_project/revamp/firstpage_rank32_lr2.2e-05_target7_epochs1_laplha64_batch1_gradacc4",
+        repo_id="seatond/page_identifier_rank32",
+        # repo_type="space",
+    )
