@@ -20,6 +20,7 @@ from huggingface_hub import login
 from datetime import datetime as dt
 import torch
 import tensorboard
+from sklearn.preprocessing import LabelEncoder
 # -----------------------------------------------------------------------------
 
 
@@ -63,11 +64,13 @@ Assisstant: "No"
 User: The given chapter title: ### {x['chapter_title']} ### This is the string: ### {x['page']} ### [/INST]
 Assisstant: {x['label']}""",
                 axis=1,
-            )
+            ),
+            'label': data.apply(lambda x: 0 if x['label']=='No' else 1,axis=1)
         }
     )
+    #return data_aq
     data_aq = Dataset.from_pandas(data_aq)
-    data_aq = data_aq.train_test_split(test_size=0.1)
+    data_aq = data_aq.train_test_split(test_size=0.15,stratify_by_column='label') #add 
     return data_aq
 
 
@@ -131,7 +134,7 @@ def finetune(data, r, lora_alpha, lr, epochs, target_modules,batch_s,gradacc):
     model = get_peft_model(model, peft_config)
     print("trainable parameters:", model.print_trainable_parameters())
     ##
-    name = f"v2_gp4_rank{r}_lr{lr}_target{len(target_modules)}_epochs{epochs}_laplha{lora_alpha}_batch{batch_s}_gradacc{gradacc}" #_wuratio{warmup_ratio}_wdecay{wdecay    
+    name = f"firstpage_rank{r}_lr{lr}_target{len(target_modules)}_epochs{epochs}_laplha{lora_alpha}_batch{batch_s}_gradacc{gradacc}" #_wuratio{warmup_ratio}_wdecay{wdecay    
     training_arguments = TrainingArguments(
         output_dir=name,
         per_device_train_batch_size=batch_s,  # 5 works
@@ -210,9 +213,7 @@ def finetune(data, r, lora_alpha, lr, epochs, target_modules,batch_s,gradacc):
 # import os
 # os.environ['PYTORCH_CUDA_ALLOC_CONF'] = 'max_split_size_mb=10'
 if __name__ == "__main__":
-    trainer_obj = finetune(prep_data(), 64, 128, 2.2e-5, 2, ["q_proj", "v_proj","o_proj","k_proj","up_proj","down_proj","gate_proj"],1,4
-                           
-                           )
+    trainer_obj = finetune(prep_data(), 64, 128, 2.2e-5, 2, ["q_proj", "v_proj","o_proj","k_proj","up_proj","down_proj","gate_proj"],1,4)
 
 #,"gate_proj"
 #,"gate_proj","up_proj","down_proj"
