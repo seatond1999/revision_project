@@ -518,17 +518,71 @@ plz['sums'][141]
 # -----------------------------------------------------------------------------
 
 # %%
-#for test ...
-pages = [
-    206,224,226,266,
-    271,272
+#for first page test ...
+yes = [
+    1,10,25,44,55,73,90,102,116,128,145,173,188,210,221,247,274,296,310    
 ]
-pages = list(map(lambda x: x - 1, pages))
-reader = PdfReader(r"../../edexcel_a_level_physics_student_book_1.pdf")
-physics = [reader.pages[i].extract_text() for i in pages]
-e = physics[4]+physics[5]
-physics=physics[0:4]
-physics.append(e)
-pd.DataFrame({'test_set':physics}).to_csv('test_data.csv')
-# %%
+yes_titles=[
+    '1 Quantities and units',
+    '2 Practical skills',
+    '3 Rectilinear motion',
+    '4 Momentum',
+    '5 Forces',
+    '6 Work, energy and power',
+    '7 Charge and current',
+    '8 Potential difference, electromotive force and power',
+    '9 Current-potential difference relationships',
+    '10 Resistance and resistivity',
+    '11 Internal resistance, series and parallel circuits, and the potential divider',
+    '12 Fluids',
+    '13 Solid materials',
+    '14 Nature of waves',
+    '15 Transmission and reflection of waves',
+    '16 Superposition of waves',
+    '17 Particle nature of light',
+    '18 Maths in physics',
+    '19 Preparing for the exams'
+]
 
+no = [
+    1,2,2,4,4,6,6,7,7,8,8,9,9,10,11,12,20,35,54
+]
+
+no_titles = [
+    '1 Fluids',
+    '1 Quantities and units',
+    'Practical skills',
+    'Quantities and units',
+    '10 Maths in physics',
+    'Quantities',
+    'Practical activity',
+    'Exam preparation',
+    '4 Momentum',
+    '12 Fluids',
+    '19 Preparing for the exams',
+    'Exam preparation',
+    '2 Practical skills',
+    'Quantities and units',
+    '13 Solid materials',
+    '1 Quantities and units',
+    '18 Maths in physics',
+    '14 Nature of waves',
+    '11 Internal resistance, series and parallel circuits, and the potential divider'
+
+
+]
+
+for i in range(0,len(yes_titles)):
+    print(yes[i],yes_titles[i])
+
+yes = list(map(lambda x: x+9, yes))
+no = list(map(lambda x: x - 1, no))
+reader = PdfReader(r"../../edexcel_a_level_physics_student_book_1.pdf")
+test_data = []
+for i in range(0,len(yes)):
+    test_data.append((reader.pages[yes[i]].extract_text(),yes_titles[i],'Yes'))
+for i in range(0,len(no)):
+    test_data.append((reader.pages[no[i]].extract_text(),no_titles[i],'No'))
+
+test_data = pd.DataFrame(test_data, columns=['page', 'chapter_title', 'label'])
+test_data.to_json('firstpage_testdata.json')
