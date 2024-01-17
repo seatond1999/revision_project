@@ -47,8 +47,7 @@ def prep_data():
                 lambda x: f"""<s>[INST] @@@ Instructions:
 You are an assisstant who must classify whether a string from a page of a pdf book corresponds to the first page of a given chapter in that book.
 You will be given the string and also given the chapter title.
-The first page of a chapter usually contains the name of the chapter towards the start of the string.
-The first word of you answer must be "Yes" or "No"
+You must reply with a single word which can be "yes" or "no"
 You must reply "yes" if the string is the first page of the given chapter, and "no" if it is not the first page of the given chapter.
 
 @@@ Example:

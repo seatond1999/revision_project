@@ -580,9 +580,10 @@ no = list(map(lambda x: x - 1, no))
 reader = PdfReader(r"../../edexcel_a_level_physics_student_book_1.pdf")
 test_data = []
 for i in range(0,len(yes)):
-    test_data.append((reader.pages[yes[i]].extract_text(),yes_titles[i],'Yes'))
+    test_data.append((reader.pages[yes[i]].extract_text(),yes_titles[i],'yes'))
 for i in range(0,len(no)):
-    test_data.append((reader.pages[no[i]].extract_text(),no_titles[i],'No'))
+    test_data.append((reader.pages[no[i]].extract_text(),no_titles[i],'no'))
 
 test_data = pd.DataFrame(test_data, columns=['page', 'chapter_title', 'label'])
 test_data.to_json('firstpage_testdata.json')
+# %%
