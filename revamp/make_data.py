@@ -180,4 +180,12 @@ physics=physics[0:4]
 physics.append(e)
 pd.DataFrame({'test_set':physics}).to_csv('test_data.csv')
 # %%
+pages = [
+    11
+]
+pages = list(map(lambda x: x - 1, pages))
+reader = PdfReader(r"../../edexcel_a_level_physics_student_book_1.pdf")
+physics = [reader.pages[i].extract_text() for i in pages]
+physics[0]
 
+# %%
