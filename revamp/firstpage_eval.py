@@ -14,6 +14,9 @@ import openai
 import os
 import time
 import tensorboard
+import pandas as pd
+from sklearn.metrics import classification_report, confusion_matrix
+import matplotlib.pyplot as plt
 
 
 def prep_data(test_data_path):
@@ -92,12 +95,41 @@ def inference(tokenizer, model, data):
                 + len("[/INST]") :
             ]
         print(decoded_output)
-        results.append('yes') if 'yes' in decoded_output.lower() else results.append('no')
+        if 'yes' in decoded_output.lower():
+            results.append('yes')
+        elif 'no' in decoded_output.lower():
+            results.append('no')
+        else:
+            results.append('error')
 
     results_df = data.assign(prediction=results)
 
     return results_df
 
+def metrics(df):
+    conf_matrix = confusion_matrix(df['label'], df['prediction'])
+    conf_matrix_df = pd.DataFrame(conf_matrix, index=['Actual No', 'Actual Yes'], columns=['Predicted No', 'Predicted Yes'])
+
+    # Plot the confusion matrix using seaborn heatmap
+    plt.imshow(conf_matrix, interpolation='nearest', cmap=plt.cm.Blues)
+    plt.title('Confusion Matrix')
+    plt.colorbar()
+
+    classes = ['No', 'Yes']
+    tick_marks = range(len(classes))
+    plt.xticks(tick_marks, classes)
+    plt.yticks(tick_marks, classes)
+
+    plt.xlabel('Predicted Label')
+    plt.ylabel('True Label')
+    for i in range(len(classes)):
+        for j in range(len(classes)):
+            plt.text(j, i, str(conf_matrix[i, j]), ha='center', va='center', color='black', fontsize=14)
+    plt.show()
+
+    recall = conf_matrix[1, 1] / (conf_matrix[1, 1] + conf_matrix[1, 0]) #check these calcs are right
+    specificity = conf_matrix[0, 0] / (conf_matrix[0, 0] + conf_matrix[0, 1])
+    return recall,specificity
 # -----------------------------------------------------------------------------
 
 
@@ -109,5 +141,36 @@ if __name__ == "__main__":
     test_data_path = r"firstpage_testdata.json"
     test_data = prep_data(test_data_path)
     results = inference(tokenizer,model,test_data)
+    recall, specificity = metrics(results)
 
 
+
+# %% --------------------------------------------------------------------------
+#confusion matrix and recall and specificity
+
+df = pd.DataFrame({'label': ['yes', 'no', 'yes', 'no', 'yes'],'prediction': ['yes', 'no', 'yes', 'yes', 'yes']})
+conf_matrix = confusion_matrix(df['label'], df['prediction'])
+conf_matrix_df = pd.DataFrame(conf_matrix, index=['Actual No', 'Actual Yes'], columns=['Predicted No', 'Predicted Yes'])
+
+# Plot the confusion matrix using seaborn heatmap
+plt.imshow(conf_matrix, interpolation='nearest', cmap=plt.cm.Blues)
+plt.title('Confusion Matrix')
+plt.colorbar()
+
+classes = ['No', 'Yes']
+tick_marks = range(len(classes))
+plt.xticks(tick_marks, classes)
+plt.yticks(tick_marks, classes)
+
+plt.xlabel('Predicted Label')
+plt.ylabel('True Label')
+for i in range(len(classes)):
+    for j in range(len(classes)):
+        plt.text(j, i, str(conf_matrix[i, j]), ha='center', va='center', color='black', fontsize=14)
+plt.show()
+
+recall = conf_matrix[1, 1] / (conf_matrix[1, 1] + conf_matrix[1, 0]) #check these calcs are right
+specificity = conf_matrix[0, 0] / (conf_matrix[0, 0] + conf_matrix[0, 1])
+# -----------------------------------------------------------------------------
+
+# %%
