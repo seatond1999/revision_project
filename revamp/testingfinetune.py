@@ -256,3 +256,23 @@ if hi==1 and __name__ == "__main__":
         # repo_type="space",
     )
 # %%
+class Mother():
+    def __init__(self):
+        self.mother_att = 'June'
+    def mother_meth(self):
+        print(self.mother_att)
+
+class Father(Mother):
+    def __init__(self):
+        super().__init__()
+        self.father_att = 'Hen_dog'
+
+    def father_meth(self):
+        print(self.mother_att)
+# %%
+hi = Father()
+hi.mother_meth()
+# %%
+Mother.mother_att = 'hahaha'
+# %%
+
