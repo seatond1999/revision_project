@@ -45,7 +45,7 @@ def prep_data():
         {
             "content": data.apply(
                 lambda x: f"""<s>[INST] @@@ Instructions:
-You are an assisstant who must classify whether a string from a page of a pdf book corresponds to the first page of a given chapter in that book.
+You are an assisstant who must classify whether a string from a page of a pdf textbook belongs to a given chapter in that book.
 You will be given the string and also given the chapter title.
 You must reply with a single word which can be "yes" or "no"
 You must reply "yes" if the string is the first page of the given chapter, and "no" if it is not the first page of the given chapter.
@@ -151,8 +151,8 @@ def finetune(data, r, lora_alpha, lr, epochs, target_modules,batch_s,gradacc):
         logging_steps=12,
         #save_steps=60,
         num_train_epochs=epochs,
-        # max_steps=250,
-        fp16=True,
+        max_steps=49,
+        fp16=False,
         push_to_hub=False,
         report_to=["tensorboard"],
         group_by_length=True,
@@ -188,7 +188,7 @@ def finetune(data, r, lora_alpha, lr, epochs, target_modules,batch_s,gradacc):
         tokenizer=tokenizer,
         callbacks=callbacks,  # try if doesnt work hashing all of checkpiint stuff above and also this callback line
         packing=False,
-        max_seq_length=4000
+        max_seq_length=3700
     )
 
     ###################################################
@@ -218,7 +218,7 @@ def finetune(data, r, lora_alpha, lr, epochs, target_modules,batch_s,gradacc):
 # os.environ['PYTORCH_CUDA_ALLOC_CONF'] = 'max_split_size_mb=10'
 if __name__ == "__main__":
     data = prep_data()
-    trainer_obj = finetune(data, 32, 64, 2.2e-5, 1, ["q_proj", "v_proj","o_proj","k_proj","up_proj","down_proj","gate_proj"],1,4)
+    trainer_obj = finetune(data, 16, 32, 2.2e-5, 1, ["q_proj", "v_proj","o_proj","k_proj"],1,4)
 
 #,"gate_proj"
 #,"gate_proj","up_proj","down_proj"
@@ -233,7 +233,7 @@ trainer_obj.save_model()
 
 # %% --------------------------------------------------------------------------
 #lens = []
-#for i in prep_data()[1]['content']:
+#for i in prep_data()[0]['content']:
 #    lens.append(len(trainer_obj(i)['input_ids']))
 
 
@@ -251,8 +251,8 @@ if hi==1 and __name__ == "__main__":
     # Upload all the content from the local folder to your remote Space.
     # By default, files are uploaded at the root of the repo
     hf_api.upload_folder(
-        folder_path="/home/seatond/revision_project/revamp/firstpage_newprompt_rank32_lr2.2e-05_target7_epochs1_laplha64_batch1_gradacc4",
-        repo_id="seatond/newprompt_pageidentifier_rank32",
+        folder_path="/home/seatond/revision_project/revamp/firstpage_rank32_lr2.2e-05_target7_epochs1_laplha64_batch2_gradacc2",
+        repo_id="seatond/firstpage_with_autoclass_mistral",
         # repo_type="space",
     )
 # %%

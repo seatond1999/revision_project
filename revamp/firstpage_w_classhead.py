@@ -1,7 +1,4 @@
 # %% --------------------------------------------------------------------------
-#
-# -----------------------------------------------------------------------------
-
 import pandas as pd
 from datasets import load_dataset, Dataset
 from transformers import (
@@ -12,6 +9,8 @@ from transformers import (
     TrainingArguments,
     TrainerCallback,
     BitsAndBytesConfig,
+    Trainer,
+    AutoConfig
 )
 from peft import LoraConfig, prepare_model_for_kbit_training, get_peft_model, TaskType
 from trl import SFTTrainer
@@ -22,6 +21,12 @@ from datetime import datetime as dt
 import torch
 from torch import nn
 import tensorboard
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import accuracy_score, recall_score, precision_score, f1_score
+
+# -----------------------------------------------------------------------------
+
+# %% --------------------------------------------------------------------------
 # -----------------------------------------------------------------------------
 
 
@@ -41,7 +46,58 @@ def timer(func):
 token = "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"
 login(token=token)
 
-def prep_data():
+def load():
+##load model and tokenizer
+    model_id = "TheBloke/Mistral-7B-Instruct-v0.2-GPTQ"
+
+    tokenizer = AutoTokenizer.from_pretrained(
+        model_id, use_fast=False, padding=True, truncation=True, max_length=1500
+    )
+    quantization_config_loading = GPTQConfig(
+        bits=4,
+        disable_exllama=True,
+        tokenizer=tokenizer,
+    )
+    model = AutoModelForSequenceClassification.from_pretrained(
+        model_id,
+        quantization_config=quantization_config_loading,
+        device_map="auto",
+        torch_dtype=torch.float16, num_labels=2
+    )
+
+    #model.score = nn.Identity()
+    #model.config.score = nn.Identity()
+    #num_classes = 2  #Adjust the number of classes according to your task
+    #classification_head = nn.Linear(model.config.hidden_size, num_classes)
+    #model.config.classifier = classification_head
+    #model.classifier = classification_head
+
+    tokenizer.pad_token = "<unk>"
+    tokenizer.padding_side = "right"
+    model.resize_token_embeddings(len(tokenizer))
+    model.config.eos_token_id = tokenizer.eos_token_id
+    model.config.pad_token_id = tokenizer.pad_token_id
+
+    return tokenizer,model
+
+
+# Create torch dataset
+class Dataset(torch.utils.data.Dataset):
+    def __init__(self, encodings, labels=None):
+        self.encodings = encodings
+        self.labels = labels
+
+    def __getitem__(self, idx):
+        item = {key: torch.tensor(val[idx]) for key, val in self.encodings.items()}
+        if self.labels:
+            item["labels"] = torch.tensor(self.labels[idx])
+        return item
+
+    def __len__(self):
+        return len(self.encodings["input_ids"])
+
+
+def prep_data(tokenizer,model):
     data = pd.read_json(r"page_identification_data.json")
     df = pd.DataFrame(
         {
@@ -55,55 +111,40 @@ def prep_data():
     )
 
     #stratified sampling
-    df = df.sample(frac=1)
-    df.reset_index(inplace=True)
-    df.drop(columns='index',inplace=True)
-    split = 0.15
+    X = list(df['content'])
+    y = list(df['label'])
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.15)
 
-    test = Dataset.from_pandas(pd.concat([df[df['label']==0][0:int(len(df[df['label']==0])*split)] ,  df[df['label']==1][0:int(len(df[df['label']==1])*split)]]))
-    train = Dataset.from_pandas(pd.concat([df[df['label']==0][int(len(df[df['label']==0])*split):] ,  df[df['label']==1][int(len(df[df['label']==1])*split):]]))
+    X_train_tokenized = tokenizer(X_train, padding=True, truncation=True, max_length=1500)
+    X_test_tokenized = tokenizer(X_test, padding=True, truncation=True, max_length=1500)
+
+    train_dataset = Dataset(X_train_tokenized, y_train)
+    test_dataset = Dataset(X_test_tokenized, y_test)
     
-    #return data_aq
-    return train,test
+    return train_dataset,test_dataset
+import numpy as np
+def compute_metrics(p):
+    pred, labels = p
+    pred = np.argmax(pred, axis=1)
+
+    accuracy = accuracy_score(y_true=labels, y_pred=pred)
+    recall = recall_score(y_true=labels, y_pred=pred)
+    precision = precision_score(y_true=labels, y_pred=pred)
+    f1 = f1_score(y_true=labels, y_pred=pred)
+
+    return {"accuracy": accuracy, "precision": precision, "recall": recall, "f1": f1}
 
 
 @timer
-def finetune(data, r, lora_alpha, lr, epochs, target_modules,batch_s,gradacc):
+def finetune(tokenizer,model,data, r, lora_alpha, lr, epochs, target_modules,batch_s,gradacc):
+    model = model
+    tokenizer = tokenizer
     token = "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"
     login(token=token)
     train_data = data[0]
     test_data = data[1]
 
-    ##load model and tokenizer
-    model_id = "TheBloke/Mistral-7B-Instruct-v0.2-GPTQ"
-
-    tokenizer = AutoTokenizer.from_pretrained(
-        model_id, use_fast=False
-    )
-    quantization_config_loading = GPTQConfig(
-        bits=4,
-        disable_exllama=True,
-        tokenizer=tokenizer,
-    )
-    model = AutoModelForCausalLM.from_pretrained(
-        model_id,
-        quantization_config=quantization_config_loading,
-        device_map="auto",
-        torch_dtype=torch.float16
-    )
-
-    model.score = nn.Identity()
-    model.config.score = nn.Identity()
-    num_classes = 2  #Adjust the number of classes according to your task
-    classification_head = nn.Linear(model.config.hidden_size, num_classes)
-    model.config.classifier = classification_head
-    model.classifier = classification_head
-
-    tokenizer.pad_token = "<unk>"
-    tokenizer.padding_side = "right"
-    model.resize_token_embeddings(len(tokenizer))
-    model.config.eos_token_id = tokenizer.eos_token_id
-    model.config.pad_token_id = tokenizer.pad_token_id
+    
     r = r
     lora_alpha = lora_alpha
     lr = lr
@@ -128,6 +169,7 @@ def finetune(data, r, lora_alpha, lr, epochs, target_modules,batch_s,gradacc):
         bias="none",
         task_type=TaskType.SEQ_CLS,
         target_modules=target_modules,
+        #modules_to_save = ['classifier']
         modules_to_save = ['classifier']
     )
     model = get_peft_model(model, peft_config)
@@ -143,17 +185,17 @@ def finetune(data, r, lora_alpha, lr, epochs, target_modules,batch_s,gradacc):
         learning_rate=lr,
         lr_scheduler_type="cosine",
         save_strategy="steps",  # so do we need the whole PeftSavingCallback function? maybe try withput and run the trainer(from last check=true)
-        logging_steps=12,
+        logging_steps=6,
         #save_steps=60,
         num_train_epochs=epochs,
         # max_steps=250,
-        fp16=True,
+        fp16=False,
         push_to_hub=False,
         report_to=["tensorboard"],
         group_by_length=True,
         ddp_find_unused_parameters=False,
         do_eval=True,  ## for eval:
-        evaluation_strategy="steps",
+        evaluation_strategy="steps"
         #warmup_ratio=warmup_ratio,
         #weight_decay=wdecay,
     )
@@ -173,20 +215,19 @@ def finetune(data, r, lora_alpha, lr, epochs, target_modules,batch_s,gradacc):
 
     callbacks = [PeftSavingCallback()]
 
-    trainer = SFTTrainer(
+    trainer = Trainer(
         model=model,
         train_dataset=train_data,
         eval_dataset=test_data,
-        peft_config=peft_config,
+        #peft_config=peft_config,
         #dataset_text_field="content",
         args=training_arguments,
-        tokenizer=tokenizer,
-        callbacks=callbacks,  # try if doesnt work hashing all of checkpiint stuff above and also this callback line
-        packing=False,
-        max_seq_length=1500
+        compute_metrics=compute_metrics,
+        #packing=False,
+        #max_seq_length=1500
+        #max_length = 1000
+        
     )
-
-    ###################################################
 
     ########## set up tensorboard #####################
     tmpdir = tempfile.TemporaryDirectory()
@@ -204,7 +245,6 @@ def finetune(data, r, lora_alpha, lr, epochs, target_modules,batch_s,gradacc):
     return trainer
 
 
-# resume_from_checkpoint (str or bool, optional) — If a str, local path to a saved checkpoint as saved by a previous instance of Trainer. If a bool and equals True, load the last checkpoint in args.output_dir as saved by a previous instance of Trainer. If present, training will resume from the model/optimizer/scheduler states loaded here.
 
 
 # %% --------------------------------------------------------------------------
@@ -212,42 +252,18 @@ def finetune(data, r, lora_alpha, lr, epochs, target_modules,batch_s,gradacc):
 # import os
 # os.environ['PYTORCH_CUDA_ALLOC_CONF'] = 'max_split_size_mb=10'
 if __name__ == "__main__":
-    data = prep_data()
-    trainer_obj = finetune(data, 32, 64, 2.2e-5, 1, ["q_proj", "v_proj","o_proj","k_proj","up_proj","down_proj","gate_proj"],1,4)
+    tokenizer,model = load()
+    data = prep_data(tokenizer,model)
+    #trainer_obj = finetune(tokenizer,model,data, 32, 64, 2.2e-5, 1, ["q_proj", "v_proj","o_proj","k_proj","up_proj","down_proj","gate_proj"],2,2)
 
 #,"gate_proj"
 #,"gate_proj","up_proj","down_proj"
 # -----------------------------------------------------------------------------
 # def finetune(data,r,lora_alpha,lr,epochs,target_modules,batch,,warmup_ratio,wdecay):
 
-# %% --------------------------------------------------------------------------
-trainer_obj.save_model()
+    
 # -----------------------------------------------------------------------------
 
 # %% --------------------------------------------------------------------------
-
-# %% --------------------------------------------------------------------------
-#lens = []
-#for i in prep_data()[1]['content']:
-#    lens.append(len(trainer_obj(i)['input_ids']))
-
-
-# %% --------------------------------------------------------------------------
-hi = 1
-if hi==1 and __name__ == "__main__":
-    from huggingface_hub import HfApi
-
-    hf_api = HfApi(
-        endpoint="https://huggingface.co",  # Can be a Private Hub endpoint.
-        token="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",  # Token is not persisted on the machine.
-    )
-    # token = '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'
-    # login(token = token)
-    # Upload all the content from the local folder to your remote Space.
-    # By default, files are uploaded at the root of the repo
-    hf_api.upload_folder(
-        folder_path="/home/seatond/revision_project/revamp/firstpage_newprompt_rank32_lr2.2e-05_target7_epochs1_laplha64_batch1_gradacc4",
-        repo_id="seatond/newprompt_pageidentifier_rank32",
-        # repo_type="space",
-    )
-# %%
+trainer_obj.save_model() 
+# -----------------------------------------------------------------------------
