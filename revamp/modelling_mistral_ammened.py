@@ -32,8 +32,10 @@ class MistralForCausalLM(MistralPreTrainedModel):
     def forward(self,*args, **kwargs): #adding a condition to select which forward pass method to use
         if self.conditioner == 'classification':
             return forward_classification(*args, **kwargs)
-        else:
+        elif self.conditioner == 'causal':
             return forward_causal(*args, **kwargs)
+        else:
+            raise Exception('neither causal or classficaition selected')
         
 
     @add_start_docstrings_to_model_forward(MISTRAL_INPUTS_DOCSTRING)
