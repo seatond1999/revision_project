@@ -20,7 +20,7 @@ from sklearn.metrics import classification_report, confusion_matrix
 #import matplotlib.pyplot as plt
  
 
-
+# %% --------------------------------------------------------------------------
 def prep_data(test_data_path):
     data = pd.read_json(test_data_path)
     df = pd.DataFrame(
@@ -37,7 +37,7 @@ def prep_data(test_data_path):
     return df
 
 
-def load_model(lora_adapters, base_model):
+def load_model(lora_adapters, base_model,cond):
     base_path = base_model  # input: base model
     adapter_path = lora_adapters  # input: adapters
 
@@ -59,11 +59,18 @@ def load_model(lora_adapters, base_model):
         device_map="auto",
         torch_dtype=torch.float16,
     )
-    return tokenizer, model
     ###### adjusting model and model config of causal to match the automdelforseqclass which finetuned classfiication on ###########
 
-    #model.lm_head = None
-    #model.config.lm_head = None #remove mpapping to vocab size
+    model.num_labels = 2
+    model.config.num_labels = 2
+
+    model.score = nn.Linear(model.config.hidden_size, model.config.num_labels, bias=True,dtype=torch.float16)
+
+    model.lm_head = None
+    model.config.lm_head = None  #remove mpapping to vocab size
+
+    #remove mpapping to vocab size
+    #removing above heads nut in actual thing would save them and then put them back for causal bits and remove score head
 
     #num_classes = 2  #yes or no as labels
     #classification_head = nn.Linear(model.config.hidden_size, num_classes,bias=False) #create linear layer which will add on
@@ -71,20 +78,24 @@ def load_model(lora_adapters, base_model):
     #model.config.score = classification_head.state_dict() #stops the error Object of type Linear is not JSON serializable
     #model.config.score["weight"] = model.config.score["weight"].tolist() # solving the issue of not being able to JSON serialize due to adding own linear layer.
     #model.score = classification_head #add linear layer mapping to my 2 classes instead of 32k vocab 
-
-    #model.resize_token_embeddings(len(tokenizer))
-    #model.config.eos_token_id = tokenizer.eos_token_id
-    #model.config.pad_token_id = tokenizer.pad_token_id
-    #return tokenizer, PeftModel.from_pretrained(model, adapter_path) #combine with adapters
+    model.conditioner = cond
+    model.resize_token_embeddings(len(tokenizer))
+    model.config.eos_token_id = tokenizer.eos_token_id
+    model.config.pad_token_id = tokenizer.pad_token_id
+    #return tokenizer,model
+    return tokenizer, PeftModel.from_pretrained(model, adapter_path) #combine with adapters
 
 def inference(tokenizer,model,test_data):
     ground = []
     pred = []
-    for i in range(0,1):
+    model = model.to("cuda:0")
+    for i in range(0,len(test_data)):
         print(i)
         X_test_tokenized = tokenizer(test_data['content'][i], return_tensors="pt").input_ids.to("cuda:0")
+
+        X_test_tokenized = X_test_tokenized.to("cuda:0")
         with torch.no_grad():
-            logits = model(model,X_test_tokenized).logits
+            logits = model(X_test_tokenized).logits
 
         # Convert logits to probabilities using softmax
         probs = torch.nn.functional.softmax(logits, dim=-1)
@@ -129,43 +140,35 @@ def metrics(df):
 
 # %% --------------------------------------------------------------------------
 if __name__ == "__main__":
-    adapter_path = "seatond/multi_yes_short"
+    adapter_path = "/home/seatond/revision_project/revamp/firstpage_c_rank32_lr2.3e-05_target7_epochs1.7_laplha64_batch4_gradacc1"
     base_model_path = "TheBloke/Mistral-7B-Instruct-v0.2-GPTQ"
-    tokenizer, model = load_model(adapter_path, base_model_path)
-    #test_data_path = r"firstpage_testdata.json"
-    #test_data = prep_data(test_data_path)
-    #results = inference(tokenizer,model,test_data)
+    tokenizer, model = load_model(adapter_path, base_model_path,'classification')
+    test_data_path = r"firstpage_testdata.json"
+    test_data = prep_data(test_data_path)
+    results = inference(tokenizer,model,test_data)
     #recall, specificity = metrics(results)
 
 
-# %% --------------------------------------------------------------------------
-model.num_labels = 2
-model.config.num_labels = 2
-model.score = nn.Linear(model.config.hidden_size, model.config.num_labels, bias=False,dtype=torch.float16)
-model.lm_head = None
-model.config.lm_head = None #remove mpapping to vocab size
-#removing above heads nut in actual thing would save them and then put them back for causal bits and remove score head
-# -----------------------------------------------------------------------------
+
 
 # %% --------------------------------------------------------------------------
-model.conditioner = 'classification'
-print(model.score)
+#input_ids = tokenizer('hello there', return_tensors="pt").input_ids.to("cuda:0")
 
-# %% --------------------------------------------------------------------------
-input_ids = tokenizer('hello there', return_tensors="pt").input_ids.to("cuda:0")
-
-model = model.to("cuda:0")
+#model = model.to("cuda:0")
 
 # Move input tensors to GPU
-input_ids = input_ids.to("cuda:0")
+#input_ids = input_ids.to("cuda:0")
 
-with torch.no_grad():
-    logits = model(input_ids)
+#with torch.no_grad():
+#    logits = model(input_ids).logits
 
-probs = torch.nn.functional.softmax(logits, dim=-1)
+#probs = torch.nn.functional.softmax(logits, dim=-1) # hashing out as only 2 classes dont need to softmax
 
 # Get the predicted class index
-predicted_class = torch.argmax(probs).item()
-predicted_class = 'yes' if predicted_class == 1 else 'No'
+#predicted_class = torch.argmax(logits).item()
+#predicted_class = 'yes' if predicted_class == 1 else 'No'
+#predicted_class
 # -----------------------------------------------------------------------------
 
+#results.to_csv(r'merge_class_to_causal.csv')
+# %%

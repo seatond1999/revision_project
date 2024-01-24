@@ -251,8 +251,8 @@ if hi==1 and __name__ == "__main__":
     # Upload all the content from the local folder to your remote Space.
     # By default, files are uploaded at the root of the repo
     hf_api.upload_folder(
-        folder_path="/home/seatond/revision_project/revamp/firstpage_rank32_lr2.2e-05_target7_epochs1_laplha64_batch2_gradacc2",
-        repo_id="seatond/firstpage_with_autoclass_mistral",
+        folder_path="/home/seatond/revision_project/revamp/firstpage_c_rank32_lr2.3e-05_target7_epochs1.7_laplha64_batch4_gradacc1",
+        repo_id="seatond/firstpage_c_rank32_lr2.3e-05_target7_epochs1.7_laplha64_batch4_gradacc1",
         # repo_type="space",
     )
 # %%

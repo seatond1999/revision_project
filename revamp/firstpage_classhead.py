@@ -62,7 +62,7 @@ def load():
         model_id,
         quantization_config=quantization_config_loading,
         device_map="auto",
-        torch_dtype=torch.float16, num_labels=2
+        torch_dtype=torch.float16, num_labels=2,
     )
 
     #model.score = nn.Identity()
@@ -175,7 +175,7 @@ def finetune(tokenizer,model,data, r, lora_alpha, lr, epochs, target_modules,bat
     model = get_peft_model(model, peft_config)
     print("trainable parameters:", model.print_trainable_parameters())
     ##
-    name = f"firstpage_rank{r}_lr{lr}_target{len(target_modules)}_epochs{epochs}_laplha{lora_alpha}_batch{batch_s}_gradacc{gradacc}" #_wuratio{warmup_ratio}_wdecay{wdecay    
+    name = f"firstpage_c_rank{r}_lr{lr}_target{len(target_modules)}_epochs1.7_laplha{lora_alpha}_batch{batch_s}_gradacc{gradacc}" #_wuratio{warmup_ratio}_wdecay{wdecay    
     training_arguments = TrainingArguments(
         output_dir=name,
         per_device_train_batch_size=batch_s,  # 5 works
@@ -188,7 +188,7 @@ def finetune(tokenizer,model,data, r, lora_alpha, lr, epochs, target_modules,bat
         logging_steps=6,
         #save_steps=60,
         num_train_epochs=epochs,
-        # max_steps=250,
+        max_steps=85,
         fp16=False,
         push_to_hub=False,
         report_to=["tensorboard"],
@@ -254,10 +254,11 @@ def finetune(tokenizer,model,data, r, lora_alpha, lr, epochs, target_modules,bat
 if __name__ == "__main__":
     tokenizer,model = load()
     data = prep_data(tokenizer,model)
-    trainer_obj = finetune(tokenizer,model,data, 32, 64, 2.2e-5, 1, ["q_proj", "v_proj","o_proj","k_proj","up_proj","down_proj","gate_proj"],2,2)
+    trainer_obj = finetune(tokenizer,model,data, 32, 64, 2.3e-5, 1, ["q_proj", "v_proj","o_proj","k_proj","up_proj","down_proj","gate_proj"],4,1)
 
 #,"gate_proj"
 #,"gate_proj","up_proj","down_proj"
+#,"k_proj","up_proj","down_proj","gate_proj"]
 # -----------------------------------------------------------------------------
 # def finetune(data,r,lora_alpha,lr,epochs,target_modules,batch,,warmup_ratio,wdecay):
 
@@ -267,3 +268,5 @@ if __name__ == "__main__":
 # %% --------------------------------------------------------------------------
 trainer_obj.save_model() 
 # -----------------------------------------------------------------------------
+
+# %%
