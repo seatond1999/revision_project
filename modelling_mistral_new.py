@@ -1117,8 +1117,8 @@ class MistralForCausalLM(MistralPreTrainedModel):
             return_dict=return_dict,
         )
         hidden_states = transformer_outputs[0]
-        print(hidden_states.dtype)
-        print(self.score.weight.dtype)
+        #print(hidden_states.dtype)
+        #print(self.score.weight.dtype)
         logits = self.score(hidden_states)
         
         if input_ids is not None:
