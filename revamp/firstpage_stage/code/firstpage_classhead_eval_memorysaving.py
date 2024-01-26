@@ -64,7 +64,7 @@ def load_model(lora_adapters, base_model,cond):
     model.num_labels = 2
     model.config.num_labels = 2
 
-    model.score = nn.Linear(model.config.hidden_size, model.config.num_labels, bias=True,dtype=torch.float16)
+    model.score = nn.Linear(model.config.hidden_size, model.config.num_labels, bias=False,dtype=torch.float16)
 
     model.lm_head = None
     model.config.lm_head = None  #remove mpapping to vocab size
@@ -98,7 +98,7 @@ def inference(tokenizer,model,test_data):
             logits = model(X_test_tokenized).logits
 
         # Convert logits to probabilities using softmax
-        probs = torch.nn.functional.softmax(logits, dim=-1)
+        probs = torch.nn.functional.softmax(logits, dim=-1) #no need for this
 
         # Get the predicted class index
         predicted_class = torch.argmax(probs).item()
