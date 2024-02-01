@@ -40,7 +40,7 @@ token = "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"
 login(token=token)
 
 def prep_data():
-    data = pd.read_json(r"synthetic_data_newest.json")
+    data = pd.read_json(r"../data/synthetic_data_newest.json")
     data_aq = pd.DataFrame(
         {
             "content": data.apply(
@@ -76,7 +76,7 @@ def finetune(data, r, lora_alpha, lr, epochs, target_modules,batch_s,gradacc):
     )
     quantization_config_loading = GPTQConfig(
         bits=4,
-        disable_exllama=True,
+        #disable_exllama=True, #trying hashing out in finetune to match inference as reduces latency.
         tokenizer=tokenizer,
     )
     model = AutoModelForCausalLM.from_pretrained(
@@ -91,7 +91,8 @@ def finetune(data, r, lora_alpha, lr, epochs, target_modules,batch_s,gradacc):
     model.resize_token_embeddings(len(tokenizer))
     model.config.eos_token_id = tokenizer.eos_token_id
     model.config.pad_token_id = tokenizer.pad_token_id
-    
+    from auto_gptq import exllama_set_max_input_length
+    model = exllama_set_max_input_length(model, max_input_length=52080)
 
     r = r
     lora_alpha = lora_alpha
@@ -135,7 +136,7 @@ def finetune(data, r, lora_alpha, lr, epochs, target_modules,batch_s,gradacc):
         #save_steps=60,
         num_train_epochs=epochs,
         # max_steps=250,
-        fp16=True,
+        fp16=False, #only set it to False for today's fietune (01/02/2024)
         push_to_hub=False,
         report_to=["tensorboard"],
         group_by_length=True,
@@ -200,7 +201,7 @@ def finetune(data, r, lora_alpha, lr, epochs, target_modules,batch_s,gradacc):
 # import os
 # os.environ['PYTORCH_CUDA_ALLOC_CONF'] = 'max_split_size_mb=10'
 if __name__ == "__main__":
-    trainer_obj = finetune(prep_data(), 64, 128, 2.2e-5, 2, ["q_proj", "v_proj","o_proj","k_proj","up_proj","down_proj","gate_proj"],1,6)
+    trainer_obj = finetune(prep_data(), 64, 128, 2.2e-5, 2, ["q_proj", "v_proj","o_proj","k_proj","up_proj","down_proj","gate_proj"],1,4)
 
 #,"gate_proj"
 #,"gate_proj","up_proj","down_proj"
@@ -231,4 +232,26 @@ if hi == 1:
         lens.append(len(tokenizer(i)['input_ids']))
 
     print(max(lens))
-    # %%
+
+
+
+# %%
+
+hi = 1
+if hi==1 and __name__ == "__main__":
+    from huggingface_hub import HfApi
+
+    hf_api = HfApi(
+        endpoint="https://huggingface.co",  # Can be a Private Hub endpoint.
+        token="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",  # Token is not persisted on the machine.
+    )
+    # token = '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'
+    # login(token = token)
+    # Upload all the content from the local folder to your remote Space.
+    # By default, files are uploaded at the root of the repo
+    hf_api.upload_folder(
+        folder_path="/home/seatond/revision_project/revamp/stage_2/code/DADSADASDASDASDASDASDv2_gp4_rank64_lr2.2e-05_target7_epochs2_laplha128_batch1_gradacc4",
+        repo_id="seatond/chosen_stage2_exllamatrue",
+        # repo_type="space",
+    )
+# %%
