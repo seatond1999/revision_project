@@ -170,5 +170,4 @@ if __name__ == "__main__":
 #predicted_class
 # -----------------------------------------------------------------------------
 
-#results.to_csv(r'merge_class_to_causal.csv')
 # %%
