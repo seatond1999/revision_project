@@ -29,7 +29,46 @@ no = [
 
 synthetic = [
     'Contents\n3 Internationalization ...................................6\n• What initiates the process of internationalization and why \nhas it gained momentum in recent years? \n• What effects does internationalization have on \ncountries, diverse social groups, and \ncultures, as well as the physical environment?\n• What are the implications of internationalization for global \ndevelopment and the physical \nenvironment, and how should various stakeholders \naddress its challenges?\nExam-style questions ................................18\n4A Renewing localities ....................20\n• How and why do localities differ?\n• Why might rejuvenation be necessary?\n• How is the management of rejuvenation handled?\n• To what extent is rejuvenation successful?\nExam-style questions ................................37\n4B Varied localities ...............................41\n• How do demographic structures differ?\n• How do diverse communities perceive various residential \nareas?\n• Why do demographic and cultural \nfrictions arise in varied localities?\n• How effectively are cultural and \ndemographic issues being managed?\nExam-style questions ................................57\n7 Dominant Powers .................................61\n• What characterizes dominant powers and how have they \ntransformed over time?\n• What are the influences of dominant powers on the \nglobal economy, political systems, and the \nphysical environment?\n• Which areas of influence are contested by \ndominant powers and what are the repercussions of \nthis?\nExam-style questions ................................71\n8A Well-being, human rights and \ninterference....................................73\n• What is human well-being and why does it differ from place to place?\n• Why do human rights vary from place to \nplace?\n• How are human rights used as justifications for \npolitical and military intervention?\n• What are the outcomes of geopolitical \ninterventions in terms of human well-being \nand human rights?\nExam-style questions ................................85\n8B Movement, identity and \nautonomy ....................................88\n• What are the consequences of internationalization on \ntransnational migration?\n• How are nation states delineated and how have \nthey transformed in a globalized world?\n• What are the influences of global organizations \non addressing global issues and conflicts?\n• What are the challenges to national autonomy in \na more globalized world?\nExam-style questions ..............................101\n',
-    'Contents\n3 Global Integration ...................................5\n• What triggers the process of global integration and why \nhas it gained momentum in recent times? \n• What effects does global integration have on \ncountries, diverse social groups, and \ncultures, as well as the physical environment?\n• What are the implications of global integration for global \ndevelopment and the physical \nenvironment, and how should various actors \nrespond to its challenges?\nExam-style questions ................................17\n4A Revitalizing localities ....................19\n• How and why do localities differ?\n• Why might revitalization be necessary?\n• How is revitalization managed?\n• To what extent is revitalization successful?\nExam-style questions ................................36\n4B Assorted localities ...............................40\n• How do population structures differ?\n• How do diverse communities perceive varied residential \nareas?\n• Why do demographic and cultural \ntensions arise in assorted localities?\n• How effectively are cultural and \ndemographic issues being managed?\nExam-style questions ................................56\n7 Global Powers .................................60\n• What characterizes global powers and how have they \ntransformed over time?\n• What are the impacts of global powers on the \nglobal economy, political systems, and the \nphysical environment?\n• Which areas of influence are contested by \nglobal powers and what are the consequences of \nthis?\nExam-style questions ................................70\n8A Health, human rights and \nintervention....................................72\n• What is human development and why do \nlevels vary from place to place?\n• Why do human rights vary from place to \nplace?\n• How are human rights used as justifications for \npolitical and military intervention?\n• What are the outcomes of geopolitical \ninterventions in terms of human development \nand human rights?\nExam-style questions ................................84\n8B Migration, identity and \nsovereignty ....................................87\n• What are the impacts of global integration on \ninternational migration?\n• How are nation states defined and how have \nthey evolved in a globalizing world?\n• What are the impacts of global organizations \non managing global issues and conflicts?\n• What are the threats to national sovereignty in \na more globalized world?\nExam-style questions ..............................100\n'
+    'Contents\n3 Global Integration ...................................8\n• What triggers the process of global integration and why \nhas it gained momentum in recent times? \n• What effects does global integration have on \ncountries, diverse social groups, and \ncultures, as well as the physical environment?\n• What are the implications of global integration for global \ndevelopment and the physical \nenvironment, and how should various actors \nrespond to its challenges?\nExam-style questions ................................17\n4A Revitalizing localities ....................19\n• How and why do localities differ?\n• Why might revitalization be necessary?\n• How is revitalization managed?\n• To what extent is revitalization successful?\nExam-style questions ................................36\n4B Assorted localities ...............................40\n• How do population structures differ?\n• How do diverse communities perceive varied residential \nareas?\n• Why do demographic and cultural \ntensions arise in assorted localities?\n• How effectively are cultural and \ndemographic issues being managed?\nExam-style questions ................................56\n7 Global Powers .................................60\n• What characterizes global powers and how have they \ntransformed over time?\n• What are the impacts of global powers on the \nglobal economy, political systems, and the \nphysical environment?\n• Which areas of influence are contested by \nglobal powers and what are the consequences of \nthis?\nExam-style questions ................................70\n8A Health, human rights and \nintervention....................................72\n• What is human development and why do \nlevels vary from place to place?\n• Why do human rights vary from place to \nplace?\n• How are human rights used as justifications for \npolitical and military intervention?\n• What are the outcomes of geopolitical \ninterventions in terms of human development \nand human rights?\nExam-style questions ................................84\n8B Migration, identity and \nsovereignty ....................................87\n• What are the impacts of global integration on \ninternational migration?\n• How are nation states defined and how have \nthey evolved in a globalizing world?\n• What are the impacts of global organizations \non managing global issues and conflicts?\n• What are the threats to national sovereignty in \na more globalized world?\nExam-style questions ..............................100\n'
+]
+
+extraction = [
+    """Chapter 3 Globalisation --- Page 5 
+Exam-style questions --- Page 17 
+Chapter 4A Regenerating places --- Page 19 
+Exam-style questions --- Page 36 
+Chapter 4B Diverse places --- Page 40 
+Exam-style questions --- Page 56 
+Chapter 7 Superpowers --- Page 60 
+Exam-style questions --- Page 70 
+Chapter 8A Health, human rights and intervention --- Page 72 
+Exam-style questions --- Page 84 
+Chapter 8B Migration, identity and sovereignty --- Page 87 
+Exam-style questions --- Page 100""",
+    """Chapter 3 Internationalization --- Page 6 
+Exam-style questions --- Page 18 
+Chapter 4A Renewing localities --- Page 20 
+Exam-style questions --- Page 37 
+Chapter 4B Varied localities --- Page 41 
+Exam-style questions --- Page 57 
+Chapter 7 Dominant Powers --- Page 61 
+Exam-style questions --- Page 71 
+Chapter 8A Well-being, human rights and interference --- Page 73 
+Exam-style questions --- Page 85 
+Chapter 8B Movement, identity and autonomy --- Page 88 
+Exam-style questions --- Page 101 """,
+    """Chapter 3 Global Integration --- Page 8
+Exam-style questions --- Page 17 
+Chapter 4A Revitalizing localities --- Page 19 
+Exam-style questions --- Page 36 
+Chapter 4B Assorted localities --- Page 40 
+Exam-style questions --- Page 56 
+Chapter 7 Global Powers --- Page 60 
+Exam-style questions --- Page 70 
+Chapter 8A Health, human rights and intervention --- Page 72 
+Exam-style questions --- Page 84 
+Chapter 8B Migration, identity and sovereignty --- Page 87 
+Exam-style questions --- Page 100 """
 ]
 
 pdf_path = r'../../../../new books/9781398332447-Pearson-Edexcel-A-Level-Geography-2-Human-Geography-Workbook.pdf'
@@ -53,10 +92,20 @@ synthetic = [
     "\n \nAppendix 5b: Practical Abilities for Direct \nEvaluation and Enhancement through Teaching and \nLearning \n61 \nAppendix 5c: Application of Instruments and Methods \n63 \nAppendix 5d: Correspondence between Appendix 5c and \nEssential Practicals (Biology) \n65 \nAppendix 6: Mathematical Competencies and \nIllustrations \n69 \nAppendix 7: Directives in Examination \nDocuments \n75 \nAppendix 8: Display by Themes \n77 \nAppendix 9: Assistance from the University of York \n97 \n \n"
     ]
 
+extraction = [
+    'Qualification at a glance --- 1 \nKnowledge, skills and understanding --- 5 \nScience Practical Endorsement --- 26 \nMarking and standardisation --- 30 \nMalpractice --- 31 \nAssessment --- 33 \nAssessment summary --- 33 \nAssessment Objectives and weightings --- 35 \nBreakdown of Assessment Objectives --- 35 \nEntry and assessment information --- 36 \nStudent entry --- 36 \nDiscount codes and performance tables --- 36 \nAccess arrangements, reasonable adjustments and special consideration --- 37 \nEquality Act 2010 and Pearson equality policy --- 38 \nSynoptic assessment --- 38 \nAwarding and reporting --- 39 \nLanguage of assessment --- 39 \nOther information --- 41 \nStudent recruitment --- 41 \nPrior learning and other requirements --- 41 \nProgression --- 41 \nRelationship between Advanced Subsidiary GCE and Advanced GCE --- 41 \nProgression from Advanced Subsidiary GCE to Advanced GCE --- 42 \nRelationship between GCSE and Advanced GCE --- 42 \nProgression from GCSE to Advanced GCE --- 42 \nAppendix 1: Transferable skills --- 45 \nAppendix 2: Level 3 Extended Project qualification --- 47 \nAppendix 3: Codes --- 51 \nAppendix 4: Practical competency authentication sheet --- 53 \nAppendix 5: Working scientifically --- 55 \nAppendix 5a: Practical skills identified for indirect assessment and developed through teaching and learning --- 57 ',
+    'Appendix 5b: Practical skills identified for direct assessment and developed through teaching and learning --- 59 \nAppendix 5c: Use of apparatus and techniques --- 61 \nAppendix 5d: Mapping between  Appendix 5c and core practicals (biology) --- 63 \nAppendix 6: Mathematical skills and exemplifications --- 67 \nAppendix 7: Command words used in examination papers --- 73 \nAppendix 8: Presentation by themes --- 75 \nAppendix 9: Support from the  University of York --- 95',
+    "Program Overview --- 1 \nUnderstanding and Competence --- 6 \nScientific Practical Validation --- 27 \nGrading and Calibration --- 31 \nEthical Standards --- 32 \nAppraisal --- 34 \nSummary of Evaluations --- 34 \nObjectives and Allocations of Evaluations --- 36 \nAnalysis of Evaluation Objectives --- 36 \nEntry and Evaluation Details --- 37 \nStudent Registration Procedures --- 37 \nPromotion Codes and Result Metrics --- 37 \nAccess Arrangements, Rational Adjustments, and Special Considerations --- 38 \nEquality Act 2010 and Pearson's Equality Guidelines --- 39 \nIntegrated Evaluation --- 39 \nRecognition and Result Presentation --- 40 \nLanguage Used in Assessment --- 40 \nAdditional Information --- 42 \nStudent Recruitment Strategies --- 42 \nPrevious Learning and Additional Requirements --- 42 \nAdvancement Paths --- 42 \nInterconnection between Preliminary GCE and Higher-level GCE --- 42 \nAdvancement from Preliminary GCE to Higher-level GCE --- 43 \nInterconnection between General Certificate of Secondary Education (GCSE) and Higher-level GCE --- 43 \nAdvancement from GCSE to Higher-level GCE --- 43 \nAppendix 1: Adaptable Skills --- 46 \nAppendix 2: Level 3 Extended Project Qualification --- 48 \nAppendix 3: Coding Protocols --- 52 \nAppendix 4: Verification of Practical Competence Sheet --- 54 \nAppendix 5: Methodology in Scientific Work --- 56 \nAppendix 5a: Practical Abilities Recognized for Indirect Assessment and Developed through Teaching and Learning --- 58",
+    'Qualification Overview --- 1 \nInsight, Proficiency, and Knowledge --- 5 \nScientific Practical Approval --- 28 \nEvaluation and Grading --- 32 \nEthical Behavior --- 33 \nAppraisal Overview --- 35 \nSummary of Evaluations --- 35 \nObjectives and Weightings of Evaluations --- 37 \nAnalysis of Evaluation Objectives --- 37 \nEntry and Evaluation Details --- 38 \nStudent Entry Procedures --- 38 \nPromotion Codes and Result Metrics --- 38 \nAccess Arrangements, Rational Adjustments, and Special Considerations --- 39 \nEquality Act 2010 and Pearson Equality Policies --- 40 \nComprehensive Evaluation --- 40 \nRecognition and Outcome Presentation --- 41 \nLanguage Used in Appraisal --- 41 \nAdditional Information --- 43 \nStudent Recruitment Approaches --- 43 \nPrevious Learning and Additional Prerequisites --- 43 \nAdvancement Strategies --- 43 \nInterrelation between Advanced Subsidiary GCE and Advanced GCE --- 43 \nAdvancement from Advanced Subsidiary GCE to Advanced GCE --- 44 \nInterrelation between GCSE and Advanced GCE --- 44 \nAdvancement from GCSE to Advanced GCE --- 44 \nAppendix 1: Transferable Proficiencies --- 47 \nAppendix 2: Level 3 Extended Project Qualification --- 49 \nAppendix 3: Coding Protocols --- 53 \nAppendix 4: Verification of Practical Competence Sheet --- 55 \nAppendix 5: Scientific Methodology --- 57 \nAppendix 5a: Practical Skills Recognized for Indirect Assessment and Developed through Teaching and Learning --- 59',
+    'Appendix 5b: Practical Proficiencies for Direct Assessment and Cultivation through Teaching and Learning --- 60 \nAppendix 5c: Utilization of Apparatus and Techniques --- 62 \nAppendix 5d: Correspondence between Appendix 5c and Core Practicals (Biology) --- 64 \nAppendix 6: Mathematical Abilities and Illustrations --- 68 \nAppendix 7: Terminology in Examination Documents --- 74 \nAppendix 8: Presentation by Topics --- 76 \nAppendix 9: Assistance from the University of York --- 96',
+    'Appendix 5b: Practical Abilities for Direct Evaluation and Enhancement through Teaching and Learning --- 61 \nAppendix 5c: Application of Instruments and Methods --- 63 \nAppendix 5d: Correspondence between Appendix 5c and Essential Practicals (Biology) --- 65 \nAppendix 6: Mathematical Competencies and Illustrations --- 69 \nAppendix 7: Directives in Examination Documents --- 75 \nAppendix 8: Display by Themes --- 77 \nAppendix 9: Assistance from the University of York --- 97'
+]
+
 file = '9781446930885-gce2015-a-bioa-spec.pdf'
 pdf_path = rf'../../../../new books/{file}'
 page = 11
 read_pdf(pdf_path,page)
+
 # -----------------------------------------------------------------------------
 
 # %%
@@ -73,6 +122,12 @@ synthetic = [
     "\n \n \n2 \n \n \n \nContents \nOverview \n3 \nThe Nature of Historical Perspectives \n5 \nThe Mirage of Ultimate History \n5 \nHistory as a Collective Endeavor \n5 \nChallenges in Comprehending History \n7 \nStudies on the Cognitive Development of Younger Children in Historical Interpretation \n7 \nStudies on the Thought Process of 16-19 Year-Old Students Regarding Interpretations \n8 \nApproaches \n9 \nInterpretations, Representations, and Constructs \n10 \nAnalyzing Varied Historians' Perspectives \n11 \nAssessing Interpretations Using Appropriate Criteria \n12 \nExercises \n15 \nAuthor's Profile \n24 \nAppreciation \n24 \n \n",
     "\n \n \n2 \n \n \n \nContents \nOverview \n3 \nThe Concept of Historical Interpretations \n5 \nThe Myth of Definitive History \n5 \nHistory as a Collective Endeavor \n5 \nChallenges in Comprehending History \n7 \nResearch on Cognitive Development in Younger Children Regarding Historical Interpretation \n7 \nResearch on 16-19 Year-Old Students' Perspectives on Interpretations \n8 \nApproaches and Techniques \n9 \nInterpretations, Representations, and Constructions \n10 \nExplaining Discrepancies in Historians' Perspectives \n11 \nAssessing Interpretations Using Appropriate and Relevant Criteria \n12 \nPractical Activities \n15 \nAuthor's Biography \n25 \nAcknowledgements \n25 \n \n"
     ]
+
+extraction = [
+    'Introduction --- 3 \nWhat are historical interpretations? --- 4 \nThe illusion of ultimate history --- 4 \nHistory is a collective practice --- 4 \nWhat are the challenges to understanding? --- 6 \nResearch on younger children’s thinking about historical interpretation --- 6 \nResearch on 16-19 year-old students’ thinking about interpretation --- 7 \nStrategies --- 8 \nInterpretations, representations and constructions --- 9 \nExplaining why historians arrive at differing interpretations --- 10 \nEvaluating interpretations against appropriate and relevant criteria --- 11 \nActivities --- 14 \nAuthor Profile --- 23 \nAcknowledgements --- 23',
+    "Overview --- 3 \nThe Nature of Historical Perspectives --- 5 \nThe Mirage of Ultimate History --- 5 \nHistory as a Collective Endeavor --- 5 \nChallenges in Comprehending History --- 7 \nStudies on the Cognitive Development of Younger Children in Historical Interpretation --- 7 \nStudies on the Thought Process of 16-19 Year-Old Students Regarding Interpretations --- 8 \nApproaches --- 9 \nInterpretations, Representations, and Constructs --- 10 \nAnalyzing Varied Historians' Perspectives --- 11 \nAssessing Interpretations Using Appropriate Criteria --- 12 \nExercises --- 15 \nAuthor's Profile --- 24 \nAppreciation --- 24",
+    "Overview --- 3 \nThe Concept of Historical Interpretations --- 5 \nThe Myth of Definitive History --- 5 \nHistory as a Collective Endeavor --- 5 \nChallenges in Comprehending History --- 7 \nResearch on Cognitive Development in Younger Children Regarding Historical Interpretation --- 7 \nResearch on 16-19 Year-Old Students' Perspectives on Interpretations --- 8 \nApproaches and Techniques --- 9 \nInterpretations, Representations, and Constructions --- 10 \nExplaining Discrepancies in Historians' Perspectives --- 11 \nAssessing Interpretations Using Appropriate and Relevant Criteria --- 12 \nPractical Activities --- 15 \nAuthor's Biography --- 25 \nAcknowledgements --- 25"
+]
 
 file = 'A_level_History_interpretations_guidance_abridged.pdf'
 pdf_path = rf'../../../../new books/{file}'
@@ -431,6 +486,70 @@ Chapter 12: Genesis of Photosynthesis (pages 260-281)
 o 12.1: A Detailed Survey of Photosynthetic Operations (page 260)
 o 12.2: Unraveling Light-Dependent Steps in Photosynthesis (page 269)
 o 12.3: Understanding the Calvin Cycle (page 278)""",
+    """Access for free at https://openstax.org/ 
+v 
+Unit 2: Cellular Division and Genetic Concepts 
+Chapter 8: Overview of Cellular Reproduction (pages 247-293) 
+o 8.1 Genetic Material Exploration (page 248) 
+o 8.2 The Cellular Life Cycle and Mitotic Processes (page 251) 
+o 8.3 Prokaryotic Cellular Division Insights (page 264) 
+o 8.4 Reproduction Mechanisms (page 268) 
+o 8.5 Cellular Division - Meiotic Perspective (page 271) 
+o 8.6 Anomalies in Meiotic Processes (page 286) 
+Chapter 9: Understanding Patterns in Genetic Inheritance (pages 295-333) 
+o 9.1 Investigating Genetic Crosses with Gregor Mendel (page 296) 
+o 9.2 Principles Governing Inheritance (page 300) 
+o 9.3 Expansions of Inheritance Principles (page 312) 
+o 9.4 Chromosomal Foundation of Inheritance (page 321) 
+o 9.5 Diverse Patterns of Inheritance (page 327) 
+Unit 3: Molecules in Biology and Biotech Applications 
+Chapter 10: DNA Synthesis and Protein Construction (pages 335-376) 
+o 10.1 Understanding DNA Structure (page 336) 
+o 10.2 DNA Duplication Processes (page 342) 
+o 10.3 Transcription Mechanisms (page 354) 
+o 10.4 Translation Operations (page 363) 
+o 10.5 Governing Genes - Regulatory Mechanisms (pages 371) 
+Unit 4: Evolutionary Concepts and Biotech Introduction 
+Chapter 11: Unveiling Evolutionary Processes (pages 379-405) 
+o 11.1 Investigating Population Transformations (page 379) 
+o 11.2 Mechanisms Steering Evolution (page 387) 
+o 11.3 Unearthing Proof of Evolution (page 395) 
+o 11.4 Dispelling Common Myths about Evolution (pages 401) 
+
+Glossary (pages I-XXI) 
+OER Attribution Table (pages XXIII-XXXVI)""",
+    """Access for free at https://openstax.org/ 
+v 
+Unit 2: Cellular Growth and Genetic Insights 
+Chapter 8: Unraveling Cellular Reproduction (pages 247-293) 
+o 8.1 Decoding the Genetic Blueprint (page 250) 
+o 8.2 Navigating the Cellular Life Cycle and Mitotic Phases (page 254) 
+o 8.3 Insights into Prokaryotic Cell Division (page 267) 
+o 8.4 Insights into Reproduction Mechanisms (page 266) 
+o 8.5 Meiotic Perspectives on Cellular Division (page 270) 
+o 8.6 Anomalies in Meiotic Processes (page 285) 
+Chapter 9: Exploring Patterns in Genetic Traits (pages 295-333) 
+o 9.1 Genetic Crosses Explored with Gregor Mendel (page 297) 
+o 9.2 Governing Laws of Inheritance (page 303) 
+o 9.3 Expanding Principles of Inheritance (page 315) 
+o 9.4 Chromosomal Basis of Inheritance (page 322) 
+o 9.5 Diverse Patterns of Inheritance (page 328) 
+Unit 3: Biomolecules and Biotech Applications 
+Chapter 10: DNA Synthesis and Protein Assembly (pages 335-376) 
+o 10.1 The Blueprint of DNA Structure (page 337) 
+o 10.2 Unraveling DNA Replication Processes (page 345) 
+o 10.3 Transcription Insights (page 357) 
+o 10.4 Translation Mechanisms (page 366) 
+o 10.5 Regulating Genes - Mechanisms Explored (pages 374) 
+Unit 4: Evolutionary Insights and Biotech Introduction 
+Chapter 11: Unveiling Evolutionary Pathways (pages 379-405) 
+o 11.1 Examining Population Dynamics (page 380) 
+o 11.2 Mechanisms Steering Evolutionary Changes (page 385) 
+o 11.3 Evidence Supporting Evolution (page 393) 
+o 11.4 Debunking Common Misconceptions about Evolution (pages 400) 
+
+Glossary (pages I-XXI) 
+OER Attribution Table (pages XXIII-XXXVI)"""
 
     ]
 
