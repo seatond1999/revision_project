@@ -517,12 +517,25 @@ synthetic = [
     "PROGRAM OUTLINE\nvi\nSECTION 5\nPHASES OF MATTER: SOLID, LIQUID, GAS\n18 PRESSURE AND MASS DISTRIBUTION\n179\n19 CHARACTERISTICS OF MATERIAL STATES\n187\nSECTION 6\nMAGNETISM AND ELECTROMAGNETIC PHENOMENA\n20 MAGNETIC PROPERTIES AND ELECTROMAGNETIC INDUCTION\n203\n21 UTILIZATION OF ELECTRIC MOTORS AND MAGNETIC INDUCTION\n212\nSECTION 7\nRADIOACTIVE DECAY AND PARTICLE INTERACTIONS\n22 STRUCTURE OF ATOMS AND RADIOACTIVE PROCESSES\n227\n23 DECAY OF RADIATION AND HALF-LIFE\n239\n24 PRACTICAL UTILIZATION OF RADIOACTIVE MATERIAL\n247\n25 NUCLEAR SPLITTING AND FUSION PROCESSES\n256\nSECTION 8\nCELESTIAL MOTION\n26 MOVEMENT IN THE COSMOS\n265\n27 TRANSFORMATION OF STARS\n271\n28 STUDY OF THE UNIVERSE\n277\nPHYSICAL SCIENCES ONLY\nAll content subject to adjustment at the publisher's discretion. Not for resale, circulation, or distribution in whole or in part. ©Pearson 2019"
     ]
 
+extraction = [
+    'COURSE STRUCTURE --- iv\nABOUT THIS BOOK --- vi\nASSESSMENT OVERVIEW --- viiiv\nUNIT 1: FORCES AND MOTION --- 2\nUNIT 2: ELECTRICITY --- 58\nUNIT 3: WAVES --- 96\nUNIT 4: ENERGY RESOURCES AND ENERGY TRANSFER --- 132\nUNIT 5: SOLIDS, LIQUIDS AND GASES --- 172\nUNIT 6: MAGNETISM AND ELECTROMAGNETISM --- 196\nUNIT 7: RADIOACTIVITY AND PARTICLES --- 220\nUNIT 8: ASTROPHYSICS --- 258\nAPPENDIX A: PERIODIC TABLE --- 277\nAPPENDIX B: FORMULAE AND RELATIONSHIPS --- 278\nAPPENDIX C: PHYSICAL QUANTITIES AND UNITS --- 279\nAPPENDIX D: EXPERIMENTAL AND INVESTIGATIVE SKILLS --- 280\nAPPENDIX E: COMMAND WORDS --- 284\nGLOSSARY --- 285\nINDEX --- 289',
+    '1 MOVEMENT AND POSITION --- 03\n2 FORCES AND SHAPE --- 18\n3 FORCES AND MOVEMENT --- 28\n4 MOMENTUM --- 40 (PHYSICS ONLY)\n5 THE TURNING EFFECT OF FORCES --- 48 (PHYSICS ONLY)\n6 MAINS ELECTRICITY --- 59\n7 CURRENT AND VOLTAGE IN CIRCUITS --- 67\n8 ELECTRICAL RESISTANCE --- 75\n9 ELECTRIC CHARGE --- 84 (PHYSICS ONLY)\n10 PROPERTIES OF WAVES --- 97\n11 THE ELECTROMAGNETIC SPECTRUM --- 106\n12 LIGHT WAVES --- 113\n13 SOUND --- 123\n14 ENERGY TRANSFERS --- 133\n15 THERMAL ENERGY --- 139\n16 WORK AND POWER --- 150\n17 ENERGY RESOURCES AND ELECTRICITY GENERATION --- 158 (PHYSICS ONLY)',
+    '18 DENSITY AND PRESSURE --- 173\n19 SOLIDS, LIQUIDS AND GASES --- 181\n20 MAGNETISM AND ELECTROMAGNETISM --- 197\n21 ELECTRIC MOTORS AND ELECTROMAGNETIC INDUCTION --- 206\n22 ATOMS AND RADIOACTIVITY --- 221\n23 RADIATION AND HALF-LIFE --- 233\n24 APPLICATIONS OF RADIOACTIVITY --- 241\n25 FISSION AND FUSION --- 250\n26 MOTION IN THE UNIVERSE --- 259\n27 STELLAR EVOLUTION --- 265\n28 COSMOLOGY --- 271 (PHYSICS ONLY)',
+    'PROGRAM ORGANIZATION --- v\nABOUT THIS VOLUME --- vii\nEVALUATION SUMMARY --- ix\nSECTION 1: DYNAMICS AND MOVEMENT --- 3\nSECTION 2: ELECTROMAGNETISM --- 61\nSECTION 3: UNDULATIONS --- 99\nSECTION 4: ENERGY SOURCES AND ENERGY CONVEYANCE --- 135\nSECTION 5: SOLIDS, FLUIDS, AND VAPORS --- 176\nSECTION 6: MAGNETIC FIELDS AND ELECTROMAGNETIC INDUCTION --- 201\nSECTION 7: NUCLEAR DECAY AND ELEMENTARY PARTICLES --- 201\nSECTION 8: CELESTIAL PHYSICS --- 264\nADDENDUM A: PERIODIC ELEMENT ARRAY --- 283\nADDENDUM B: EQUATIONS AND ASSOCIATIONS --- 284\nADDENDUM C: MEASURED QUANTITIES AND UNITS --- 285\nADDENDUM D: EXPERIMENTAL AND INQUIRY ABILITIES --- 286\nADDENDUM E: IMPERATIVE TERMINOLOGY --- 290\nGLOSSARY --- 291\nINDEX --- 295',
+    'PROGRAM FRAMEWORK --- vi\nABOUT THIS GUIDEBOOK --- viii\nAPPRAISAL SUMMARY --- x\nSECTION 1: POWER AND MOVEMENT --- 4\nSECTION 2: ELECTRICAL CURRENT --- 60\nSECTION 3: UNDULATING PHENOMENA --- 98\nSECTION 4: SOURCES OF ENERGY AND ENERGY TRANSFER --- 134\nSECTION 5: SOLIDS, FLUIDS, AND GASSES --- 175\nSECTION 6: MAGNETIC INFLUENCE AND ELECTROMAGNETICISM --- 200\nSECTION 7: RADIATION AND ELEMENTARY PARTICLES --- 225\nSECTION 8: CELESTIAL SCIENCE --- 263\nAPPENDIX A: PERIODIC TABLE --- 282\nAPPENDIX B: MATHEMATICAL EXPRESSIONS AND CORRELATIONS --- 283\nAPPENDIX C: PHYSICAL PROPERTIES AND MEASUREMENT UNITS --- 284\nAPPENDIX D: CONDUCTING EXPERIMENTS AND RESEARCH ABILITIES --- 287\nAPPENDIX E: OPERATIONAL TERMINOLOGY --- 291\nGLOSSARY --- 292\nINDEX --- 296',
+    '1 SHIFT AND LOCATION --- 07\n2 EFFECTS OF FORCES ON FORM --- 22\n3 IMPETUS AND MOVEMENT --- 31\n4 INERTIAL MOMENTUM --- 43 (PHYSICAL SCIENCES ONLY)\n5 ROTATIONAL FORCE EFFECT --- 51 (PHYSICAL SCIENCES ONLY)\n6 ELECTRICAL GRID POWER --- 63\n7 FLOW OF CURRENT AND ELECTRICAL POTENTIAL --- 71\n8 RESISTANCE TO ELECTRIC FLOW --- 79\n9 ELECTRICAL QUANTITY --- 88 (PHYSICAL SCIENCES ONLY)\n10 WAVE CHARACTERISTICS --- 101\n11 RANGE OF ELECTROMAGNETIC WAVES --- 110\n12 VISUAL WAVE TRANSMISSION --- 117\n13 AUDITORY VIBRATIONS --- 127\n14 TRANSFER OF ENERGY --- 137\n15 HEAT ENERGY --- 143\n16 LABOR AND ENERGY --- 154\n17 SOURCES OF ENERGY AND ELECTRICAL PRODUCTION --- 162 (PHYSICAL SCIENCES ONLY)',
+    '1 DISPLACEMENT AND POSITION --- 05\n2 SHAPE ALTERATION DUE TO FORCES --- 20\n3 MOTION UNDER THE INFLUENCE OF FORCES --- 30\n4 MOVEMENT CONSERVATION --- 42 (PHYSICS ONLY)\n5 FORCES RESULTING IN ROTATION --- 50 (PHYSICS ONLY)\n6 ELECTRICAL POWER FROM THE GRID --- 61\n7 CIRCUIT CURRENT AND VOLTAGE --- 69\n8 OPPOSITION TO ELECTRIC FLOW --- 77\n9 ELECTRICAL CHARGE --- 86 (PHYSICS ONLY)\n10 WAVE PROPERTIES --- 99\n11 THE RANGE OF ELECTROMAGNETIC WAVES --- 108\n12 OPTICAL WAVE TRANSMISSION --- 115\n13 AUDITORY UNDULATIONS --- 125\n14 MOVEMENT OF ENERGY --- 135\n15 THERMAL POWER --- 141\n16 EFFORT AND ENERGY --- 152\n17 SOURCES OF ENERGY AND POWER GENERATION --- 160 (PHYSICS ONLY)',
+    '18 PRESSURE AND DENSITY --- 177\n19 STATES OF MATTER --- 185\n20 MAGNETIC EFFECTS AND ELECTROMAGNETISM --- 201\n21 ELECTRIC MOTORS AND INDUCTION --- 210\n22 ELEMENTARY PARTICLES AND RADIOACTIVE DECAY --- 225\n23 RADIATION AND TIME DECAY --- 237\n24 PRACTICAL APPLICATIONS OF RADIOACTIVE MATERIALS --- 245\n25 NUCLEAR FISSION AND FUSION --- 254\n26 CELESTIAL MOTION --- 263\n27 LIFE CYCLES OF STARS --- 269\n28 STUDY OF THE UNIVERSE --- 275 (PHYSICAL SCIENCES ONLY)',
+    '18 PRESSURE AND MASS DISTRIBUTION --- 179\n19 CHARACTERISTICS OF MATERIAL STATES --- 187\n20 MAGNETIC PROPERTIES AND ELECTROMAGNETIC INDUCTION --- 203\n21 UTILIZATION OF ELECTRIC MOTORS AND MAGNETIC INDUCTION --- 212\n22 STRUCTURE OF ATOMS AND RADIOACTIVE PROCESSES --- 227\n23 DECAY OF RADIATION AND HALF-LIFE --- 239\n24 PRACTICAL UTILIZATION OF RADIOACTIVE MATERIAL --- 247\n25 NUCLEAR SPLITTING AND FUSION PROCESSES --- 256\n26 MOVEMENT IN THE COSMOS --- 265\n27 TRANSFORMATION OF STARS --- 271\n28 STUDY OF THE UNIVERSE --- 277 (PHYSICAL SCIENCES ONLY)',
+]
+
 file = 'International-GCSE-Physics-Student-Book-sample.pdf'
 pdf_path = rf'../../../../new books/{file}'
 page = 6
 hi = read_pdf(pdf_path,page)
 prompt = """You must create 2 synthetic strings based on a string that I will give you. The string is from a contents page of a pdf book. You should keep the format of the strings very similar, but change the chapter titles, page numbers and any numbers . You will be penalized for including the same numbers on  either of the strings. Change all numbers. This is the string:""" + hi 
 prompt
+hi
 
 # %% --------------------------------------------------------------------------
 #PrinciplesOfBiology
@@ -537,114 +550,23 @@ no = [
 synthetic = [
     " \n \n \n \nAccess for free at https://openstax.org/ \n \niv \nFundamentals of Biology – A Journey into Biological Principles \n \nTable of Contents \no Foreword to the revised text, Fundamentals of Biology – A Journey into Biological \nConcepts of Biology (pages i-vi) \n \nUnit 1. The Fundamental Elements of Life \nChapter 1: Overview of Biology and the Scientific Method (pages 1-24) \no 1.1 Core Ideas and Principles of Biology (page 1) \no 1.2 The Scientific Approach (pages 14) \nChapter 2: Basics of Biochemistry (pages 25-61) \no 2.1 Molecules: The Foundation of Life (page 25) \no 2.2 Chemical Linkages (page 38) \no 2.3 H2O Essentials (page 48) \no 2.4 Acidity and Buffering Agents (page 56) \nChapter 3 Essential Biomolecules (pages 63-101) \no 3.1 Organic Chemistry (page 64) \no 3.2 Synthesis and Decomposition of Macromolecules (page 68) \no 3.3 Vital Molecules – Sugars and Starches (page 72) \no 3.4 Vital Molecules – Fats and Oils (page 79) \no 3.5 Vital Molecules – Proteins (page 87) \no 3.6 Vital Molecules - Nucleic Acid Insights (page 97) \nChapter 4: Dive into Cell Structure and Operations (pages 103-144) \no 4.1 Unraveling Microscopic Life (page 104) \no 4.2 Contrasting Prokaryotes and Eukaryotes (page 108) \no 4.3 Components of Eukaryotic Cells (page 113) \no 4.4 Cellular Organelles in Focus (page 120) \no 4.5 Range of organelles in eukaryotic cells (page 133) \n \n \n",
     "n \n \n \nAccess for free at https://openstax.org/ \n \nvi \nEssentials of Biology – Unveiling the Wonders of Biological Fundamentals \n \nTable of Contents \no Introduction to the reimagined text, Essentials of Biology – Unveiling the Wonders of \nBiological Concepts of Biology (pages i-vi) \n \nUnit 1. The Core Components of Life \nChapter 1: Embark on Biology and the Method of Inquiry (pages 1-24) \no 1.1 Central Concepts and Principles of Biology (page 1) \no 1.2 The Approach of Scientific Investigation (pages 14) \nChapter 2: Fundamentals of Biochemical Science (pages 25-61) \no 2.1 The Foundation of Life – Molecules (page 25) \no 2.2 Molecular Bonds (page 38) \no 2.3 Aquatic Essentials (page 48) \no 2.4 Alkalinity and Buffer Systems (page 56) \nChapter 3 Crucial Biomolecular Entities (pages 63-101) \no 3.1 Carbon Chemistry (page 64) \no 3.2 Synthesis and Breakdown of Giant Molecules (page 68) \no 3.3 Biological Essentials – Carbs (page 72) \no 3.4 Biological Essentials – Lipids (page 79) \no 3.5 Biological Essentials – Proteins (page 87) \no 3.6 Biological Essentials - Nucleic Acid Constructs (page 97) \nChapter 4: Insight into Cellular Framework and Operations (pages 103-144) \no 4.1 Probing Microscopic Entities (page 104) \no 4.2 Distinctions between Prokaryotic and Eukaryotic Cells (page 108) \no 4.3 Constituents of Eukaryotic Cells (page 113) \no 4.4 Intricacies of Cellular Organelles (page 120) \no 4.5 Spectrum of organelles within eukaryotic cells (page 133) \n \n \n",
-    """iv
-Return to Table of Contents
-Chapter 8: Cellular Structures and the Dynamics of Energy (pages 155-201)
-o 8.1 The Cellular Components (page 155)
-o 8.2 Facilitated Transport (page 162)
-o 8.3 Dynamic Cellular Processes (page 171)
-o 8.4 Energy Dynamics and Cellular Activity (page 177)
-o 8.5 Fundamental Principles of Thermodynamics (page 183)
-o 8.6 Varieties of Energy Forms (page 189)
-o 8.7 Catalysts in Cellular Processes (page 198)
-Chapter 9: Unveiling Cellular Respiration (pages 210-241)
-o 9.1 Energy Flow in Living Organisms (page 210)
-o 9.2 Cellular Glucose Breakdown (page 219)
-o 9.3 The Citrus Acid Circulation (page 224)
-o 9.4 Cellular Energy Production (page 230)
-o 9.5 Anaerobic Metabolism (page 236)
-o 9.6 Interconnections with Other Metabolic Routes (page 239)
-Chapter 10: Initiation to Photosynthesis (pages 246-267)
-o 10.1: In-Depth Exploration of Photosynthetic Processes (page 246)
-o 10.2: Illuminated Phases in Photosynthesis (page 256)
-o 10.3: The Calvin Sequence (page 263)""",
-    """iv
-Back to Table of Contents
-Chapter 6: Cellular Membrane Structure and Functions with an Overview of Energy Dynamics (pages 167-213)
-o 6.1 Understanding the Membrane Structure (page 167)
-o 6.2 Passive Movement Mechanisms (page 174)
-o 6.3 Active Transfer Processes (page 183)
-o 6.4 Energy Relations and Metabolic Pathways (page 189)
-o 6.5 Laws Governing Thermodynamics (page 195)
-o 6.6 Varieties in Energy Forms (page 201)
-o 6.7 Exploring Enzymatic Functions (page 210)
-Chapter 11: Preamble to Cellular Breathing (pages 224-255)
-o 11.1 Energy Transactions within Living Organisms (page 224)
-o 11.2 Glycolysis Deconstructed (page 232)
-o 11.3 The Citric Acid Rotation (page 238)
-o 11.4 Oxidative Phosphorylation Unveiled (page 243)
-o 11.5 Fermentative Processes (page 249)
-o 11.6 Interlinks with Diverse Metabolic Pathways (page 253)
-Chapter 12: Genesis of Photosynthesis (pages 260-281)
-o 12.1: A Detailed Survey of Photosynthetic Operations (page 260)
-o 12.2: Unraveling Light-Dependent Steps in Photosynthesis (page 269)
-o 12.3: Understanding the Calvin Cycle (page 278)""",
-    """Access for free at https://openstax.org/ 
-v 
-Unit 2: Cellular Division and Genetic Concepts 
-Chapter 8: Overview of Cellular Reproduction (pages 247-293) 
-o 8.1 Genetic Material Exploration (page 248) 
-o 8.2 The Cellular Life Cycle and Mitotic Processes (page 251) 
-o 8.3 Prokaryotic Cellular Division Insights (page 264) 
-o 8.4 Reproduction Mechanisms (page 268) 
-o 8.5 Cellular Division - Meiotic Perspective (page 271) 
-o 8.6 Anomalies in Meiotic Processes (page 286) 
-Chapter 9: Understanding Patterns in Genetic Inheritance (pages 295-333) 
-o 9.1 Investigating Genetic Crosses with Gregor Mendel (page 296) 
-o 9.2 Principles Governing Inheritance (page 300) 
-o 9.3 Expansions of Inheritance Principles (page 312) 
-o 9.4 Chromosomal Foundation of Inheritance (page 321) 
-o 9.5 Diverse Patterns of Inheritance (page 327) 
-Unit 3: Molecules in Biology and Biotech Applications 
-Chapter 10: DNA Synthesis and Protein Construction (pages 335-376) 
-o 10.1 Understanding DNA Structure (page 336) 
-o 10.2 DNA Duplication Processes (page 342) 
-o 10.3 Transcription Mechanisms (page 354) 
-o 10.4 Translation Operations (page 363) 
-o 10.5 Governing Genes - Regulatory Mechanisms (pages 371) 
-Unit 4: Evolutionary Concepts and Biotech Introduction 
-Chapter 11: Unveiling Evolutionary Processes (pages 379-405) 
-o 11.1 Investigating Population Transformations (page 379) 
-o 11.2 Mechanisms Steering Evolution (page 387) 
-o 11.3 Unearthing Proof of Evolution (page 395) 
-o 11.4 Dispelling Common Myths about Evolution (pages 401) 
-
-Glossary (pages I-XXI) 
-OER Attribution Table (pages XXIII-XXXVI)""",
-    """Access for free at https://openstax.org/ 
-v 
-Unit 2: Cellular Growth and Genetic Insights 
-Chapter 8: Unraveling Cellular Reproduction (pages 247-293) 
-o 8.1 Decoding the Genetic Blueprint (page 250) 
-o 8.2 Navigating the Cellular Life Cycle and Mitotic Phases (page 254) 
-o 8.3 Insights into Prokaryotic Cell Division (page 267) 
-o 8.4 Insights into Reproduction Mechanisms (page 266) 
-o 8.5 Meiotic Perspectives on Cellular Division (page 270) 
-o 8.6 Anomalies in Meiotic Processes (page 285) 
-Chapter 9: Exploring Patterns in Genetic Traits (pages 295-333) 
-o 9.1 Genetic Crosses Explored with Gregor Mendel (page 297) 
-o 9.2 Governing Laws of Inheritance (page 303) 
-o 9.3 Expanding Principles of Inheritance (page 315) 
-o 9.4 Chromosomal Basis of Inheritance (page 322) 
-o 9.5 Diverse Patterns of Inheritance (page 328) 
-Unit 3: Biomolecules and Biotech Applications 
-Chapter 10: DNA Synthesis and Protein Assembly (pages 335-376) 
-o 10.1 The Blueprint of DNA Structure (page 337) 
-o 10.2 Unraveling DNA Replication Processes (page 345) 
-o 10.3 Transcription Insights (page 357) 
-o 10.4 Translation Mechanisms (page 366) 
-o 10.5 Regulating Genes - Mechanisms Explored (pages 374) 
-Unit 4: Evolutionary Insights and Biotech Introduction 
-Chapter 11: Unveiling Evolutionary Pathways (pages 379-405) 
-o 11.1 Examining Population Dynamics (page 380) 
-o 11.2 Mechanisms Steering Evolutionary Changes (page 385) 
-o 11.3 Evidence Supporting Evolution (page 393) 
-o 11.4 Debunking Common Misconceptions about Evolution (pages 400) 
-
-Glossary (pages I-XXI) 
-OER Attribution Table (pages XXIII-XXXVI)"""
-
+    """iv\nReturn to Table of Contents\nChapter 8: Cellular Structures and the Dynamics of Energy (pages 155-201)\no 8.1 The Cellular Components (page 155)\no 8.2 Facilitated Transport (page 162)\no 8.3 Dynamic Cellular Processes (page 171)\no 8.4 Energy Dynamics and Cellular Activity (page 177)\no 8.5 Fundamental Principles of Thermodynamics (page 183)\no 8.6 Varieties of Energy Forms (page 189)\no 8.7 Catalysts in Cellular Processes (page 198)\nChapter 9: Unveiling Cellular Respiration (pages 210-241)\no 9.1 Energy Flow in Living Organisms (page 210)\no 9.2 Cellular Glucose Breakdown (page 219)\no 9.3 The Citrus Acid Circulation (page 224)\no 9.4 Cellular Energy Production (page 230)\no 9.5 Anaerobic Metabolism (page 236)\no 9.6 Interconnections with Other Metabolic Routes (page 239)\nChapter 10: Initiation to Photosynthesis (pages 246-267)\no 10.1: In-Depth Exploration of Photosynthetic Processes (page 246)\no 10.2: Illuminated Phases in Photosynthesis (page 256)\no 10.3: The Calvin Sequence (page 263)""",
+    'iv\nBack to Table of Contents\nChapter 6: Cellular Membrane Structure and Functions with an Overview of Energy Dynamics (pages 167-213)\no 6.1 Understanding the Membrane Structure (page 167)\no 6.2 Passive Movement Mechanisms (page 174)\no 6.3 Active Transfer Processes (page 183)\no 6.4 Energy Relations and Metabolic Pathways (page 189)\no 6.5 Laws Governing Thermodynamics (page 195)\no 6.6 Varieties in Energy Forms (page 201)\no 6.7 Exploring Enzymatic Functions (page 210)\nChapter 11: Preamble to Cellular Breathing (pages 224-255)\no 11.1 Energy Transactions within Living Organisms (page 224)\no 11.2 Glycolysis Deconstructed (page 232)\no 11.3 The Citric Acid Rotation (page 238)\no 11.4 Oxidative Phosphorylation Unveiled (page 243)\no 11.5 Fermentative Processes (page 249)\no 11.6 Interlinks with Diverse Metabolic Pathways (page 253)\nChapter 12: Genesis of Photosynthesis (pages 260-281)\no 12.1: A Detailed Survey of Photosynthetic Operations (page 260)\no 12.2: Unraveling Light-Dependent Steps in Photosynthesis (page 269)\no 12.3: Understanding the Calvin Cycle (page 278)',
+    'Access for free at https://openstax.org/ \nv \nUnit 2: Cellular Division and Genetic Concepts \nChapter 8: Overview of Cellular Reproduction (pages 247-293) \no 8.1 Genetic Material Exploration (page 248) \no 8.2 The Cellular Life Cycle and Mitotic Processes (page 251) \no 8.3 Prokaryotic Cellular Division Insights (page 264) \no 8.4 Reproduction Mechanisms (page 268) \no 8.5 Cellular Division - Meiotic Perspective (page 271) \no 8.6 Anomalies in Meiotic Processes (page 286) \nChapter 9: Understanding Patterns in Genetic Inheritance (pages 295-333) \no 9.1 Investigating Genetic Crosses with Gregor Mendel (page 296) \no 9.2 Principles Governing Inheritance (page 300) \no 9.3 Expansions of Inheritance Principles (page 312) \no 9.4 Chromosomal Foundation of Inheritance (page 321) \no 9.5 Diverse Patterns of Inheritance (page 327) \nUnit 3: Molecules in Biology and Biotech Applications \nChapter 10: DNA Synthesis and Protein Construction (pages 335-376) \no 10.1 Understanding DNA Structure (page 336) \no 10.2 DNA Duplication Processes (page 342) \no 10.3 Transcription Mechanisms (page 354) \no 10.4 Translation Operations (page 363) \no 10.5 Governing Genes - Regulatory Mechanisms (pages 371) \nUnit 4: Evolutionary Concepts and Biotech Introduction \nChapter 11: Unveiling Evolutionary Processes (pages 379-405) \no 11.1 Investigating Population Transformations (page 379) \no 11.2 Mechanisms Steering Evolution (page 387) \no 11.3 Unearthing Proof of Evolution (page 395) \no 11.4 Dispelling Common Myths about Evolution (pages 401) \n\nGlossary (pages I-XXI) \nOER Attribution Table (pages XXIII-XXXVI)',
+    'Access for free at https://openstax.org/ \nv \nUnit 2: Cellular Growth and Genetic Insights \nChapter 8: Unraveling Cellular Reproduction (pages 247-293) \no 8.1 Decoding the Genetic Blueprint (page 250) \no 8.2 Navigating the Cellular Life Cycle and Mitotic Phases (page 254) \no 8.3 Insights into Prokaryotic Cell Division (page 267) \no 8.4 Insights into Reproduction Mechanisms (page 266) \no 8.5 Meiotic Perspectives on Cellular Division (page 270) \no 8.6 Anomalies in Meiotic Processes (page 285) \nChapter 9: Exploring Patterns in Genetic Traits (pages 295-333) \no 9.1 Genetic Crosses Explored with Gregor Mendel (page 297) \no 9.2 Governing Laws of Inheritance (page 303) \no 9.3 Expanding Principles of Inheritance (page 315) \no 9.4 Chromosomal Basis of Inheritance (page 322) \no 9.5 Diverse Patterns of Inheritance (page 328) \nUnit 3: Biomolecules and Biotech Applications \nChapter 10: DNA Synthesis and Protein Assembly (pages 335-376) \no 10.1 The Blueprint of DNA Structure (page 337) \no 10.2 Unraveling DNA Replication Processes (page 345) \no 10.3 Transcription Insights (page 357) \no 10.4 Translation Mechanisms (page 366) \no 10.5 Regulating Genes - Mechanisms Explored (pages 374) \nUnit 4: Evolutionary Insights and Biotech Introduction \nChapter 11: Unveiling Evolutionary Pathways (pages 379-405) \no 11.1 Examining Population Dynamics (page 380) \no 11.2 Mechanisms Steering Evolutionary Changes (page 385) \no 11.3 Evidence Supporting Evolution (page 393) \no 11.4 Debunking Common Misconceptions about Evolution (pages 400) \n\nGlossary (pages I-XXI) \nOER Attribution Table (pages XXIII-XXXVI)',
     ]
+
+extraction = [
+    'Chapter 1: Introduction to Biology and the Process of Science --- 1\n1.1 Themes and Concepts of Biology --- 1\n1.2 The Process of Science --- 14\nChapter 2: Introduction to the Chemistry of Life --- 25\n2.1 The Building Blocks of Molecules --- 25\n2.2 Chemical Bonds --- 38\n2.3 Water --- 48\n2.4 pH and Buffers --- 56\nChapter 3 Biologically Important Molecules --- 63\n3.1 Carbon --- 64\n3.2 Synthesis and Breakdown of Macromolecules --- 68\n3.3 Biological Molecules – Carbohydrates --- 72\n3.4 Biological Molecules – Lipids --- 79\n3.5 Biological Molecules – Proteins --- 87\n3.6 Biological Molecules - Nucleic Acids --- 97\nChapter 4: Introduction to Cell Structure and Function --- 103\n4.1 How Microorganisms Are Studied --- 104\n4.2 Comparing Prokaryotic and Eukaryotic Cells --- 108\n4.3 Eukaryotic Cell Components --- 113\n4.4 Eukaryotic Cell Organelles --- 120\n4.5 Diversity of cell organelles within the eukaryotes --- 133'
+    'Chapter 5: Structure and Function of the Cell Membrane and an Introduction to Energy --- 145\n5.1 The Cell Membrane --- 145\n5.2 Passive Transport --- 152\n5.3 Active Transport --- 161\n5.4 Energy and Metabolism --- 166\n5.5 Law of Thermodynamics --- 171\n5.6 Types of Energy --- 175\n5.7 Enzymes --- 184\nChapter 6: Introduction to Cellular Respiration --- 193\n6.1 Energy in Living Systems --- 193\n6.2 Glycolysis --- 201\n6.3 Citric Acid Cycle --- 206\n6.4 Oxidative phosphorylation --- 210\n6.5 Fermentation --- 216\n6.6 Connections to Other Metabolic Pathways --- 220\nChapter 7: Introduction to Photosynthesis --- 223\n7.1 Overview of Photosynthesis --- 223\n7.2 The Light-Dependent Reactions of Photosynthesis --- 232\n7.3 The Calvin Cycle --- 240',
+    'Chapter 8: Introduction to Reproduction at the Cellular Level --- 247\n8.1 The Genome --- 248\n8.2 The Cell Cycle and Mitosis --- 252\n8.3 Prokaryotic Cell Division --- 265\n8.4 Sexual Reproduction --- 269\n8.5 Meiosis --- 272\n8.6 Errors in Meiosis --- 287\nChapter 9: Introduction to Patterns of Inheritance --- 295\n9.1 Gregor Mendel and Genetic Crosses --- 295\n9.2 Laws of Inheritance --- 301\n9.3 Extensions of the Laws of Inheritance --- 313\n9.4 Chromosomal Basis of Inheritance --- 320\n9.5 Patterns of Inheritance --- 326\nChapter 10: DNA Replication and Protein Synthesis --- 335\n10.1 The Structure of DNA --- 335\n10.2 DNA Replication --- 343\n10.3 Transcription --- 355\n10.4 Translation --- 364\n10.5 How Genes Are Regulated --- 372\nChapter 11: Introduction Evolution --- 379\n11.1 Discovering How Populations Change --- 378\n11.2 Mechanisms of Evolution --- 388\n11.3 Evidence of Evolution --- 396\n11.4 Common Misconceptions about Evolution --- 402',
+    'Chapter 1: Overview of Biology and the Scientific Method --- 1\n1.1 Core Ideas and Principles of Biology --- 1\n1.2 The Scientific Approach --- 14\nChapter 2: Basics of Biochemistry --- 25\n2.1 Molecules: The Foundation of Life --- 25\n2.2 Chemical Linkages --- 38\n2.3 H2O Essentials --- 48\n2.4 Acidity and Buffering Agents --- 56\nChapter 3 Essential Biomolecules --- 63\n3.1 Organic Chemistry --- 64\n3.2 Synthesis and Decomposition of Macromolecules --- 68\n3.3 Vital Molecules – Sugars and Starches --- 72\n3.4 Vital Molecules – Fats and Oils --- 79\n3.5 Vital Molecules – Proteins --- 87\n3.6 Vital Molecules - Nucleic Acid Insights --- 97\nChapter 4: Dive into Cell Structure and Operations --- 103\n4.1 Unraveling Microscopic Life --- 104\n4.2 Contrasting Prokaryotes and Eukaryotes --- 108\n4.3 Components of Eukaryotic Cells --- 113\n4.4 Cellular Organelles in Focus --- 120\n4.5 Range of organelles in eukaryotic cells --- 133\n',
+    'Chapter 1: Embark on Biology and the Method of Inquiry --- 1\n1.1 Central Concepts and Principles of Biology --- 1\n1.2 The Approach of Scientific Investigation --- 14\nChapter 2: Fundamentals of Biochemical Science --- 25\n2.1 The Foundation of Life – Molecules --- 25\n2.2 Molecular Bonds --- 38\n2.3 Aquatic Essentials --- 48\n2.4 Alkalinity and Buffer Systems --- 56\nChapter 3 Crucial Biomolecular Entities --- 63\n3.1 Carbon Chemistry --- 64\n3.2 Synthesis and Breakdown of Giant Molecules --- 68\n3.3 Biological Essentials – Carbs --- 72\n3.4 Biological Essentials – Lipids --- 79\n3.5 Biological Essentials – Proteins --- 87\n3.6 Biological Essentials - Nucleic Acid Constructs --- 97\nChapter 4: Insight into Cellular Framework and Operations --- 103\n4.1 Probing Microscopic Entities --- 104\n4.2 Distinctions between Prokaryotic and Eukaryotic Cells --- 108\n4.3 Constituents of Eukaryotic Cells --- 113\n4.4 Intricacies of Cellular Organelles --- 120\n4.5 Spectrum of organelles within eukaryotic cells --- 133',
+    'Chapter 8: Cellular Structures and the Dynamics of Energy --- 155\n8.1 The Cellular Components --- 155\n8.2 Facilitated Transport --- 162\n8.3 Dynamic Cellular Processes --- 171\n8.4 Energy Dynamics and Cellular Activity --- 177\n8.5 Fundamental Principles of Thermodynamics --- 183\n8.6 Varieties of Energy Forms --- 189\n8.7 Catalysts in Cellular Processes --- 198\nChapter 9: Unveiling Cellular Respiration --- 210\n9.1 Energy Flow in Living Organisms --- 210\n9.2 Cellular Glucose Breakdown --- 219\n9.3 The Citrus Acid Circulation --- 224\n9.4 Cellular Energy Production --- 230\n9.5 Anaerobic Metabolism --- 236\n9.6 Interconnections with Other Metabolic Routes --- 239\nChapter 10: Initiation to Photosynthesis --- 246\n10.1 In-Depth Exploration of Photosynthetic Processes --- 246\n10.2 Illuminated Phases in Photosynthesis --- 256\n10.3 The Calvin Sequence --- 263',
+    'Chapter 6: Cellular Membrane Structure and Functions with an Overview of Energy Dynamics --- 167\n6.1 Understanding the Membrane Structure --- 167\n6.2 Passive Movement Mechanisms --- 174\n6.3 Active Transfer Processes --- 183\n6.4 Energy Relations and Metabolic Pathways --- 189\n6.5 Laws Governing Thermodynamics --- 195\n6.6 Varieties in Energy Forms --- 201\n6.7 Exploring Enzymatic Functions --- 210\nChapter 11: Preamble to Cellular Breathing --- 224\n11.1 Energy Transactions within Living Organisms --- 224\n11.2 Glycolysis Deconstructed --- 232\n11.3 The Citric Acid Rotation --- 238\n11.4 Oxidative Phosphorylation Unveiled --- 243\n11.5 Fermentative Processes --- 249\n11.6 Interlinks with Diverse Metabolic Pathways --- 253\nChapter 12: Genesis of Photosynthesis --- 260\n12.1 A Detailed Survey of Photosynthetic Operations --- 260\n12.2 Unraveling Light-Dependent Steps in Photosynthesis --- 269\n12.3 Understanding the Calvin Cycle --- 278',
+    'Chapter 8: Overview of Cellular Reproduction --- 247\n8.1 Genetic Material Exploration --- 248\n8.2 The Cellular Life Cycle and Mitotic Processes --- 251\n8.3 Prokaryotic Cellular Division Insights --- 264\n8.4 Reproduction Mechanisms --- 268\n8.5 Cellular Division - Meiotic Perspective --- 271\n8.6 Anomalies in Meiotic Processes --- 286\nChapter 9: Understanding Patterns in Genetic Inheritance --- 295\n9.1 Investigating Genetic Crosses with Gregor Mendel --- 296\n9.2 Principles Governing Inheritance --- 300\n9.3 Expansions of Inheritance Principles --- 312\n9.4 Chromosomal Foundation of Inheritance --- 321\n9.5 Diverse Patterns of Inheritance --- 327\nChapter 10: DNA Synthesis and Protein Construction --- 335\n10.1 Understanding DNA Structure --- 336\n10.2 DNA Duplication Processes --- 342\n10.3 Transcription Mechanisms --- 354\n10.4 Translation Operations --- 363\n10.5 Governing Genes - Regulatory Mechanisms --- 371\nChapter 11: Unveiling Evolutionary Processes --- 379\n11.1 Investigating Population Transformations --- 379\n11.2 Mechanisms Steering Evolution --- 387\n11.3 Unearthing Proof of Evolution --- 395\n11.4 Dispelling Common Myths about Evolution --- 401',
+    'Chapter 8: Unraveling Cellular Reproduction --- 247\n8.1 Decoding the Genetic Blueprint --- 250\n8.2 Navigating the Cellular Life Cycle and Mitotic Phases --- 254\n8.3 Insights into Prokaryotic Cell Division --- 267\n8.4 Insights into Reproduction Mechanisms --- 266\n8.5 Meiotic Perspectives on Cellular Division --- 270\n8.6 Anomalies in Meiotic Processes --- 285\nChapter 9: Exploring Patterns in Genetic Traits --- 295\n9.1 Genetic Crosses Explored with Gregor Mendel --- 297\n9.2 Governing Laws of Inheritance --- 303\n9.3 Expanding Principles of Inheritance --- 315\n9.4 Chromosomal Basis of Inheritance --- 322\n9.5 Diverse Patterns of Inheritance --- 328\nChapter 10: DNA Synthesis and Protein Assembly --- 335\n10.1 The Blueprint of DNA Structure --- 337\n10.2 Unraveling DNA Replication Processes --- 345\n10.3 Transcription Insights --- 357\n10.4 Translation Mechanisms --- 366\n10.5 Regulating Genes - Mechanisms Explored --- 374\nChapter 11: Unveiling Evolutionary Pathways --- 379\n11.1 Examining Population Dynamics --- 380\n11.2 Mechanisms Steering Evolutionary Changes --- 385\n11.3 Evidence Supporting Evolution --- 393\n11.4 Debunking Common Misconceptions about Evolution --- 400',
+]
 
 file = 'PrinciplesOfBiology.pdf'
 pdf_path = rf'../../../../new books/{file}'
@@ -652,4 +574,5 @@ page = 4
 hi = read_pdf(pdf_path,page)
 prompt = """You must create 2 synthetic strings based on a string that I will give you. The string is from a contents page of a pdf book. You should keep the format of the strings very similar, but change the chapter titles, page numbers and any numbers . You will be penalized for including the same numbers on  either of the strings. Change all numbers. This is the string:""" + hi 
 prompt
+hi
 # -----------------------------------------------------------------------------
