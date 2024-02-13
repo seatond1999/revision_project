@@ -15,6 +15,10 @@ def read_pdf(file_path,page_number):
 
 # Replace 'your_pdf_file.pdf' with the path to your PDF file
 
+
+# %% --------------------------------------------------------------------------
+df_yes = pd.DataFrame({'contents_page':[],'label':[],'extraction':[]})
+df_no = pd.DataFrame({'contents_page':[],'label':[],'extraction':[]})
 # -----------------------------------------------------------------------------
 
 # %%
@@ -33,47 +37,22 @@ synthetic = [
 ]
 
 extraction = [
-    """Chapter 3 Globalisation --- Page 5 
-Exam-style questions --- Page 17 
-Chapter 4A Regenerating places --- Page 19 
-Exam-style questions --- Page 36 
-Chapter 4B Diverse places --- Page 40 
-Exam-style questions --- Page 56 
-Chapter 7 Superpowers --- Page 60 
-Exam-style questions --- Page 70 
-Chapter 8A Health, human rights and intervention --- Page 72 
-Exam-style questions --- Page 84 
-Chapter 8B Migration, identity and sovereignty --- Page 87 
-Exam-style questions --- Page 100""",
-    """Chapter 3 Internationalization --- Page 6 
-Exam-style questions --- Page 18 
-Chapter 4A Renewing localities --- Page 20 
-Exam-style questions --- Page 37 
-Chapter 4B Varied localities --- Page 41 
-Exam-style questions --- Page 57 
-Chapter 7 Dominant Powers --- Page 61 
-Exam-style questions --- Page 71 
-Chapter 8A Well-being, human rights and interference --- Page 73 
-Exam-style questions --- Page 85 
-Chapter 8B Movement, identity and autonomy --- Page 88 
-Exam-style questions --- Page 101 """,
-    """Chapter 3 Global Integration --- Page 8
-Exam-style questions --- Page 17 
-Chapter 4A Revitalizing localities --- Page 19 
-Exam-style questions --- Page 36 
-Chapter 4B Assorted localities --- Page 40 
-Exam-style questions --- Page 56 
-Chapter 7 Global Powers --- Page 60 
-Exam-style questions --- Page 70 
-Chapter 8A Health, human rights and intervention --- Page 72 
-Exam-style questions --- Page 84 
-Chapter 8B Migration, identity and sovereignty --- Page 87 
-Exam-style questions --- Page 100 """
+    'Chapter 3 Globalisation --- Page 5 \nExam-style questions --- Page 17 \nChapter 4A Regenerating places --- Page 19 \nExam-style questions --- Page 36 \nChapter 4B Diverse places --- Page 40 \nExam-style questions --- Page 56 \nChapter 7 Superpowers --- Page 60 \nExam-style questions --- Page 70 \nChapter 8A Health, human rights and intervention --- Page 72 \nExam-style questions --- Page 84 \nChapter 8B Migration, identity and sovereignty --- Page 87 \nExam-style questions --- Page 100',
+    'Chapter 3 Internationalization --- Page 6 \nExam-style questions --- Page 18 \nChapter 4A Renewing localities --- Page 20 \nExam-style questions --- Page 37 \nChapter 4B Varied localities --- Page 41 \nExam-style questions --- Page 57 \nChapter 7 Dominant Powers --- Page 61 \nExam-style questions --- Page 71 \nChapter 8A Well-being, human rights and interference --- Page 73 \nExam-style questions --- Page 85 \nChapter 8B Movement, identity and autonomy --- Page 88 \nExam-style questions --- Page 101',
+    'Chapter 3 Global Integration --- Page 8\nExam-style questions --- Page 17 \nChapter 4A Revitalizing localities --- Page 19 \nExam-style questions --- Page 36 \nChapter 4B Assorted localities --- Page 40 \nExam-style questions --- Page 56 \nChapter 7 Global Powers --- Page 60 \nExam-style questions --- Page 70 \nChapter 8A Health, human rights and intervention --- Page 72 \nExam-style questions --- Page 84 \nChapter 8B Migration, identity and sovereignty --- Page 87 \nExam-style questions --- Page 100',
 ]
 
 pdf_path = r'../../../../new books/9781398332447-Pearson-Edexcel-A-Level-Geography-2-Human-Geography-Workbook.pdf'
 page = 1
 read_pdf(pdf_path,page)
+
+yes_df = [read_pdf(pdf_path,i) for i in yes] + synthetic
+no_df = [read_pdf(pdf_path,i) for i in no]
+
+df_yes_temp = pd.DataFrame({'contents_page':yes_df,'label':'yes','extraction':extraction})
+df_no_temp = pd.DataFrame({'contents_page':no_df,'label':'no','extraction':'IGNORE'})
+df_yes = pd.concat([df_yes,df_yes_temp],axis=0)
+df_no = pd.concat([df_no,df_no_temp])
 
 # %% --------------------------------------------------------------------------
 #9781446930885-gce2015-a-bioa-spec 
@@ -106,6 +85,13 @@ pdf_path = rf'../../../../new books/{file}'
 page = 11
 read_pdf(pdf_path,page)
 
+
+yes_df = [read_pdf(pdf_path,i) for i in yes] + synthetic
+no_df = [read_pdf(pdf_path,i) for i in no]
+df_yes_temp = pd.DataFrame({'contents_page':yes_df,'label':'yes','extraction':extraction})
+df_no_temp = pd.DataFrame({'contents_page':no_df,'label':'no','extraction':'IGNORE'})
+df_yes = pd.concat([df_yes,df_yes_temp],axis=0)
+df_no = pd.concat([df_no,df_no_temp])
 # -----------------------------------------------------------------------------
 
 # %%
@@ -133,6 +119,13 @@ file = 'A_level_History_interpretations_guidance_abridged.pdf'
 pdf_path = rf'../../../../new books/{file}'
 page = 1
 read_pdf(pdf_path,page)
+
+yes_df = [read_pdf(pdf_path,i) for i in yes] + synthetic
+no_df = [read_pdf(pdf_path,i) for i in no]
+df_yes_temp = pd.DataFrame({'contents_page':yes_df,'label':'yes','extraction':extraction})
+df_no_temp = pd.DataFrame({'contents_page':no_df,'label':'no','extraction':'IGNORE'})
+df_yes = pd.concat([df_yes,df_yes_temp],axis=0)
+df_no = pd.concat([df_no,df_no_temp])
 
 # %% --------------------------------------------------------------------------
 #AQA GCSE textbook
@@ -164,6 +157,13 @@ file = 'AQA GCSE textbook.pdf'
 pdf_path = rf'../../../../new books/{file}'
 page = 4
 read_pdf(pdf_path,page) 
+
+yes_df = [read_pdf(pdf_path,i) for i in yes] + synthetic
+no_df = [read_pdf(pdf_path,i) for i in no]
+df_yes_temp = pd.DataFrame({'contents_page':yes_df,'label':'yes','extraction':extraction})
+df_no_temp = pd.DataFrame({'contents_page':no_df,'label':'no','extraction':'IGNORE'})
+df_yes = pd.concat([df_yes,df_yes_temp],axis=0)
+df_no = pd.concat([df_no,df_no_temp])
 # -----------------------------------------------------------------------------
 
 # %% --------------------------------------------------------------------------
@@ -199,6 +199,12 @@ hi = read_pdf(pdf_path,page)
 prompt = """You must create 2 synthetic strings based on a string that I will give you. The string is from a contents page of a pdf book. You should keep the format of the strings very similar, but change 
 the chapter titles and page numbers. . You will be penalized for including the same page numbers on either of the strings. The page numbers on the second string MUST be different from the first string and the original string. This is the string: ###""" + hi + '###' 
 hi
+yes_df = [read_pdf(pdf_path,i) for i in yes] + synthetic
+no_df = [read_pdf(pdf_path,i) for i in no]
+df_yes_temp = pd.DataFrame({'contents_page':yes_df,'label':'yes','extraction':extraction})
+df_no_temp = pd.DataFrame({'contents_page':no_df,'label':'no','extraction':'IGNORE'})
+df_yes = pd.concat([df_yes,df_yes_temp],axis=0)
+df_no = pd.concat([df_no,df_no_temp])
 # -----------------------------------------------------------------------------
 
 # %% --------------------------------------------------------------------------
@@ -236,6 +242,12 @@ hi = hi.replace('     ','')
 prompt = """You must create 2 synthetic strings based on a string that I will give you. The string is from a contents page of a pdf book. You should keep the format of the strings very similar, but change the chapter titles, page numbers and any numbers . You will be penalized for including the same numbers on  either of the strings. Change all numbers. This is the string:""" + hi 
 prompt
 hi
+yes_df = [read_pdf(pdf_path,i) for i in yes] + synthetic
+no_df = [read_pdf(pdf_path,i) for i in no]
+df_yes_temp = pd.DataFrame({'contents_page':yes_df,'label':'yes','extraction':extraction})
+df_no_temp = pd.DataFrame({'contents_page':no_df,'label':'no','extraction':'IGNORE'})
+df_yes = pd.concat([df_yes,df_yes_temp],axis=0)
+df_no = pd.concat([df_no,df_no_temp])
 #remove the dots so GPT can work. Keep original though
 # %%
 #CGP-AQA-Biology-A-Level-ariadanesh.com_
@@ -250,10 +262,10 @@ no = [
 synthetic = [
     "Contents\nIf you're preparing for the AS exams, you'll require Sections 5-8, and the Practical Techniques segment at the end. \nIf you're preparing for the A-level exams, you'll require the entire compendium.\nChapter 1A —\n Organic Compounds\nChapter 2B  —\n Cellular Barriers\nNucleic Acids....................................................................................4\nLipids......................................................................................................9\nPolypeptides....................................................................................11\nEnzyme Function........................................................................... 13\nVariables Influencing Enzyme Function................................15\nRegulation of Enzymatic Reactions...................................... 17\nCell Boundary Configuration.................................................. 40\nTransfer Through Cell Boundaries — Dispersion......... 42\nTransfer Through Cell Boundaries — Osmosis...........44\nTransfer Through Cell Boundaries\n—  Energetic Movement.............................................................. 46\nChapter 1B —\n Various Organic \nCompounds\nGenetic Material..............................................................................18\nGenetic Material Duplication.................................................20\nH2O......................................................................................................... 22\nEnergy Carrier.................................................................................24\nInorganic Elements....................................................................... 25\nChapter 2C  —\n Cellular Elements \nand the Defense System\nThe Defense Mechanism....................................................................48\nProtection and Vaccination.................................................... 50\nAntibodies in Medical Practice.................................................. 52\nAnalyzing Vaccine and Antibody Information................... 54\nHIV and Pathogens..........................................................................56\nChapter 2A —\n Cellular Arrangement \nand Multiplication\nEukaryotic Cells and Cellular Organelles............................ 26\nProkaryotic Cells and Microbes...............................................30\nStudy of Cellular Constituents...................................................32\nCell Duplication —  Mitosis.......................................................... 34\nCell Duplication — Investigating Mitosis................................ 36\nChapter 3A —\n Interaction and \nTransmission Systems\nMagnitude and Exterior Area................................................... 58\nAir Exchange.....................................................................................60\nRespiratory Gas Exchange in Humans................................. 62\nImpacts of Respiratory Ailments............................................ 64\nAnalyzing Respiratory Illness Information..........................66\nExploring Respiratory Gas Exchange Systems........................68\n",
     "Contents\nIf you're gearing up for the AS examinations, you'll need Segments 9-12, and the Hands-On Techniques portion at the end. \nIf you're gearing up for the A-level examinations, you'll need the complete manual.\nChapter 1A —\n Organic Substances\nChapter 2B —\n Cellular Boundaries\nNucleotide Chains............................................................................6\nFats........................................................................................................12\nAmino Acid Chains........................................................................14\nEnzymatic Processes...................................................................... 16\nFactors Influencing Enzymatic Processes.............................18\nControl of Enzymatic Transformations................................... 20\nCell Wall Configuration............................................................. 44\nTransfer Across Cellular Boundaries — Scattering......... 46\nTransfer Across Cellular Boundaries — Diffusion.........48\nTransfer Across Cellular Boundaries\n— Dynamic Transport............................................................... 50\nChapter 1B —\n Various Organic \nSubstances\nGenetic Code......................................................................................22\nGenetic Code Duplication.......................................................24\nH2O......................................................................................................... 26\nEnergy Carrier.................................................................................28\nNon-Organic Elements..................................................................29\nChapter 2C —\n Cellular Structures \nand the Protection Mechanism\nThe Defense System..........................................................................52\nImmunity and Inoculations..................................................... 54\nAntibodies in Medical Treatment............................................ 56\nEvaluation of Vaccine and Antibody Records..................... 58\nHIV and Microorganisms................................................................60\nChapter 2A —\n Cellular Structure \nand Duplication\nEukaryotic Cells and Cellular Components..................... 28\nProkaryotic Cells and Microorganisms...................................32\nAnalysis of Cellular Components...........................................34\nCell Replication — Mitosis........................................................... 36\nCell Replication — Investigating Mitosis................................. 38\nChapter 3A —\n Interaction and \nTransfer Systems\nDimensions and Surface Area................................................. 62\nGaseous Interchange...................................................................64\nRespiratory Gas Exchange in Humans................................. 66\nConsequences of Respiratory Disorders.............................. 68\nEvaluation of Respiratory Disorder Data............................70\nExamination of Respiratory Gas Exchange Systems................72\n",
-    "Chapter 7C  —\n Enhanced Interaction \nand Conveyance Mechanisms\nBreakdown and Uptake..........................................................77\nBlood Pigment.................................................................................79\nThe Vascular System...................................................................81\nThe Core.............................................................................................83\nCardiovascular Conditions......................................................86\nTransfer in Vegetation —  Xyle m ............................................89\nTransfer in Vegetation —  Phloem..........................................91\nChapter 9A —\n Light-Driven Processes \nand Breathing\nIllumination-Driven Processes, Breathing and Energy......116\nIllumination-Driven Processes...............................................118\nDetermining Elements in Illumination-Driven Processes.......122\nIllumination-Driven Experiments..........................................124\nBreathing........................................................................................... 126\nOxygen-Based Breathing.......................................................127\nBreathing Experiments..............................................................130\nChapter 8A  —\n Genetic Material, RNA, and \nSynthesizing Proteins\nD N A, Hereditary Traits, and Chromosomal Structures..........93\nRNA and Protein Synthesis.....................................................95\nThe Hereditary Code and Nucleic Acids................................97\nChapter 9B —\n Power Transmission \nand Elemental Cycles\nPower Transmission in Ecological Systems...........................132\nCultivation Approaches and Yield.........................................134\nElemental Cycles........................................................................136\nFertilizers and Elevated Nutrient Levels.............................. 138\nChapter 8B  —\n Assortment, \nArrangement, and Diversity\nM eiosis and Hereditary Modification........................................100\nGenetic Changes...........................................................................103\nHereditary Diversity and Natural Choice........................... 104\nExploring Choice.............................................................................106\nArrangement of Organisms...................................................... 108\nD N A Technology, Arrangement, and Diversity..............110\nExploring Diversity.....................................................................112\nBiological Diversity...................................................................114\nChapter 10A —\n Sensory Stimuli and \nReactions\nNeural Communication..............................................................140\nResponses in Vegetation and Fauna......................................142\nReceptors........................................................................................144\nRegulation of Pulse Rate.........................................................146\n"
-    "Chapter 7C —\n Advanced Interaction \nand Transportation Systems\nBreakdown and Uptake..........................................................75\nBlood Pigment.................................................................................78\nThe Vascular System...................................................................80\nThe Core.............................................................................................82\nCardiovascular Conditions......................................................85\nTransportation in Plants — Xylem ..........................................87\nTransportation in Plants — Phloem..........................................90\nChapter 9A —\n Light-Powered Processes \nand Breathing\nLight-Powered Processes, Breathing and Energy............120\nLight-Powered Processes.........................................................123\nFactors Impacting Light-Powered Processes.........................127\nLight-Powered Experiments....................................................129\nBreathing........................................................................................... 132\nOxygen-Driven Breathing........................................................133\nBreathing Experiments..............................................................136\nChapter 8A —\n Genetic Material, RNA, and \nProtein Synthesis\nDNA, Genetic Information, and Chromosomal Structures..........94\nRNA and Protein Synthesis.....................................................96\nThe Genetic Code and Nucleic Acids......................................98\nChapter 9B —\n Energy Transfer \nand Elemental Cycles\nEnergy Transfer in Ecosystems............................................134\nAgricultural Techniques and Yield..........................................136\nElemental Cycles........................................................................138\nFertilizers and Nutrient Overflow.......................................... 140\nChapter 8B —\n Diversity, \nClassification, and Variation\nMeiosis and Genetic Alteration..................................................102\nGenetic Modifications..................................................................105\nGenetic Diversity and Natural Selection............................. 106\nInvestigating Selection...............................................................108\nClassification of Organisms...................................................... 110\nDNA Technology, Classification, and Diversity...............112\nExploring Variation................................................................. 114\nBiological Variation..................................................................116\nChapter 10A —\n Sensory Stimuli and \nReactions\nNeuronal Communication.......................................................138\nResponses in Vegetation and Fauna......................................140\nReceptors........................................................................................142\nHeart Rate Control..................................................................144\n"
-    "Chapter 11D  —\n Equilibrium at H om e\nSteadiness Fundamentals............................................................150\nManagement of Blood Sugar Levels..............................152\nThe Renal System.........................................................................156\nRegulating Blood Water Potential....................................158\nChapter 12A  —\n Hereditary Traits\nHeritage..............................................................................................160\nAssociations and Interaction....................................................163\nThe Statistical Test of Chi-Square....................................... 166\nChapter 12B —\n Populace and Evolutionary Changes\nThe Hardy-Weinberg Law.....................................................168\nVariability and Choice............................................................. 170\nFormation of Species and Genetic Alteration................. 172\nChapter 13A —\n Changes in Genes \nand Genetic Information\nGenetic Changes.........................................................................184\nMalignancy........................................................................................ 186\nAnalysis of Cancer Data......................................................... 188\nCellular Structures........................................................................190\nControl of Genetic Code Reading and Interpretation........194\nEpigenetic Oversight of Genetic Interpretation................197\nAssessing Data on Traits...........................................................199\nChapter 13B —\n Genetic Mapping \nand Genetic Engineering\nGenetic Mapping and Constructing DNA Fragments......200\nIncreasing DNA Fragments...................................................203\nUtilizing Modified DNA Techniques................................205\nGene Markers and Medical Diagnosis............................. 208\nGenetic Identification............................................................... 210\nChapter 13C  —\n Ecosystem Populations\nBiomes.............................................................................................174\nDifferences in Community Magnitude.............................. 176\nExploring Communities....................................................... 178\nSequence......................................................................................... 180\nPreservation................................................................................... 182\nPractical Approaches\nStrategizing an Experiment................................................... 212\nProcessing and Exhibiting Information...........................214\nDeriving Conclusions and Assessment..........................217\nAchieving Success in Assessments\nStrategies for Success in Assessments.............................219\nResponses........................\nCredits \nIn d ex..............................\n228\n229\n"
-    "Chapter 11D —\n Balance at H ome\nEquilibrium Basics............................................................148\nControl of Blood Glucose Levels..............................150\nThe Renal System.........................................................................154\nControlling Blood Water Potential....................................156\nChapter 12A —\n Genetic Inheritance\nInheritance........................................................................................158\nConnection and Interplay....................................................... 161\nStatistical Examination of Chi-Square................................ 164\nChapter 12B —\n Populations and Evolutionary Developments\nThe Hardy-Weinberg Principle..............................................166\nVariability and Selection.......................................................... 168\nFormation of Species and Genetic Drift......................... 170\nChapter 13A —\n Transformations in Genes \nand Genetic Data\nGenetic Changes.........................................................................182\nCancer.............................................................................................. 184\nInterpreting Data on Cancer.................................................. 186\nCellular Structures........................................................................188\nControl of Genetic Code Decoding and Interpretation........192\nEpigenetic Management of Genetic Expression................195\nEvaluation of Data on Traits....................................................197\nChapter 13B —\n Genetic Charting \nand Genetic Adjustment\nGenetic Charting and Constructing DNA Segments......198\nAmplifying DNA Segments.....................................................201\nEmploying Recombinant DNA Approaches......................203\nGene Indicators and Medical Diagnosis............................ 206\nGenetic Identification............................................................... 208\nChapter 13C —\n Community Populations\nEcosystems...................................................................................172\nVariations in Community Scale............................................ 174\nExploring Populations............................................................ 176\nSequence......................................................................................... 178\nPreservation................................................................................... 180\nPractical Techniques\nDesigning an Experiment....................................................... 210\nHandling and Exhibiting Data...............................................212\nFormulating Conclusions and Evaluating.........................215\nAchieve Excellence in Examinations\nHow to Excel in Your Exams................................................217\nResponses........................\nCredits \nIn d ex..............................\n226\n227\n"
+    "Chapter 7C  —\n Enhanced Interaction \nand Conveyance Mechanisms\nBreakdown and Uptake..........................................................77\nBlood Pigment.................................................................................79\nThe Vascular System...................................................................81\nThe Core.............................................................................................83\nCardiovascular Conditions......................................................86\nTransfer in Vegetation —  Xyle m ............................................89\nTransfer in Vegetation —  Phloem..........................................91\nChapter 9A —\n Light-Driven Processes \nand Breathing\nIllumination-Driven Processes, Breathing and Energy......116\nIllumination-Driven Processes...............................................118\nDetermining Elements in Illumination-Driven Processes.......122\nIllumination-Driven Experiments..........................................124\nBreathing........................................................................................... 126\nOxygen-Based Breathing.......................................................127\nBreathing Experiments..............................................................130\nChapter 8A  —\n Genetic Material, RNA, and \nSynthesizing Proteins\nD N A, Hereditary Traits, and Chromosomal Structures..........93\nRNA and Protein Synthesis.....................................................95\nThe Hereditary Code and Nucleic Acids................................97\nChapter 9B —\n Power Transmission \nand Elemental Cycles\nPower Transmission in Ecological Systems...........................132\nCultivation Approaches and Yield.........................................134\nElemental Cycles........................................................................136\nFertilizers and Elevated Nutrient Levels.............................. 138\nChapter 8B  —\n Assortment, \nArrangement, and Diversity\nM eiosis and Hereditary Modification........................................100\nGenetic Changes...........................................................................103\nHereditary Diversity and Natural Choice........................... 104\nExploring Choice.............................................................................106\nArrangement of Organisms...................................................... 108\nD N A Technology, Arrangement, and Diversity..............110\nExploring Diversity.....................................................................112\nBiological Diversity...................................................................114\nChapter 10A —\n Sensory Stimuli and \nReactions\nNeural Communication..............................................................140\nResponses in Vegetation and Fauna......................................142\nReceptors........................................................................................144\nRegulation of Pulse Rate.........................................................146\n",
+    "Chapter 7C —\n Advanced Interaction \nand Transportation Systems\nBreakdown and Uptake..........................................................75\nBlood Pigment.................................................................................78\nThe Vascular System...................................................................80\nThe Core.............................................................................................82\nCardiovascular Conditions......................................................85\nTransportation in Plants — Xylem ..........................................87\nTransportation in Plants — Phloem..........................................90\nChapter 9A —\n Light-Powered Processes \nand Breathing\nLight-Powered Processes, Breathing and Energy............120\nLight-Powered Processes.........................................................123\nFactors Impacting Light-Powered Processes.........................127\nLight-Powered Experiments....................................................129\nBreathing........................................................................................... 132\nOxygen-Driven Breathing........................................................133\nBreathing Experiments..............................................................136\nChapter 8A —\n Genetic Material, RNA, and \nProtein Synthesis\nDNA, Genetic Information, and Chromosomal Structures..........94\nRNA and Protein Synthesis.....................................................96\nThe Genetic Code and Nucleic Acids......................................98\nChapter 9B —\n Energy Transfer \nand Elemental Cycles\nEnergy Transfer in Ecosystems............................................134\nAgricultural Techniques and Yield..........................................136\nElemental Cycles........................................................................138\nFertilizers and Nutrient Overflow.......................................... 140\nChapter 8B —\n Diversity, \nClassification, and Variation\nMeiosis and Genetic Alteration..................................................102\nGenetic Modifications..................................................................105\nGenetic Diversity and Natural Selection............................. 106\nInvestigating Selection...............................................................108\nClassification of Organisms...................................................... 110\nDNA Technology, Classification, and Diversity...............112\nExploring Variation................................................................. 114\nBiological Variation..................................................................116\nChapter 10A —\n Sensory Stimuli and \nReactions\nNeuronal Communication.......................................................138\nResponses in Vegetation and Fauna......................................140\nReceptors........................................................................................142\nHeart Rate Control..................................................................144\n",
+    "Chapter 11D  —\n Equilibrium at H om e\nSteadiness Fundamentals............................................................150\nManagement of Blood Sugar Levels..............................152\nThe Renal System.........................................................................156\nRegulating Blood Water Potential....................................158\nChapter 12A  —\n Hereditary Traits\nHeritage..............................................................................................160\nAssociations and Interaction....................................................163\nThe Statistical Test of Chi-Square....................................... 166\nChapter 12B —\n Populace and Evolutionary Changes\nThe Hardy-Weinberg Law.....................................................168\nVariability and Choice............................................................. 170\nFormation of Species and Genetic Alteration................. 172\nChapter 13A —\n Changes in Genes \nand Genetic Information\nGenetic Changes.........................................................................184\nMalignancy........................................................................................ 186\nAnalysis of Cancer Data......................................................... 188\nCellular Structures........................................................................190\nControl of Genetic Code Reading and Interpretation........194\nEpigenetic Oversight of Genetic Interpretation................197\nAssessing Data on Traits...........................................................199\nChapter 13B —\n Genetic Mapping \nand Genetic Engineering\nGenetic Mapping and Constructing DNA Fragments......200\nIncreasing DNA Fragments...................................................203\nUtilizing Modified DNA Techniques................................205\nGene Markers and Medical Diagnosis............................. 208\nGenetic Identification............................................................... 210\nChapter 13C  —\n Ecosystem Populations\nBiomes.............................................................................................174\nDifferences in Community Magnitude.............................. 176\nExploring Communities....................................................... 178\nSequence......................................................................................... 180\nPreservation................................................................................... 182\nPractical Approaches\nStrategizing an Experiment................................................... 212\nProcessing and Exhibiting Information...........................214\nDeriving Conclusions and Assessment..........................217\nAchieving Success in Assessments\nStrategies for Success in Assessments.............................219\nResponses........................\nCredits \nIn d ex..............................\n228\n229\n",
+    "Chapter 11D —\n Balance at H ome\nEquilibrium Basics............................................................148\nControl of Blood Glucose Levels..............................150\nThe Renal System.........................................................................154\nControlling Blood Water Potential....................................156\nChapter 12A —\n Genetic Inheritance\nInheritance........................................................................................158\nConnection and Interplay....................................................... 161\nStatistical Examination of Chi-Square................................ 164\nChapter 12B —\n Populations and Evolutionary Developments\nThe Hardy-Weinberg Principle..............................................166\nVariability and Selection.......................................................... 168\nFormation of Species and Genetic Drift......................... 170\nChapter 13A —\n Transformations in Genes \nand Genetic Data\nGenetic Changes.........................................................................182\nCancer.............................................................................................. 184\nInterpreting Data on Cancer.................................................. 186\nCellular Structures........................................................................188\nControl of Genetic Code Decoding and Interpretation........192\nEpigenetic Management of Genetic Expression................195\nEvaluation of Data on Traits....................................................197\nChapter 13B —\n Genetic Charting \nand Genetic Adjustment\nGenetic Charting and Constructing DNA Segments......198\nAmplifying DNA Segments.....................................................201\nEmploying Recombinant DNA Approaches......................203\nGene Indicators and Medical Diagnosis............................ 206\nGenetic Identification............................................................... 208\nChapter 13C —\n Community Populations\nEcosystems...................................................................................172\nVariations in Community Scale............................................ 174\nExploring Populations............................................................ 176\nSequence......................................................................................... 178\nPreservation................................................................................... 180\nPractical Techniques\nDesigning an Experiment....................................................... 210\nHandling and Exhibiting Data...............................................212\nFormulating Conclusions and Evaluating.........................215\nAchieve Excellence in Examinations\nHow to Excel in Your Exams................................................217\nResponses........................\nCredits \nIn d ex..............................\n226\n227\n",
     ]
 
 extraction = [
@@ -275,6 +287,13 @@ hi = read_pdf(pdf_path,page)
 prompt = """You must create 2 synthetic strings based on a string that I will give you. The string is from a contents page of a pdf book. You should keep the format of the strings very similar, but change the chapter titles, page numbers and any numbers . You will be penalized for including the same numbers on  either of the strings. Change all numbers. This is the string:""" + hi 
 prompt
 hi
+
+yes_df = [read_pdf(pdf_path,i) for i in yes] + synthetic
+no_df = [read_pdf(pdf_path,i) for i in no]
+df_yes_temp = pd.DataFrame({'contents_page':yes_df,'label':'yes','extraction':extraction})
+df_no_temp = pd.DataFrame({'contents_page':no_df,'label':'no','extraction':'IGNORE'})
+df_yes = pd.concat([df_yes,df_yes_temp],axis=0)
+df_no = pd.concat([df_no,df_no_temp])
 
 # %% --------------------------------------------------------------------------
 #husotry a level
@@ -304,6 +323,12 @@ hi = read_pdf(pdf_path,page)
 prompt = """You must create 2 synthetic strings based on a string that I will give you. The string is from a contents page of a pdf book. You should keep the format of the strings very similar, but change the chapter titles, page numbers and any numbers . You will be penalized for including the same numbers on  either of the strings. Change all numbers. This is the string:""" + hi 
 prompt 
 hi
+yes_df = [read_pdf(pdf_path,i) for i in yes] + synthetic
+no_df = [read_pdf(pdf_path,i) for i in no]
+df_yes_temp = pd.DataFrame({'contents_page':yes_df,'label':'yes','extraction':extraction})
+df_no_temp = pd.DataFrame({'contents_page':no_df,'label':'no','extraction':'IGNORE'})
+df_yes = pd.concat([df_yes,df_yes_temp],axis=0)
+df_no = pd.concat([df_no,df_no_temp])
 # -----------------------------------------------------------------------------
 
 # %%
@@ -354,6 +379,12 @@ hi = read_pdf(pdf_path,page)
 prompt = """You must create 2 synthetic strings based on a string that I will give you. The string is from a contents page of a pdf book. You should keep the format of the strings very similar, but change the chapter titles, page numbers and any numbers . You will be penalized for including the same numbers on  either of the strings. Change all numbers. This is the string:""" + hi 
 prompt 
 hi
+yes_df = [read_pdf(pdf_path,i) for i in yes] + synthetic
+no_df = [read_pdf(pdf_path,i) for i in no]
+df_yes_temp = pd.DataFrame({'contents_page':yes_df,'label':'yes','extraction':extraction})
+df_no_temp = pd.DataFrame({'contents_page':no_df,'label':'no','extraction':'IGNORE'})
+df_yes = pd.concat([df_yes,df_yes_temp],axis=0)
+df_no = pd.concat([df_no,df_no_temp])
 # %%
 #International-A-Level-Physics-Lab-Book-sample
 yes = [
@@ -382,6 +413,12 @@ hi = read_pdf(pdf_path,page)
 prompt = """You must create 2 synthetic strings based on a string that I will give you. The string is from a contents page of a pdf book. You should keep the format of the strings very similar, but change the chapter titles, page numbers and any numbers . You will be penalized for including the same numbers on  either of the strings. Change all numbers. This is the string:""" + hi 
 prompt 
 hi
+yes_df = [read_pdf(pdf_path,i) for i in yes] + synthetic
+no_df = [read_pdf(pdf_path,i) for i in no]
+df_yes_temp = pd.DataFrame({'contents_page':yes_df,'label':'yes','extraction':extraction})
+df_no_temp = pd.DataFrame({'contents_page':no_df,'label':'no','extraction':'IGNORE'})
+df_yes = pd.concat([df_yes,df_yes_temp],axis=0)
+df_no = pd.concat([df_no,df_no_temp])
 
 # %% --------------------------------------------------------------------------
 #International-A-Level-Physics-Student-Book-2-sample
@@ -421,6 +458,12 @@ hi = read_pdf(pdf_path,page)
 prompt = """You must create 2 synthetic strings based on a string that I will give you. The string is from a contents page of a pdf book. You should keep the format of the strings very similar, but change the chapter titles, page numbers and any numbers . You will be penalized for including the same numbers on  either of the strings. Change all numbers. This is the string:""" + hi 
 prompt
 hi
+yes_df = [read_pdf(pdf_path,i) for i in yes] + synthetic
+no_df = [read_pdf(pdf_path,i) for i in no]
+df_yes_temp = pd.DataFrame({'contents_page':yes_df,'label':'yes','extraction':extraction})
+df_no_temp = pd.DataFrame({'contents_page':no_df,'label':'no','extraction':'IGNORE'})
+df_yes = pd.concat([df_yes,df_yes_temp],axis=0)
+df_no = pd.concat([df_no,df_no_temp])
 # -----------------------------------------------------------------------------
 
 
@@ -462,6 +505,12 @@ hi = read_pdf(pdf_path,page)
 prompt = """You must create 2 synthetic strings based on a string that I will give you. The string is from a contents page of a pdf book. You should keep the format of the strings very similar, but change the chapter titles, page numbers and any numbers . You will be penalized for including the same numbers on  either of the strings. Change all numbers. This is the string:""" + hi 
 prompt
 hi
+yes_df = [read_pdf(pdf_path,i) for i in yes] + synthetic
+no_df = [read_pdf(pdf_path,i) for i in no]
+df_yes_temp = pd.DataFrame({'contents_page':yes_df,'label':'yes','extraction':extraction})
+df_no_temp = pd.DataFrame({'contents_page':no_df,'label':'no','extraction':'IGNORE'})
+df_yes = pd.concat([df_yes,df_yes_temp],axis=0)
+df_no = pd.concat([df_no,df_no_temp])
 # %%
 #International-GCSE-Geography-Student-Book-sample
 yes = [
@@ -498,6 +547,12 @@ hi = read_pdf(pdf_path,page)
 prompt = """You must create 2 synthetic strings based on a string that I will give you. The string is from a contents page of a pdf book. You should keep the format of the strings very similar, but change the chapter titles, page numbers and any numbers . You will be penalized for including the same numbers on  either of the strings. Change all numbers. This is the string:""" + hi 
 prompt
 hi
+yes_df = [read_pdf(pdf_path,i) for i in yes] + synthetic
+no_df = [read_pdf(pdf_path,i) for i in no]
+df_yes_temp = pd.DataFrame({'contents_page':yes_df,'label':'yes','extraction':extraction})
+df_no_temp = pd.DataFrame({'contents_page':no_df,'label':'no','extraction':'IGNORE'})
+df_yes = pd.concat([df_yes,df_yes_temp],axis=0)
+df_no = pd.concat([df_no,df_no_temp])
 # %%
 #International-GCSE-Physics-Student-Book-sample
 yes = [
@@ -536,7 +591,12 @@ hi = read_pdf(pdf_path,page)
 prompt = """You must create 2 synthetic strings based on a string that I will give you. The string is from a contents page of a pdf book. You should keep the format of the strings very similar, but change the chapter titles, page numbers and any numbers . You will be penalized for including the same numbers on  either of the strings. Change all numbers. This is the string:""" + hi 
 prompt
 hi
-
+yes_df = [read_pdf(pdf_path,i) for i in yes] + synthetic
+no_df = [read_pdf(pdf_path,i) for i in no]
+df_yes_temp = pd.DataFrame({'contents_page':yes_df,'label':'yes','extraction':extraction})
+df_no_temp = pd.DataFrame({'contents_page':no_df,'label':'no','extraction':'IGNORE'})
+df_yes = pd.concat([df_yes,df_yes_temp],axis=0)
+df_no = pd.concat([df_no,df_no_temp])
 # %% --------------------------------------------------------------------------
 #PrinciplesOfBiology
 yes = [
@@ -557,7 +617,7 @@ synthetic = [
     ]
 
 extraction = [
-    'Chapter 1: Introduction to Biology and the Process of Science --- 1\n1.1 Themes and Concepts of Biology --- 1\n1.2 The Process of Science --- 14\nChapter 2: Introduction to the Chemistry of Life --- 25\n2.1 The Building Blocks of Molecules --- 25\n2.2 Chemical Bonds --- 38\n2.3 Water --- 48\n2.4 pH and Buffers --- 56\nChapter 3 Biologically Important Molecules --- 63\n3.1 Carbon --- 64\n3.2 Synthesis and Breakdown of Macromolecules --- 68\n3.3 Biological Molecules – Carbohydrates --- 72\n3.4 Biological Molecules – Lipids --- 79\n3.5 Biological Molecules – Proteins --- 87\n3.6 Biological Molecules - Nucleic Acids --- 97\nChapter 4: Introduction to Cell Structure and Function --- 103\n4.1 How Microorganisms Are Studied --- 104\n4.2 Comparing Prokaryotic and Eukaryotic Cells --- 108\n4.3 Eukaryotic Cell Components --- 113\n4.4 Eukaryotic Cell Organelles --- 120\n4.5 Diversity of cell organelles within the eukaryotes --- 133'
+    'Chapter 1: Introduction to Biology and the Process of Science --- 1\n1.1 Themes and Concepts of Biology --- 1\n1.2 The Process of Science --- 14\nChapter 2: Introduction to the Chemistry of Life --- 25\n2.1 The Building Blocks of Molecules --- 25\n2.2 Chemical Bonds --- 38\n2.3 Water --- 48\n2.4 pH and Buffers --- 56\nChapter 3 Biologically Important Molecules --- 63\n3.1 Carbon --- 64\n3.2 Synthesis and Breakdown of Macromolecules --- 68\n3.3 Biological Molecules – Carbohydrates --- 72\n3.4 Biological Molecules – Lipids --- 79\n3.5 Biological Molecules – Proteins --- 87\n3.6 Biological Molecules - Nucleic Acids --- 97\nChapter 4: Introduction to Cell Structure and Function --- 103\n4.1 How Microorganisms Are Studied --- 104\n4.2 Comparing Prokaryotic and Eukaryotic Cells --- 108\n4.3 Eukaryotic Cell Components --- 113\n4.4 Eukaryotic Cell Organelles --- 120\n4.5 Diversity of cell organelles within the eukaryotes --- 133',
     'Chapter 5: Structure and Function of the Cell Membrane and an Introduction to Energy --- 145\n5.1 The Cell Membrane --- 145\n5.2 Passive Transport --- 152\n5.3 Active Transport --- 161\n5.4 Energy and Metabolism --- 166\n5.5 Law of Thermodynamics --- 171\n5.6 Types of Energy --- 175\n5.7 Enzymes --- 184\nChapter 6: Introduction to Cellular Respiration --- 193\n6.1 Energy in Living Systems --- 193\n6.2 Glycolysis --- 201\n6.3 Citric Acid Cycle --- 206\n6.4 Oxidative phosphorylation --- 210\n6.5 Fermentation --- 216\n6.6 Connections to Other Metabolic Pathways --- 220\nChapter 7: Introduction to Photosynthesis --- 223\n7.1 Overview of Photosynthesis --- 223\n7.2 The Light-Dependent Reactions of Photosynthesis --- 232\n7.3 The Calvin Cycle --- 240',
     'Chapter 8: Introduction to Reproduction at the Cellular Level --- 247\n8.1 The Genome --- 248\n8.2 The Cell Cycle and Mitosis --- 252\n8.3 Prokaryotic Cell Division --- 265\n8.4 Sexual Reproduction --- 269\n8.5 Meiosis --- 272\n8.6 Errors in Meiosis --- 287\nChapter 9: Introduction to Patterns of Inheritance --- 295\n9.1 Gregor Mendel and Genetic Crosses --- 295\n9.2 Laws of Inheritance --- 301\n9.3 Extensions of the Laws of Inheritance --- 313\n9.4 Chromosomal Basis of Inheritance --- 320\n9.5 Patterns of Inheritance --- 326\nChapter 10: DNA Replication and Protein Synthesis --- 335\n10.1 The Structure of DNA --- 335\n10.2 DNA Replication --- 343\n10.3 Transcription --- 355\n10.4 Translation --- 364\n10.5 How Genes Are Regulated --- 372\nChapter 11: Introduction Evolution --- 379\n11.1 Discovering How Populations Change --- 378\n11.2 Mechanisms of Evolution --- 388\n11.3 Evidence of Evolution --- 396\n11.4 Common Misconceptions about Evolution --- 402',
     'Chapter 1: Overview of Biology and the Scientific Method --- 1\n1.1 Core Ideas and Principles of Biology --- 1\n1.2 The Scientific Approach --- 14\nChapter 2: Basics of Biochemistry --- 25\n2.1 Molecules: The Foundation of Life --- 25\n2.2 Chemical Linkages --- 38\n2.3 H2O Essentials --- 48\n2.4 Acidity and Buffering Agents --- 56\nChapter 3 Essential Biomolecules --- 63\n3.1 Organic Chemistry --- 64\n3.2 Synthesis and Decomposition of Macromolecules --- 68\n3.3 Vital Molecules – Sugars and Starches --- 72\n3.4 Vital Molecules – Fats and Oils --- 79\n3.5 Vital Molecules – Proteins --- 87\n3.6 Vital Molecules - Nucleic Acid Insights --- 97\nChapter 4: Dive into Cell Structure and Operations --- 103\n4.1 Unraveling Microscopic Life --- 104\n4.2 Contrasting Prokaryotes and Eukaryotes --- 108\n4.3 Components of Eukaryotic Cells --- 113\n4.4 Cellular Organelles in Focus --- 120\n4.5 Range of organelles in eukaryotic cells --- 133\n',
@@ -575,4 +635,43 @@ hi = read_pdf(pdf_path,page)
 prompt = """You must create 2 synthetic strings based on a string that I will give you. The string is from a contents page of a pdf book. You should keep the format of the strings very similar, but change the chapter titles, page numbers and any numbers . You will be penalized for including the same numbers on  either of the strings. Change all numbers. This is the string:""" + hi 
 prompt
 hi
+yes_df = [read_pdf(pdf_path,i) for i in yes] + synthetic
+no_df = [read_pdf(pdf_path,i) for i in no]
+df_yes_temp = pd.DataFrame({'contents_page':yes_df,'label':'yes','extraction':extraction})
+df_no_temp = pd.DataFrame({'contents_page':no_df,'label':'no','extraction':'IGNORE'})
+df_yes = pd.concat([df_yes,df_yes_temp],axis=0)
+df_no = pd.concat([df_no,df_no_temp])
 # -----------------------------------------------------------------------------
+
+# %% --------------------------------------------------------------------------
+#PrinciplesOfBiology
+no = [
+    0,1,2,3,8,9,43,42,41
+]
+
+file = 'AQA-8658H-OUP-SAMPLE.pdf'
+pdf_path = rf'../../../../new books/{file}'
+page = 4
+hi = read_pdf(pdf_path,page)
+
+hi
+no_df = [read_pdf(pdf_path,i) for i in no]
+df_no_temp = pd.DataFrame({'contents_page':no_df,'label':'no','extraction':'IGNORE'})
+df_no = pd.concat([df_no,df_no_temp])
+# -----------------------------------------------------------------------------
+
+# %% --------------------------------------------------------------------------
+#finally combine
+df_final = pd.concat([df_yes,df_no])
+df_final.reset_index(inplace=True)
+df_final.drop(columns='index',inplace=True)
+df_final.iloc[104]
+# -----------------------------------------------------------------------------
+
+
+# %% --------------------------------------------------------------------------
+# save
+df_final.to_csv(r'../data/prepared_data.csv')
+# -----------------------------------------------------------------------------
+
+# %%
