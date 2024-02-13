@@ -76,7 +76,7 @@ def finetune(data, r, lora_alpha, lr, epochs, target_modules,batch_s,gradacc):
     )
     quantization_config_loading = GPTQConfig(
         bits=4,
-        #disable_exllama=True, #trying hashing out in finetune to match inference as reduces latency.
+        disable_exllama=True,
         tokenizer=tokenizer,
     )
     model = AutoModelForCausalLM.from_pretrained(
@@ -91,8 +91,7 @@ def finetune(data, r, lora_alpha, lr, epochs, target_modules,batch_s,gradacc):
     model.resize_token_embeddings(len(tokenizer))
     model.config.eos_token_id = tokenizer.eos_token_id
     model.config.pad_token_id = tokenizer.pad_token_id
-    from auto_gptq import exllama_set_max_input_length
-    model = exllama_set_max_input_length(model, max_input_length=52080)
+
 
     r = r
     lora_alpha = lora_alpha

@@ -64,7 +64,6 @@ Output: {x['extraction']}""",
     data_aq = data_aq.train_test_split(test_size=0.1)
     return data_aq
 
-############got up to here
 
 @timer
 def finetune(data, r, lora_alpha, lr, epochs, target_modules,batch_s,gradacc):
@@ -79,9 +78,10 @@ def finetune(data, r, lora_alpha, lr, epochs, target_modules,batch_s,gradacc):
     tokenizer = AutoTokenizer.from_pretrained(
         model_id, use_fast=False
     )
+
     quantization_config_loading = GPTQConfig(
         bits=4,
-        #disable_exllama=True, #trying hashing out in finetune to match inference as reduces latency.
+        disable_exllama=True, 
         tokenizer=tokenizer,
     )
     model = AutoModelForCausalLM.from_pretrained(
@@ -96,8 +96,7 @@ def finetune(data, r, lora_alpha, lr, epochs, target_modules,batch_s,gradacc):
     model.resize_token_embeddings(len(tokenizer))
     model.config.eos_token_id = tokenizer.eos_token_id
     model.config.pad_token_id = tokenizer.pad_token_id
-    from auto_gptq import exllama_set_max_input_length
-    model = exllama_set_max_input_length(model, max_input_length=52080)
+
 
     r = r
     lora_alpha = lora_alpha
@@ -177,7 +176,7 @@ def finetune(data, r, lora_alpha, lr, epochs, target_modules,batch_s,gradacc):
         tokenizer=tokenizer,
         callbacks=callbacks,  # try if doesnt work hashing all of checkpiint stuff above and also this callback line
         packing=False,
-        max_seq_length=2608
+        max_seq_length=3500 # did by tokenizing all dtaa set and getting max length
     )
 
     ###################################################
