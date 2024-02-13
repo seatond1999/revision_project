@@ -44,7 +44,7 @@ def prep_data():
     data_aq = pd.DataFrame(
         {
             "content": data.apply(
-                lambda x: f"""[INST]You must split text up into subsections and add informative titles for each subsection.
+                lambda x: f"""<s>[INST]You must split text up into subsections and add informative titles for each subsection.
 Each subsection must be in paragraph form and all information should be included from the original text.
 You will be penalized for removing information from the original text.
 Mark each title you create by adding the symbols "@@@" before each title and placing the title on its own line.
