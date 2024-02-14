@@ -254,7 +254,7 @@ def finetune(tokenizer,model,data, r, lora_alpha, lr, epochs, target_modules,bat
 if __name__ == "__main__":
     tokenizer,model = load()
     data = prep_data(tokenizer,model)
-    trainer_obj = finetune(tokenizer,model,data, 32, 64, 2.3e-5, 1, ["q_proj", "v_proj","o_proj","k_proj","up_proj","down_proj","gate_proj"],4,1)
+    trainer_obj = finetune(tokenizer,model,data, 32, 64, 2.2e-5, 5, ["q_proj", "v_proj","o_proj","k_proj","up_proj","down_proj","gate_proj"],4,1)
 
 #,"gate_proj"
 #,"gate_proj","up_proj","down_proj"
