@@ -98,34 +98,14 @@ class Dataset(torch.utils.data.Dataset):
         return len(self.encodings["input_ids"])
 
 
-def prep_data(tokenizer,model):
-    data = pd.read_csv(r"../data/prepared_data.csv")
-    df = pd.DataFrame(
-        {
-            "content": data.apply(
-                lambda x: f"""<s>[INST] @@@ Instructions:
-It is your task to classify whether a string corresponds to the contents page of a pdf book.
-A contents page includes chapter titles and page numbers.
-Only reply with the words "Yes" or "No"
-You must reply "yes" if the string is from the contents page, and "no" if it is not the contents page.
+def prep_data(tokenizer):
+    train_df = pd.read_csv(r'../data/classification_train_data.csv')
+    test_df = pd.read_csv(r'../data/classification_test_data.csv')
+    X_train_tokenized = tokenizer(train_df['x_train'], padding=True, truncation=True, max_length=3000)
+    X_test_tokenized = tokenizer(test_df['x_test'], padding=True, truncation=True, max_length=3000)
 
-@@@ Question:
-This is the string: ### {x['contents_page']} ### [/INST]""",
-                axis=1,
-            ),
-            'label': data.apply(lambda x: 0 if x['label']=='no' else 1,axis=1)
-        }
-    )
-
-    #stratified sampling
-    X = list(df['content'])
-    y = list(df['label'])
-    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.1,stratify=y)
-    X_train_tokenized = tokenizer(X_train, padding=True, truncation=True, max_length=3000)
-    X_test_tokenized = tokenizer(X_test, padding=True, truncation=True, max_length=3000)
-
-    train_dataset = Dataset(X_train_tokenized, y_train)
-    test_dataset = Dataset(X_test_tokenized, y_test)
+    train_dataset = Dataset(X_train_tokenized, train_df['y_train'])
+    test_dataset = Dataset(X_test_tokenized, test_df['y_test'])
     
     return train_dataset,test_dataset
 
@@ -274,5 +254,46 @@ if __name__ == "__main__":
 # %% --------------------------------------------------------------------------
 trainer_obj.save_model() 
 # -----------------------------------------------------------------------------
+
+# %%
+
+
+### where train and test data came from:
+run = 0
+if run == 1:
+    def prep_data():
+        data = pd.read_csv(r"../data/prepared_data.csv")
+        df = pd.DataFrame(
+            {
+                "content": data.apply(
+                    lambda x: f"""<s>[INST] @@@ Instructions:
+    It is your task to classify whether a string corresponds to the contents page of a pdf book.
+    A contents page includes chapter titles and page numbers.
+    Only reply with the words "Yes" or "No"
+    You must reply "yes" if the string is from the contents page, and "no" if it is not the contents page.
+
+    @@@ Question:
+    This is the string: ### {x['contents_page']} ### [/INST]""",
+                    axis=1,
+                ),
+                'label': data.apply(lambda x: 0 if x['label']=='no' else 1,axis=1)
+            }
+        )
+
+        #stratified sampling
+        X = list(df['content'])
+        y = list(df['label'])
+        X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.1,stratify=y)
+        train_df = pd.DataFrame({'x_train':X_train,'y_train':y_train})
+        test_df = pd.DataFrame({'x_test':X_test,'y_test':y_test})
+        
+        return train_df,test_df
+    
+    train_df,test_df = prep_data()
+    train_df.to_csv(r'../data/classification_train_data.csv')
+    test_df.to_csv(r'../data/classification_test_data.csv')
+
+
+
 
 # %%
