@@ -174,7 +174,7 @@ def finetune(tokenizer,model,data, r, lora_alpha, lr, epochs, target_modules,bat
         logging_steps=6,
         #save_steps=60,
         num_train_epochs=epochs,
-        max_steps=85,
+        max_steps=39,
         fp16=False,
         push_to_hub=False,
         report_to=["tensorboard"],
