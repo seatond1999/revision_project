@@ -54,7 +54,7 @@ def load_model(lora_adapters, base_model):
     base_model.config.pad_token_id = tokenizer.pad_token_id
 
     # Load LoRA adapter and merge
-    return tokenizer,base_model
+    #return tokenizer,base_model
     return tokenizer, PeftModel.from_pretrained(base_model, adapter_path)
 
 

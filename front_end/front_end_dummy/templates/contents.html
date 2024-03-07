@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Upload Success</title>
+</head>
+<body>
+
+    <h1>Upload Successful</h1>
+    <p>The file {{ filename }} has been successfully uploaded.</p>
+
+    <h2>DataFrame</h2>
+    {% for table in tables %}
+        <div>
+            {{ table|safe }}
+        </div>
+    {% endfor %}
+
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            // Add a click event to the DataFrame rows
+            $('.data tbody tr').click(function() {
+                // Get the clicked value from the first column
+                var clickedValue = $(this).find('td:first').text();
+
+                // Show a confirmation dialog
+                var confirmation = confirm('Do you want to continue with ' + clickedValue + '?');
+                
+                if (confirmation) {
+                    // Add the clicked value to the form and submit it
+                    $('<form action="/update_df" method="post"><input type="hidden" name="clicked_value" value="' + clickedValue + '"></form>').appendTo('body').submit();
+                }
+            });
+        });
+    </script>
+</body>
+</html>
