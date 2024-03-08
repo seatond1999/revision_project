@@ -22,15 +22,14 @@ import time
 from PyPDF2 import PdfReader
 import tensorboard
 from auto_gptq import exllama_set_max_input_length
-from app_class import app as appedy
 
 
 # %% --------------------------------------------------------------------------
-base_model_path = "TheBloke/Mistral-7B-Instruct-v0.2-GPTQ"
+from app_class import app as appedy
 # book = PdfReader(r"C:/MLE07/projects/edexcel_a_level_physics_student_book_1.pdf")
 #book = PdfReader(r"../../business book for testing.pdf")
 
-obj = appedy(base_model_path)
+obj = appedy()
 #load base model and adapters (if deployed could move)
 obj.get_base()
 obj.load_contclass_adapter()
@@ -78,9 +77,11 @@ def upload_file():
 def contents():
     filename = obj.book_filename
     if not obj.contents:
+        print('starting stuff')
         obj.get_contents()
         obj.extract_contents()
         obj.find_first_page()
+        print('ending stuff')
     df = obj.contents
     print(df)
     return render_template('contents.html',filename=filename , tables=[df.to_html(classes='data', index=False)], column_names=df.columns)
@@ -89,9 +90,10 @@ def contents():
 #User has clicked on a chapter, triggers it to get breakdown and displays subtitles to user
 @app.route('/update_df', methods=['POST'])
 def update_df():
+    print('startting dupate_df')
     filename = obj.book_filename
     clicked_value = request.form.get('clicked_value')
-    obj.split_chosen_chapter(clicked_value)
+    obj.split_chosen_chapter(clicked_value+' ')
     print(clicked_value)
     df = obj.contents
     updated_df = obj.chapter_breakdown
@@ -103,9 +105,10 @@ def update_df():
 def qa_func():
     filename = obj.book_filename
     updated_df = obj.chapter_breakdown
-    df = obj.qa
+    df = obj.contents
     clicked_value = request.form.get('clickedValue')
-    if not obj.question:
+    print(clicked_value)
+    if not obj.qa:
         obj.question_answer(clicked_value)
 
     qa_df = obj.qa.iloc[0:1]
@@ -134,6 +137,6 @@ def reset():
 
 
 if __name__ == '__main__':
-    app.run()
+    app.run(host='0.0.0.0', port=5000)
 
 # %%

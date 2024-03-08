@@ -1,31 +1,30 @@
 
 # %% --------------------------------------------------------------------------
 
-# import pandas as pd
-# from peft import PeftModel
-# from transformers import (
-#     AutoTokenizer,
-#     GenerationConfig,
-#     GPTQConfig,
-#     AutoModelForCausalLM,
-# )
-# import torch
-# from torch import nn
-# from openai import OpenAI
-# import openai
-# import os
-# import time
-# from PyPDF2 import PdfReader
-# import tensorboard
-# from auto_gptq import exllama_set_max_input_length
+import pandas as pd
+from peft import PeftModel
+from transformers import (
+    AutoTokenizer,
+    GenerationConfig,
+    GPTQConfig,
+    AutoModelForCausalLM,
+)
+import torch
+from torch import nn
+from openai import OpenAI
+import openai
+import os
+import time
+from PyPDF2 import PdfReader
+import tensorboard
+from auto_gptq import exllama_set_max_input_length
 # %%
 # %% --------------------------------------------------------------------------
 #remember for this script need to havemodified mistral_modelling.py file
 #have to load book and set as attirbute
 class app:
-    def __init__(self,base_model_path):
+    def __init__(self):
         self.book = None
-        self.base_model_path = base_model_path
         self.model = None
         self.tokenizer = None
         self.fpclass_head = None
@@ -42,7 +41,7 @@ class app:
         self.question = None
         self.answer = None
 
-    def load_base_model(base_model):
+    def load_base_model(self,base_model):
         base_path = base_model  # input: base model
 
         tokenizer = AutoTokenizer.from_pretrained(base_path, use_fast=False)
@@ -71,8 +70,10 @@ class app:
 
         return tokenizer,model
 
+
     def get_base(self):
-        self.tokenizer, self.model = self.load_base_model(self.base_model_path)
+        base_model_path = "TheBloke/Mistral-7B-Instruct-v0.2-GPTQ"
+        self.tokenizer, self.model = self.load_base_model(base_model_path)
         self.causal_head = self.model.lm_head #no finetuning was done to causal head, unlike classificaiton head, so can take the base model LM_head for base and causal.
 
 
@@ -80,7 +81,7 @@ class app:
         self.model.num_labels = 2
         self.model.config.num_labels = 2 #model attributes needed for classificaiton forward pass
         self.model.score = nn.Linear(self.model.config.hidden_size, self.model.config.num_labels, bias=False,dtype=torch.float16) #bias is false as finetuned with and without and made no diff so saves memory
-        self.model.load_adapter(peft_model_id=r'../adapters/firstpage',adapter_name='ident_fistpage_adapter')
+        self.model.load_adapter(peft_model_id=r'seatond/firstpage_c_rank16_lr2.2e-05_target3_epochs1.7_laplha32_batch4_gradacc1',adapter_name='ident_fistpage_adapter')
         self.fpclass_head = self.model.score
         return None
 
@@ -106,29 +107,33 @@ class app:
             self.model.config.lm_head = None  #remove mpapping to vocab size
             self.model.conditioner = 'classification' #added if statement in source code to direct to correct type of forward pass for classification.
             self.model.score = self.fpclass_head #sets the 2 class head
-            self.model.enable_adapters()
+            self.model.disable_adapters
             self.model.set_adapter('ident_fistpage_adapter')
+            self.model.enable_adapters()
         if desired == 'contclass':
             self.model.lm_head = None #replaced LM_head with score which maps to our 2 classes
             self.model.config.lm_head = None  #remove mpapping to vocab size
             self.model.conditioner = 'classification' #added if statement in source code to direct to correct type of forward pass for classification.
             self.model.score = self.contclass_head #sets the 2 class head
-            self.model.enable_adapters()
+            self.model.disable_adapters
             self.model.set_adapter('ident_cont_adapter')
+            self.model.enable_adapters()
         if desired == 'splitcausal':
             self.model.score = None
             self.model.config.score = None
             self.model.conditioner = 'causal'
             self.model.lm_head = self.causal_head
-            self.model.enable_adapters()
+            self.model.disable_adapters
             self.model.set_adapter('splitcausal_adapter')
+            self.model.enable_adapters()
         if desired == 'extrcontcausal':
             self.model.score = None
             self.model.config.score = None
             self.model.conditioner = 'causal'
             self.model.lm_head = self.causal_head
-            self.model.enable_adapters()
+            self.model.disable_adapters
             self.model.set_adapter('extrcontcausal_adapter')
+            self.model.enable_adapters()
         if desired == 'base':
             self.model.score = None
             self.model.config.score = None
@@ -140,7 +145,7 @@ class app:
     def get_contents(self):
             self.change_adapter('contclass')
             from auto_gptq import exllama_set_max_input_length
-            obj.model = exllama_set_max_input_length(obj.model, max_input_length=30761)
+            self.model = exllama_set_max_input_length(self.model, max_input_length=30761)
             prompt = """<s>[INST] @@@ Instructions:
         It is your task to classify whether a string corresponds to the contents page of a pdf book.
         A contents page includes chapter titles and page numbers.
@@ -329,7 +334,8 @@ Output: """
     def question_answer(self,chosen_sub):
         self.change_adapter('base')
         self.model = self.model.to("cuda:0")
-
+        chosen_sub_name = chosen_sub
+        chosen_sub_index = self.chapter_breakdown[self.chapter_breakdown['subtitle']==chosen_sub_name].index[0]
         prompt = f"""[INST]You are a helpful revision assisstant who asks the user a question about some information which you are given and provide the answer and a concise explanation.
         Your questions must be based on the provided information only.
         Your answer and explanation must include knowledge from the provided information only.
@@ -344,7 +350,7 @@ Output: """
         ---
         You will be penalised for doing a different format to the one shown above.
         This is the provided information:
-        ### {self.chapter_breakdown['text'][chosen_sub]} ### [/INST]
+        ### {self.chapter_breakdown.iloc[chosen_sub_index,1]} ### [/INST]
         Output: """
 
         input_ids = self.tokenizer(prompt,return_tensors='pt').input_ids.to("cuda:0")
