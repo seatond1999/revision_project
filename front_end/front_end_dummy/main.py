@@ -30,7 +30,7 @@ base_model_path = "TheBloke/Mistral-7B-Instruct-v0.2-GPTQ"
 # book = PdfReader(r"C:/MLE07/projects/edexcel_a_level_physics_student_book_1.pdf")
 #book = PdfReader(r"../../business book for testing.pdf")
 
-obj = appedy(base_model_path)
+obj = appedy()
 #load base model and adapters (if deployed could move)
 # obj.get_base()
 # obj.load_contclass_adapter()
@@ -144,9 +144,6 @@ def reset():
     obj.answer = None
     df = obj.contents
     return render_template('upload_success.html', filename=filename, tables=[df.to_html(classes='data', index=False)], column_names=df.columns)
-
-
-
 
 if __name__ == '__main__':
     app.run()

@@ -5,9 +5,10 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Flask DataFrame Example</title>
-
     <style>
-        
+        body {
+            text-align: left;
+        }
 
         #resetButton {
             background-color: red; /* Set background color to red */
@@ -19,13 +20,19 @@
             border: none; /* Remove border */
             cursor: pointer; /* Change cursor to pointer on hover */
         }
+        header { 
+                text-align: center; 
+            }
     </style>
+    
+
 </head>
 <body>
-    <h1>Upload Successful</h1>
+    <header> 
+    <h1>Revision tool</h1>
+    </header>
+    <h2>Upload Successful</h2>
     <p>The file {{ filename }} has been successfully uploaded.</p>
-
-    <h1>DataFrame</h1>
     
     <!-- First Table -->
     <h2>Contents Table</h2>
@@ -36,7 +43,7 @@
     {% endfor %}
 
     <!-- Second Table -->
-    <h2>Chapter Breakdown Table</h2>
+    <h2>Chapter breakdown</h2>
     {% for table in tables[1:2] %}
         <div>
             {{ table|safe }}
