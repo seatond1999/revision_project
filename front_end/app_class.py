@@ -144,7 +144,7 @@ class app:
     def get_contents(self):
             self.change_adapter('contclass')
             from auto_gptq import exllama_set_max_input_length
-            obj.model = exllama_set_max_input_length(obj.model, max_input_length=30761)
+            self.model = exllama_set_max_input_length(self.model, max_input_length=30761)
             prompt = """<s>[INST] @@@ Instructions:
         It is your task to classify whether a string corresponds to the contents page of a pdf book.
         A contents page includes chapter titles and page numbers.
