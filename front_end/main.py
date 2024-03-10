@@ -90,15 +90,24 @@ def contents():
 #User has clicked on a chapter, triggers it to get breakdown and displays subtitles to user
 @app.route('/update_df', methods=['POST'])
 def update_df():
-    print('startting dupate_df')
+    print('starting dupate_df')
     filename = obj.book_filename
-    clicked_value = request.form.get('clicked_value')
-    obj.split_chosen_chapter(clicked_value+' ')
-    print(clicked_value)
+    if not obj.contents:
+        clicked_value = request.form.get('clicked_value')
+        obj.split_chosen_chapter(clicked_value+' ')
+        print(clicked_value)
     df = obj.contents
-    updated_df = obj.chapter_breakdown
+    updated_df = obj.chapter_breakdown.drop(columns=['text'])
     
     return render_template('breakdown.html', filename=filename, tables=[df.to_html(classes='data', index=False), updated_df.to_html(classes='data', index=False)], column_names=df.columns)
+
+@app.route('/expand_sub', methods=['POST'])
+def expand_sub():
+    clicked_value = request.form.get('clickedValue')
+    index = obj.chapter_breakdown[obj.chapter_breakdown['subtitle']==clicked_value]
+    expanded_sub = obj.chapter_breakdown['text'][index]
+    return render_template('expand_sub.html',subtitle=clicked_value,expanded_sub = expanded_sub)
+
 
 #User has clicke don subtitle, now displaying just the question
 @app.route('/qa_func', methods=['POST'])
@@ -108,7 +117,7 @@ def qa_func():
     df = obj.contents
     
     if not obj.questions:
-        clicked_value = request.form.get('clickedValue')
+        clicked_value = request.form.get('subtitle')
         print(clicked_value)
         obj.question(clicked_value)
         obj.answer(clicked_value)
@@ -141,3 +150,4 @@ if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000)
 
 # %%
+

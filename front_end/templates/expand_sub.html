@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flask DataFrame Example</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <style>
+        body {
+            text-align: left;
+        }
+        header { 
+            text-align: center; 
+        }
+        section.grainy-gradient-weaker {
+            text-align: center;
+            margin-top: 20px;
+        }
+        .button-container {
+            margin-top: 20px;
+            text-align: center;
+        }
+        .button-container button {
+            margin: 5px;
+        }
+    </style>
+</head>
+<body>
+    <section class="grainy-gradient-weaker">
+        <svg height="100" width="0">
+            <filter id='f'>
+                <feTurbulence type='fractalNoise' baseFrequency='.5' />
+            </filter>
+        </svg>
+    </section>
+    <header> 
+        <h1>Subsection {{subtitle}}</h1>
+    </header>
+    <!-- Text from subsection -->
+    <h2>{{expanded_sub}}</h2>
+
+    <!-- Button container -->
+    <div class="button-container">
+        <button onclick="reviseFunction()">Revise</button>
+        <button onclick="backToChapterBreakdown()">Back to Chapter Breakdown</button>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    <script>
+        function reviseFunction() {
+            $('<form action="/qa_func" method="post"><input type="hidden" name="subtitle" value="' + subtitle + '"></form>').appendTo('body').submit();
+        }
+
+        function backToChapterBreakdown() {
+            $('<form action="/update_df" method="post"></form>').appendTo('body').submit();
+
+        }
+    </script>
+</body>
+</html>

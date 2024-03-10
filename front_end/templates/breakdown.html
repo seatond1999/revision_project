@@ -47,7 +47,7 @@
             // Call the qa_func only if the user clicks "OK"
             if (confirmation) {
                 // Use AJAX to send a request to the server-side function
-                $('<form action="/qa_func" method="post"><input type="hidden" name="clickedValue" value="' + clickedValue + '"></form>').appendTo('body').submit();
+                $('<form action="/expand_sub" method="post"><input type="hidden" name="clickedValue" value="' + clickedValue + '"></form>').appendTo('body').submit();
             }
         });
     });
