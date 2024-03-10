@@ -31,11 +31,11 @@ from app_class import app as appedy
 
 obj = appedy()
 #load base model and adapters (if deployed could move)
-obj.get_base()
-obj.load_contclass_adapter()
-obj.load_fpclass_adapter()
-obj.load_splitcausal_adapter()
-obj.load_extrcontcausal_adapter()
+# obj.get_base()
+# obj.load_contclass_adapter()
+# obj.load_fpclass_adapter()
+# obj.load_splitcausal_adapter()
+# obj.load_extrcontcausal_adapter()
 
 
 # %% --------------------------------------------------------------------------
@@ -106,14 +106,16 @@ def qa_func():
     filename = obj.book_filename
     updated_df = obj.chapter_breakdown
     df = obj.contents
-    clicked_value = request.form.get('clickedValue')
-    print(clicked_value)
-    if not obj.qa:
-        obj.question_answer(clicked_value)
+    
+    if not obj.questions:
+        clicked_value = request.form.get('clickedValue')
+        print(clicked_value)
+        obj.question(clicked_value)
+        obj.answer(clicked_value)
 
-    qa_df = obj.qa.iloc[0:1]
+    question_df = pd.DataFrame({'Questions':[obj.questions]})
 
-    return render_template('qa.html', filename=filename, tables=[df.to_html(classes='data', index=False), updated_df.to_html(classes='data', index=False),qa_df.to_html(classes='data', index=False)], column_names=df.columns)
+    return render_template('qa.html', filename=filename, tables=[df.to_html(classes='data', index=False), updated_df.to_html(classes='data', index=False),question_df.to_html(classes='data', index=False)], column_names=df.columns)
 
 #displaying q and a.
 @app.route('/ans_func', methods=['POST'])
@@ -121,10 +123,9 @@ def ans_func():
     filename = obj.book_filename 
     updated_df = obj.chapter_breakdown
     df = obj.contents
-    qa_df = obj.qa
+    question_answer_df = pd.DataFrame({'Questions':[obj.questions,obj.answers]})
 
-    
-    return render_template('qa.html', filename=filename, tables=[df.to_html(classes='data', index=False), updated_df.to_html(classes='data', index=False),qa_df.to_html(classes='data', index=False)], column_names=df.columns)
+    return render_template('qa.html', filename=filename, tables=[df.to_html(classes='data', index=False), updated_df.to_html(classes='data', index=False),question_answer_df.to_html(classes='data', index=False)], column_names=df.columns)
 
 @app.route('/reset', methods=['POST'])
 def reset():

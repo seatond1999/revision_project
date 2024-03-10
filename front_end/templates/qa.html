@@ -5,7 +5,11 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Flask DataFrame Example</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
     <style>
+        section.grainy-gradient-intro {
+          text-align: center;
+        }
         body {
             text-align: left;
         }
@@ -28,6 +32,13 @@
 
 </head>
 <body>
+    <section class="grainy-gradient-weaker">
+        <svg height="100" width="0">
+            <filter id='f'>
+                <feTurbulence type='fractalNoise' baseFrequency='.5' />
+            </filter>
+        </svg>
+    </section>
     <header> 
     <h1>Revision tool</h1>
     </header>

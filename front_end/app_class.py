@@ -35,11 +35,10 @@ class app:
         self.contents_last = None
         self.contents = None #make pd dataframe but get last contents page first lol.
         self.chapter_breakdown = None
-        self.qa = None
+        self.questions = None
+        self.answers = None
         #for flask
         self.book_filename = None
-        self.question = None
-        self.answer = None
 
     def load_base_model(self,base_model):
         base_path = base_model  # input: base model
@@ -145,7 +144,7 @@ class app:
     def get_contents(self):
             self.change_adapter('contclass')
             from auto_gptq import exllama_set_max_input_length
-            self.model = exllama_set_max_input_length(self.model, max_input_length=30761)
+            obj.model = exllama_set_max_input_length(obj.model, max_input_length=30761)
             prompt = """<s>[INST] @@@ Instructions:
         It is your task to classify whether a string corresponds to the contents page of a pdf book.
         A contents page includes chapter titles and page numbers.
@@ -195,7 +194,7 @@ class app:
         for i in range(self.contents_first,self.contents_last+1):
             contents_pages += self.book.pages[i].extract_text()
 
-        prompt = """<s>[INST] @@@ Instructions:
+        prompt = f"""<s>[INST] @@@ Instructions:
 It is your task to extract the chapters and corresponding page numbers from a string which was created from the contents page of a pdf book.
 You must return a list of the chapters and page numbers.
 Put each chapter and its page number on its own line, and separate chapters titles from page numbers with a "---".
@@ -203,14 +202,15 @@ You will be penalised for separating chapters with anything that is not "---"
 For example the first 2 chapters of a contents page should be in the following format: "chapter 1 title --- chapter 1 page number \n chapter 2 title --- chapter 2 page number"
 
 @@@ Question:
-string which was created from the contents page of a pdf book: ### """
+string which was created from the contents page of a pdf book: ### {contents_pages} ### [/INST]
 
-        input_ids = self.tokenizer(prompt+contents_pages+' ### [/INST]',return_tensors='pt').input_ids.cuda()
-        output = self.tokenizer.decode((self.model.generate(inputs=input_ids, temperature=0.07, do_sample=True, top_p=0.35, top_k=5, max_new_tokens=2000))[0])
+Output: """
 
+        input_ids = self.tokenizer(prompt,return_tensors='pt').input_ids.cuda()
+        output = self.tokenizer.decode((self.model.generate(inputs=input_ids, temperature=0.07, do_sample=True, top_p=0.2, top_k=3, max_new_tokens=20000))[0])
+        output = output[output.find("[/INST]\n\nOutput:")+ len("[/INST]\n\nOutput:"):]
         contents_list = [i.split('---') for i in output.split('\n')]
         contents_df = pd.DataFrame(contents_list,columns=['chapter_titles','page_number'])
-
         mask = contents_df['page_number'].notna()
         contents_df = contents_df[mask]
         contents_df['page_number'] = contents_df['page_number'].apply(lambda x: x.replace(' ',''))
@@ -220,6 +220,7 @@ string which was created from the contents page of a pdf book: ### """
         contents_df.drop(columns=['index'],inplace=True)
         contents_df['page_number'] = contents_df['page_number'].apply(lambda x: int(x))
         contents_df = contents_df.sort_values(by='page_number', ascending=True)
+        contents_df = contents_df.drop_duplicates(subset='page_number', keep='first')
         contents_df.reset_index(inplace = True)
         contents_df.drop(columns = ['index'],inplace = True)
         self.contents = contents_df
@@ -290,7 +291,7 @@ string which was created from the contents page of a pdf book: ### """
         self.model = self.model.to("cuda:0")
         chosen_chapter_index = self.contents[self.contents['chapter_titles'] == chosen_chapter].index[0] #gets row of chosen chapter in contents df
         responses = ""
-        for i in range(self.contents.iloc[chosen_chapter_index,2],self.contents.iloc[chosen_chapter_index,2]+2): #between the page numbers of chosen chapter and next chapter
+        for i in range(self.contents.iloc[chosen_chapter_index,2],self.contents.iloc[chosen_chapter_index+1,2]): #between the page numbers of chosen chapter and next chapter
             prompt = f"""[INST]You must split text up into subsections and add informative titles for each subsection.
 Each subsection must be in paragraph form and all information should be included from the original text.
 You will be penalized for removing information from the original text.
@@ -326,32 +327,22 @@ Output: """
         responses = responses.split('@@@')[1:]
         self.chapter_breakdown = pd.DataFrame({
             'subtitle':list(map(lambda x: x[:x.find('\n')],responses)),
-            'text':list(map(lambda x: x[x.find('\n')+2:],responses))})
+            'text':list(map(lambda x: x[x.find('\n')+1:],responses))})
         return 'done'
         
     # this function will ask the base mistral model a question about the subtitle section which the user has chosen
     # for now have chosen sub as the indice in the chapter breakdown table
-    def question_answer(self,chosen_sub):
+    def question(self,chosen_sub):
         self.change_adapter('base')
         self.model = self.model.to("cuda:0")
         chosen_sub_name = chosen_sub
         chosen_sub_index = self.chapter_breakdown[self.chapter_breakdown['subtitle']==chosen_sub_name].index[0]
-        prompt = f"""[INST]You are a helpful revision assisstant who asks the user a question about some information which you are given and provide the answer and a concise explanation.
+
+        prompt = f"""[INST]You are a helpful revision assisstant who asks the user 2 questions about some information which you are given.
         Your questions must be based on the provided information only.
-        Your answer and explanation must include knowledge from the provided information only.
-        You will be rewarded for making the explanation a single sentence.
-        You must format your response in the following way:
-        ---
-        Question  (replace with actual question)
-        @@@
-        Answer (replace with actual Answer)
-        @@@
-        Explanation (replace with actual Explanation)
-        ---
-        You will be penalised for doing a different format to the one shown above.
+        Provide the question only.
         This is the provided information:
-        ### {self.chapter_breakdown.iloc[chosen_sub_index,1]} ### [/INST]
-        Output: """
+        ### {self.chapter_breakdown.iloc[chosen_sub_index,1]} ### [/INST]"""
 
         input_ids = self.tokenizer(prompt,return_tensors='pt').input_ids.to("cuda:0")
         input_ids = input_ids.to("cuda:0")
@@ -372,15 +363,48 @@ Output: """
             decoded_output.find("[/INST]")
             + len("[/INST]"):
         ]
-        decoded_output = decoded_output[
-            decoded_output.find("---")
-            + len("---"):
-        ]
-        decoded_output = decoded_output.split('@@@')
-        qa_df = pd.DataFrame({'qa':decoded_output})
 
-        self.qa = qa_df
+        self.questions = decoded_output
+        
         return 'done'
+
+    def answer(self,chosen_sub):
+            self.change_adapter('base')
+            self.model = self.model.to("cuda:0")
+            chosen_sub_name = chosen_sub
+            chosen_sub_index = self.chapter_breakdown[self.chapter_breakdown['subtitle']==chosen_sub_name].index[0]
+
+            prompt = f"""[INST]You are a helpful assisstant who will answer 2 questions about some information which you are given.
+            Your answers must be use the provided information only.
+            You will be rewarded for only using information given to you.
+            These are the two questions:
+            ### {self.questions} ###
+            This is the provided information you must answer the questions with:
+            ### {self.chapter_breakdown.iloc[chosen_sub_index,1]} ### [/INST]"""
+
+            input_ids = self.tokenizer(prompt,return_tensors='pt').input_ids.to("cuda:0")
+            input_ids = input_ids.to("cuda:0")
+
+            generation_config = GenerationConfig(
+              do_sample=True,
+              top_p=0.95, top_k=40,
+              temperature=0.7,
+              max_new_tokens=150000,
+              eos_token_id=self.tokenizer.eos_token_id,
+              pad_token_id=self.tokenizer.pad_token_id,
+            )
+
+
+            out = self.model.generate(inputs=input_ids, generation_config=generation_config)
+            decoded_output = self.tokenizer.decode(out[0], skip_special_tokens=True)
+            decoded_output = decoded_output[
+                decoded_output.find("[/INST]")
+                + len("[/INST]"):
+            ]
+
+            self.answers = decoded_output
+            
+            return 'done'
 
 
 # %% --------------------------------------------------------------------------

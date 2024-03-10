@@ -103,11 +103,13 @@ def update_df():
     print(clicked_value)
     df = obj.contents
     # Update DataFrame based on clicked value
-    updated_data = {'Values': ['TESTINGINIGNING'+clicked_value]}
+    updated_data = {'Values': ['TESTINGINIGNING'+clicked_value],'expansion':['expansion']}
     obj.chapter_breakdown = pd.DataFrame(updated_data)
     updated_df = obj.chapter_breakdown
     
-    return render_template('breakdown.html', filename=filename, tables=[df.to_html(classes='data', index=False), updated_df.to_html(classes='data', index=False)], column_names=df.columns)
+    return render_template('breakdown.html', filename=filename, tables=[df.to_html(classes='data', index=False), updated_df.to_html(classes='data', index=False)], column_names=df.columns,title=clicked_value)
+
+
 
 #User has clicke don subtitle, now displaying just the question
 @app.route('/qa_func', methods=['POST'])
@@ -149,3 +151,5 @@ if __name__ == '__main__':
     app.run()
 
 # %%
+
+#changed breakdown to show the title, need to add title arg to render of breakdown.
