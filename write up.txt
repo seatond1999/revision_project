@@ -1,0 +1,52 @@
+Who for? Non-technical and techincal can understand
+
+Overall structure: 
+
+V short intro - LLM project with finetuning databricks course/attention is all you need.
+Purpose/aim of the tool - a level revision, importance of chapters, Mistral 7B to run locally instead of API to huge model and why
+How the tool does this on a non-technical level e.g. thinks like human with contents, identifies first page, page lag, question asking etc, why not similarity search - recall thing etc? Also why the RAG style thing as only care about info in the book.
+How tool works slightly more technical - QLora with GPTQ mistral instruct - 4 adapter with hot swapping, data, classfiication heads, total RAM taken up etc - finish with might post in more detail on some of the technical aspects.
+
+Say about could turn into an agent if added more functions and add smilarity search also?
+Improvements - Inference time GPU optim and flash attn-2, MLOps tradeoff local stuff, multimodal, more training so deals with the exam practise better.
+
+
+
+I'd like to share my progress on a revision tool which I've been building recently.
+
+The purpose of the tool is to help a school student use their subject textbook to revise for an exam. My goal was for the tool to provide this help in two ways:
+- Split any chapter of the student's choice from the book into small subsections of information with accurate titles.
+- Ask the student questions about any of these subsections and provide the answer.
+
+** here add the non technical what the tool actually does, as shown in video**
+
+This is diff to usual LLM powered PDF tools.. how and why....?
+interesting considerations due to target audience.
+------------------------
+Domain-specific knowledge is important for an A-level and GCSE revision tool.
+
+The majority of students only care about information which will get them extra marks in their exam. For example, the AQA definition of electricity could be: "the amount of electrical energy produced by a
+battery/source per unit of charge." Whereas, the Edexcel definition could be: "the flow of charged particles." If a student receives their AQA Physics result and they are 1 mark off a C, due to the mark 
+they dropped from using the Edexcel electricity definition, they're not going to be happy. For this reason, a key part of this tool was that it should only use knowledge from the textbook, as this is one
+place a student can trust to deliver information in a way that will get them marks. This means that any parametric knowledge stored in the Mistral 7B model - generic information stored in the model weights
+from its pretraining on data from the internet - should not be included in the output. 
+
+Exclusively using domain-knowledge to generate output is achievable using an augmented generation arrangement - putting information from the textbook into the LLM prompt.
+------------------------
+Importance of chapters
+
+Another interesting aspect of school exam revision is the importance of chapters. During my time in school, when a teacher told me that chapters 2,3 and 4 would be on the exam, chapters 1 and 5 could be in a
+different subject or language as they aren't going to help me bump up my predicted grades. Most LLM powered PDF tools **give example** use similarity search to retrieve relevant information from a PDF to answer a user's questions. For
+example, if a user has loaded their **add in example of word from textbook for retrievela that could be in 2 chapters.** The LLM will answer the user's question using information from anywehre in the book which is semantically similar
+to the question. In this application however, the student wants to revise information belonging to a given chapter, not information which is necessarily semantically similar to a single word. 
+
+As a student does not want to revise any extra information other than the chosen chapter, specificity is important. As in, the tool should not include chapter 4 plus a quarter of chapter 5 when the student is revising chapter 4.
+Also, a student does not want to miss any information from the chapter without knowing, and lose marks in the exam when that missing topic comes up in a question. This need for almost 100% recall and 100% specificity makes
+using a usual arrangement with a vector databse and similarity search very difficult. By adjusting the chunk size the ztudent will either receive far too much information, or won't receive all the infromation from the chapter they are]
+revising.
+------------------------
+
+** after say technical stuff **
+
+
+

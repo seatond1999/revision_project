@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flask DataFrame Example</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <style>
+        body {
+            text-align: left;
+        }
+        header { 
+                text-align: center; 
+            }
+
+        nav {
+            display: flex;
+            justify-content: center;
+            background-color: #444;
+            padding: 10px;
+        }
+
+        nav a {
+            color: white;
+            text-decoration: none;
+            padding: 10px;
+            margin: 0 10px;
+            font-weight: bold;
+        }
+
+        nav a:hover {
+            background-color: #555;
+        }
+        .container {
+            max-width: 600px; /* Adjust the max-width as needed */
+            margin: 0 auto;
+        }
+
+        table {
+        font-size: 18px; /* Adjust the font size as needed */
+        border-collapse: collapse;
+        width: 100%;
+    }
+
+        th, td {
+            border: 2px solid black; /* Adjust the border thickness as needed */
+            padding: 10px;
+            text-align: left;
+        }
+    </style>
+</head>
+<body>
+    <section class="grainy-gradient-weaker">
+        <svg height="0" width="0">
+            <filter id='f'>
+                <feTurbulence type='fractalNoise' baseFrequency='.5' />
+            </filter>
+        </svg>
+    </section>
+
+    <nav>
+        <!-- Call the Python function when the link is clicked -->
+        <a href="{{ url_for('upload_file') }}">CHANGE BOOK</a>
+        <a href="{{ url_for('change_chapter') }}">CHANGE CHAPTER</a>
+    </nav>
+    <header> 
+    <h1>Breakdown of: {{title}}</h1>
+    </header>
+    <!-- Second Table -->
+    <div class="container">
+        <!-- First Table -->
+        {% for table in tables[0:1] %}
+            <div>
+                {{ table|safe }}
+            </div>
+        {% endfor %}
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+<script>
+
+    var chapter_title = "{{title}}";
+
+    $(document).ready(function() {
+        // Add a click event to the DataFrame rows
+        $('.data tbody tr').click(function() {
+            // Get the clicked value from the first column
+            var clickedValue = $(this).find('td:first').text();
+
+            // Use AJAX to send a request to the server-side function
+            $('<form action="/expand_sub" method="post"><input type="hidden" name="clickedValue" value="' + clickedValue + '"><input type="hidden" name="chapter_title" value="' + chapter_title + '"></form>').appendTo('body').submit();
+            
+        });
+    });
+</script>
+
+    
+
+</body>
+</html>
+
+

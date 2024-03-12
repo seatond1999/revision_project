@@ -52,6 +52,9 @@ def allowed_file(filename):
 #user uploads PDF,triggers functions to get corrected contents, diplsays contents to user.
 @app.route('/', methods=['GET', 'POST'])
 def upload_file():
+    obj.contents = None
+    obj.chapter_breakdown = None
+    obj.questions = None
     if request.method == 'POST':
         if 'file' not in request.files:
             return render_template('upload.html', error='No file part')
@@ -76,11 +79,16 @@ def upload_file():
 @app.route('/contents', methods=['POST'])
 def contents():
     filename = obj.book_filename
-    if not obj.contents:
+    if obj.contents is None:
         print('starting stuff')
+        #####################
         obj.get_contents()
         obj.extract_contents()
         obj.find_first_page()
+        # obj.contents_first = loaded_contents_first
+        # obj.contents_last = loaded_contents_last
+        # obj.contents = loaded_contents
+        #####################
         print('ending stuff')
     df = obj.contents
     print(df)
@@ -91,59 +99,69 @@ def contents():
 @app.route('/update_df', methods=['POST'])
 def update_df():
     print('starting dupate_df')
-    filename = obj.book_filename
-    if not obj.contents:
-        clicked_value = request.form.get('clicked_value')
-        obj.split_chosen_chapter(clicked_value+' ')
-        print(clicked_value)
-    df = obj.contents
+    clicked_chapter = request.form.get('chapter_title')
+    if obj.chapter_breakdown is None:
+        ###################
+        obj.split_chosen_chapter(clicked_chapter+' ')
+        print(clicked_chapter)
+
+        # obj.chapter_breakdown = loaded_chapter_breakdown
+        ################################
     updated_df = obj.chapter_breakdown.drop(columns=['text'])
     
-    return render_template('breakdown.html', filename=filename, tables=[df.to_html(classes='data', index=False), updated_df.to_html(classes='data', index=False)], column_names=df.columns)
+    return render_template('breakdown.html', tables=[updated_df.to_html(classes='data', index=False)],title=clicked_chapter)
 
 @app.route('/expand_sub', methods=['POST'])
 def expand_sub():
-    clicked_value = request.form.get('clickedValue')
-    index = obj.chapter_breakdown[obj.chapter_breakdown['subtitle']==clicked_value]
+    updated_df = obj.chapter_breakdown.drop(columns=['text'])
+    clicked_subtitle = request.form.get('clickedValue')
+    clicked_chapter = request.form.get('chapter_title')
+    print(clicked_subtitle)
+    index = obj.chapter_breakdown[obj.chapter_breakdown['subtitle']==clicked_subtitle].index[0]
     expanded_sub = obj.chapter_breakdown['text'][index]
-    return render_template('expand_sub.html',subtitle=clicked_value,expanded_sub = expanded_sub)
+    return render_template('expand_sub.html',subtitle=clicked_subtitle,chapter=clicked_chapter,expanded_sub = expanded_sub,tables=[updated_df.to_html(classes='data', index=False)],title=clicked_chapter)
 
 
 #User has clicke don subtitle, now displaying just the question
 @app.route('/qa_func', methods=['POST'])
 def qa_func():
-    filename = obj.book_filename
-    updated_df = obj.chapter_breakdown
-    df = obj.contents
-    
+    clicked_subtitle = request.form.get('subtitle')
+    clicked_chapter = request.form.get('chapter_title')
     if not obj.questions:
-        clicked_value = request.form.get('subtitle')
-        print(clicked_value)
-        obj.question(clicked_value)
-        obj.answer(clicked_value)
+        print(clicked_subtitle)
+        #############################
+        obj.question(clicked_subtitle)
+        obj.answer(clicked_subtitle)
+        # obj.questions = loaded_questions
+        # obj.answers = loaded_answers
+        #############################
+    questions = obj.questions
 
-    question_df = pd.DataFrame({'Questions':[obj.questions]})
-
-    return render_template('qa.html', filename=filename, tables=[df.to_html(classes='data', index=False), updated_df.to_html(classes='data', index=False),question_df.to_html(classes='data', index=False)], column_names=df.columns)
+    return render_template('questions.html', questions = questions,subtitle=clicked_subtitle,title = clicked_chapter)
+    
 
 #displaying q and a.
 @app.route('/ans_func', methods=['POST'])
 def ans_func():   
-    filename = obj.book_filename 
-    updated_df = obj.chapter_breakdown
+    clicked_subtitle = request.form.get('subtitle')
+    clicked_chapter = request.form.get('chapter_title')
+    print('currrrrr' + clicked_chapter)
+    questions = obj.questions
+    answers = obj.answers
+
+    return render_template('answers.html', questions = questions,subtitle=clicked_subtitle,answers=answers,title = clicked_chapter)
+
+@app.route('/change_chapter', methods=['GET'])
+def change_chapter():
     df = obj.contents
-    question_answer_df = pd.DataFrame({'Questions':[obj.questions,obj.answers]})
+    return render_template('contents.html', tables=[df.to_html(classes='data', index=False)], column_names=df.columns)
 
-    return render_template('qa.html', filename=filename, tables=[df.to_html(classes='data', index=False), updated_df.to_html(classes='data', index=False),question_answer_df.to_html(classes='data', index=False)], column_names=df.columns)
-
-@app.route('/reset', methods=['POST'])
-def reset():
-    filename = obj.book_filename
-    obj.qa = None
-    df = obj.contents
-    return render_template('contents.html', filename=filename, tables=[df.to_html(classes='data', index=False)], column_names=df.columns)
-
-
+@app.route('/change_subtitle')
+def change_subtitle():
+    clicked_chapter = request.args.get('chapter_title')
+    updated_df = obj.chapter_breakdown.drop(columns=['text'])
+    obj.questions = None
+    return render_template('breakdown.html', tables=[updated_df.to_html(classes='data', index=False)],title=clicked_chapter)
 
 
 if __name__ == '__main__':
