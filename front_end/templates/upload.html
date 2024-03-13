@@ -38,13 +38,13 @@
 </head>
 <body>
   <section class="grainy-gradient-intro">
-    <svg height="100" width="0">
+    <svg height="0" width="0">
       <filter id='f'>
         <feTurbulence type='fractalNoise' baseFrequency='.5' />
       </filter>
     </svg>
   </section>
-  <h1>UPLOAD YOUR TEXTBOOK TO START REVISION</h1>
+  <h1>UPLOAD YOUR TEXTBOOK</h1>
   {% if error %}
     <p style="color: red;">{{ error }}</p>
   {% endif %}

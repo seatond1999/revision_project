@@ -31,11 +31,11 @@ from app_class import app as appedy
 
 obj = appedy()
 #load base model and adapters (if deployed could move)
-# obj.get_base()
-# obj.load_contclass_adapter()
-# obj.load_fpclass_adapter()
-# obj.load_splitcausal_adapter()
-# obj.load_extrcontcausal_adapter()
+obj.get_base()
+obj.load_contclass_adapter()
+obj.load_fpclass_adapter()
+obj.load_splitcausal_adapter()
+obj.load_extrcontcausal_adapter()
 
 
 # %% --------------------------------------------------------------------------
@@ -80,10 +80,12 @@ def upload_file():
 def contents():
     filename = obj.book_filename
     if obj.contents is None:
-        print('starting stuff')
+        print('get_contents')
         #####################
         obj.get_contents()
+        print('extract_contents')
         obj.extract_contents()
+        print('find_first_page')
         obj.find_first_page()
         # obj.contents_first = loaded_contents_first
         # obj.contents_last = loaded_contents_last
@@ -102,8 +104,8 @@ def update_df():
     clicked_chapter = request.form.get('chapter_title')
     if obj.chapter_breakdown is None:
         ###################
-        obj.split_chosen_chapter(clicked_chapter+' ')
         print(clicked_chapter)
+        obj.split_chosen_chapter(clicked_chapter)
 
         # obj.chapter_breakdown = loaded_chapter_breakdown
         ################################

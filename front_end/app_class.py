@@ -221,6 +221,7 @@ Output: """
         contents_df['page_number'] = contents_df['page_number'].apply(lambda x: int(x))
         contents_df = contents_df.sort_values(by='page_number', ascending=True)
         contents_df = contents_df.drop_duplicates(subset='page_number', keep='first')
+        contents_df['chapter_titles'] = contents_df['chapter_titles'].apply(lambda x: x.strip())
         contents_df.reset_index(inplace = True)
         contents_df.drop(columns = ['index'],inplace = True)
         self.contents = contents_df
@@ -306,7 +307,7 @@ Output: """
 
             generation_config = GenerationConfig(
               do_sample=True,
-              top_p=0.95, top_k=40,
+              top_p=0.85, top_k=20,
               temperature=0.7,
               max_new_tokens=150000,
               eos_token_id=self.tokenizer.eos_token_id,
@@ -369,42 +370,42 @@ Output: """
         return 'done'
 
     def answer(self,chosen_sub):
-            self.change_adapter('base')
-            self.model = self.model.to("cuda:0")
-            chosen_sub_name = chosen_sub
-            chosen_sub_index = self.chapter_breakdown[self.chapter_breakdown['subtitle']==chosen_sub_name].index[0]
+      self.change_adapter('base')
+      self.model = self.model.to("cuda:0")
+      chosen_sub_name = chosen_sub
+      chosen_sub_index = self.chapter_breakdown[self.chapter_breakdown['subtitle']==chosen_sub_name].index[0]
 
-            prompt = f"""[INST]You are a helpful assisstant who will answer 2 questions about some information which you are given.
-            Your answers must be use the provided information only.
-            You will be rewarded for only using information given to you.
-            These are the two questions:
-            ### {self.questions} ###
-            This is the provided information you must answer the questions with:
-            ### {self.chapter_breakdown.iloc[chosen_sub_index,1]} ### [/INST]"""
+      prompt = f"""[INST]You are a helpful assisstant who will concisely answer 2 questions about some information which you are given.
+      Only use the information provided to you.
+      Do not add any additional information.
+      You will be rewarded for making your answers single sentences or as concise as possible.
+      These are the two questions:
+      ### {self.questions} ###
+      This is the provided information you must answer the questions with:
+      ### {self.chapter_breakdown.iloc[chosen_sub_index,1]} ### [/INST]"""
 
-            input_ids = self.tokenizer(prompt,return_tensors='pt').input_ids.to("cuda:0")
-            input_ids = input_ids.to("cuda:0")
+      input_ids = self.tokenizer(prompt,return_tensors='pt').input_ids.to("cuda:0")
+      input_ids = input_ids.to("cuda:0")
 
-            generation_config = GenerationConfig(
-              do_sample=True,
-              top_p=0.95, top_k=40,
-              temperature=0.7,
-              max_new_tokens=150000,
-              eos_token_id=self.tokenizer.eos_token_id,
-              pad_token_id=self.tokenizer.pad_token_id,
-            )
+      generation_config = GenerationConfig(
+        do_sample=True,
+        top_p=0.75, top_k=30,
+        temperature=0.5,
+        max_new_tokens=150000,
+        eos_token_id=self.tokenizer.eos_token_id,
+        pad_token_id=self.tokenizer.pad_token_id,
+      )
 
+      out = self.model.generate(inputs=input_ids, generation_config=generation_config)
+      decoded_output = self.tokenizer.decode(out[0], skip_special_tokens=True)
+      decoded_output = decoded_output[
+          decoded_output.find("[/INST]")
+          + len("[/INST]"):
+      ]
 
-            out = self.model.generate(inputs=input_ids, generation_config=generation_config)
-            decoded_output = self.tokenizer.decode(out[0], skip_special_tokens=True)
-            decoded_output = decoded_output[
-                decoded_output.find("[/INST]")
-                + len("[/INST]"):
-            ]
+      self.answers = decoded_output
 
-            self.answers = decoded_output
-            
-            return 'done'
+      return 'done'
 
 
 # %% --------------------------------------------------------------------------
