@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <style>
+        body {
+          display: flex;
+          flex-direction: column;
+          justify-content: center;
+          align-items: center;
+          height: 92vh;
+          margin: 0;
+        }
+    
+        section.grainy-gradient-intro {
+          text-align: center;
+        }
+    
+        h1, form {
+          margin-top: 20px;
+        }
+    
+        form {
+          text-align: center;
+        }
+    
+        input[type="file"] {
+          margin-right: 10px;
+        }
+    
+        svg {
+          display: none; /* Add this line if you don't need the SVG element */
+        }
+    
+    </style>
+
+</head>
+<body>
+
+    <section class="grainy-gradient-intro">
+        <svg height="0" width="0">
+          <filter id='f'>
+            <feTurbulence type='fractalNoise' baseFrequency='.5' />
+          </filter>
+        </svg>
+    </section>
+    <header> 
+    </header>
+    <h2>UPLOAD SUCCESSFUL</h2>
+    <p>NOW READING YOUR TEXTBOOK</p>
+
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            // Add a click event to the DataFrame rows
+            $('<form action="/contents" method="post"></form>').appendTo('body').submit();
+        });
+    </script>
+</body>
+</html>
