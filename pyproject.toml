@@ -1,0 +1,19 @@
+[tool.poetry]
+name = "revistral"
+version = "0.1.0"
+description = ""
+authors = ["Dan <danseaton@kubrickgroup.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.12"
+pandas = "^2.2.3"
+sqlalchemy = "^2.0.35"
+psycopg2-binary = "^2.9.9"
+langchain = "^0.3.2"
+awscli = "^1.35.3"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
